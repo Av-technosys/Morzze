@@ -25,7 +25,9 @@ const Header = () => {
 
   return (
     <header className="bg-black text-white w-full border-b border-zinc-900 sticky top-0 z-50">
-      <nav className="max-w-360 mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+      <nav className="max-w-[1440px] mx-auto px-6 md:px-10 h-20 flex items-center justify-between">
+        
+        {/* -- Logo Section -- */}
         <div className="flex-none pt-2">
           <Link href="/">
             <Image
@@ -37,13 +39,15 @@ const Header = () => {
             />
           </Link>
         </div>
-        <div className="hidden md:flex items-center">
-          <ul className="flex space-x-10 text-[13px] font-medium font-montserrat tracking-wide text-white">
+
+        {/* -- Navigation Links (Hidden on Mobile) -- */}
+        <div className="hidden lg:flex items-center">
+          <ul className="flex space-x-8 lg:space-x-7 text-[13px] font-medium font-montserrat tracking-wide text-white">
             {navLinks.map((link) => (
               <li key={link.name}>
                 <Link
                   href={link.href}
-                  className="hover:text-zinc-300 transition-all duration-300"
+                  className="hover:text-[#B88E2F] transition-all duration-300"
                 >
                   {link.name}
                 </Link>
@@ -51,32 +55,53 @@ const Header = () => {
             ))}
           </ul>
         </div>
-        <div className="flex items-center space-x-5 md:space-x-4">
-          <button className="hover:text-zinc-300 transition-colors md:block hidden">
-            <IconSearch size={20} stroke={1.5} />
-          </button>
-          <button className=" hover:text-zinc-300 transition-colors">
-            <IconHeart size={20} stroke={1.5} />
-          </button>
-          <button className=" hover:text-zinc-300 transition-colors">
-            <IconUser size={20} stroke={1.5} />
-          </button>
-          <div className="relative mt-2">
-            <button className=" hover:text-zinc-300 transition-colors">
-              <IconShoppingBag size={22} stroke={1.5} />
-            </button>
-            <span className="absolute -top-1 -right-1.5 bg-[#B88E2F] text-black text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-              0
-            </span>
+
+        {/* -- Right Section: Search Bar + Icons -- */}
+        <div className="flex items-center space-x-4 lg:space-x-6">
+          
+          {/* Exact Same Search Bar from Attachment 8 */}
+          <div className="relative hidden md:block">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500">
+              <IconSearch size={18} stroke={1.5} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search Product"
+              className="bg-[#111111] border border-zinc-800 text-[12px] font-inter rounded-md pl-10 pr-4 py-2 w-[200px] lg:w-[280px] focus:outline-none focus:border-[#B88E2F]/50 transition-all placeholder:text-zinc-600"
+            />
           </div>
-          <button
-            className="md:hidden text-white ml-2"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
-          </button>
+
+          {/* Icon Actions */}
+          <div className="flex items-center space-x-4">
+            <button className="hover:text-[#B88E2F] transition-colors">
+              <IconHeart size={20} stroke={1.5} />
+            </button>
+            <button className="hover:text-[#B88E2F] transition-colors">
+              <IconUser size={20} stroke={1.5} />
+            </button>
+            
+            {/* Cart with Badge */}
+            <div className="relative mt-1">
+              <button className="hover:text-[#B88E2F] transition-colors">
+                <IconShoppingBag size={22} stroke={1.5} />
+              </button>
+              <span className="absolute -top-1 -right-1.5 bg-[#B88E2F] text-black text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                0
+              </span>
+            </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="md:hidden text-white ml-2"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <IconX size={24} /> : <IconMenu2 size={24} />}
+            </button>
+          </div>
         </div>
       </nav>
+
+      {/* -- Mobile Navigation Menu (Logic Unchanged) -- */}
       {isMenuOpen && (
         <div className="md:hidden bg-black border-t border-zinc-900 animate-in fade-in slide-in-from-top duration-1000">
           <ul className="flex flex-col p-6 space-y-4 font-montserrat">

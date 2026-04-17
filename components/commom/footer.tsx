@@ -21,7 +21,7 @@ const Footer = () => {
           className="object-cover object-center opacity-100"
           priority
         />
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/20"></div>
       </div>
 
       <div className="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-10 py-16">

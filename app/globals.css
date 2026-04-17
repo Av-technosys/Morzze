@@ -128,3 +128,11 @@
     @apply font-sans;
   }
 }
+
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+.font-montserrat {
+  font-family: var(--font-montserrat);
+}

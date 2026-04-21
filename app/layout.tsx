@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/commom/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
         ${montserrat.variable}  h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
+        <Footer/>
     </html>
   );
 }

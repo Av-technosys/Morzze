@@ -22,10 +22,8 @@ const CategoryShowcase = () => {
   const [activeTab, setActiveTab] = useState(categoryData[0]);
 
   return (
-    <section className="bg-black text-white py-24 px-6 md:px-10 overflow-hidden">
-      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-        
-        {/* -- LEFT SIDE: CATEGORY LIST (4 Columns) -- */}
+    <section className="bg-black text-white py-8 md:py-24 px-6 md:px-10 overflow-hidden">
+      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-start">
         <div className="lg:col-span-4 space-y-6 pt-10">
           {categoryData.map((cat) => (
             <div key={cat.id} className="relative">
@@ -64,12 +62,11 @@ const CategoryShowcase = () => {
           ))}
         </div>
 
-        {/* -- RIGHT SIDE: COMPACT IMAGE GRID (8 Columns) -- */}
         <div className="lg:col-span-8 flex justify-center items-center h-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab.id}
-              className="grid grid-cols-2 gap-11 w-[500px]" // Max-width added to keep images small
+              className="grid grid-cols-2 md:gap-11 gap-4 w-[500px]" 
             >
               {activeTab.images.map((img, index) => (
                 <motion.div
@@ -81,7 +78,6 @@ const CategoryShowcase = () => {
                     delay: index * 0.15, 
                     ease: [0.16, 1, 0.3, 1] 
                   }}
-                  // Heights and Widths are now controlled and separate
                   className={`relative overflow-hidden bg-zinc-900 w-full rounded-sm shadow-2xl ${
                     index === 0 ? 'aspect-square mt-0' : 
                     index === 1 ? 'aspect-square mt-10' : 

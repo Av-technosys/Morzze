@@ -27,7 +27,7 @@ const categories = [
 
 const ShopCategory = () => {
   return (
-    <section className="bg-black text-white py-24 px-6 md:px-10 overflow-hidden">
+    <section className="bg-black text-white py-8 md:py-24 px-6 md:px-10 overflow-hidden">
       <div className="max-w-screen-2xl mx-auto">
         <div className="relative mb-16 flex items-center justify-center">
           <motion.div

@@ -40,7 +40,7 @@ const products = [
 
 const SignaturePieces = () => {
   return (
-    <section className="bg-black text-white py-20 overflow-hidden">
+    <section className="bg-black text-white py-8 md:py-20 overflow-hidden">
       <div className="max-w-screen-2xl mx-auto px-6 md:px-10">
         <div className="relative mb-12 flex items-center justify-center min-h-25">
           <div className="text-center">

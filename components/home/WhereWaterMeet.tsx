@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 
 const WhereWaterMeet = () => {
   return (
-    <section className="relative w-full h-[60vh] md:h-[70vh] lg:h-[100vh] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-[70vh] md:h-[70vh] lg:h-[100vh] flex items-center justify-center overflow-hidden">
       
       {/* -- Background Image with Zoom-In Animation -- */}
       <motion.div 

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const HeroSection = () => {
   return (
-    <section className="relative w-full h-[80vh] md:h-[90vh] flex items-center overflow-hidden">
+    <section className="relative w-full md:py-8 py-18  flex items-center overflow-hidden">
       <motion.div
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}

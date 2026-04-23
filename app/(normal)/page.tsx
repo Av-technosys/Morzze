@@ -1,5 +1,3 @@
-import Footer from '@/components/commom/footer'
-import Header from '@/components/commom/header'
 import CategoryShowcase from '@/components/home/CategoryShowcase'
 import Craftsmanship from '@/components/home/Craftsmanship'
 import FeaturedInnovation from '@/components/home/FeaturedInnovation'
@@ -25,7 +23,7 @@ import React from 'react'
 const page = () => {
   return (
     <main>
-      <Header/>
+     
       <HeroSection/>
       <TheStory/>
       <SignaturePieces/>

@@ -26,7 +26,7 @@ const FeaturedInnovation = () => {
             Featured <br />
             <span className="text-white">Innovation</span>
           </h2>
-          <p className="font-inter text-[#928E87] text-sm md:text-base leading-relaxed text-justify">
+          <p className="font-inter text-[#928E87] text-sm md:text-md leading-relaxed text-justify">
             The <span className="text-white font-bold">Air Tap</span> is a sleek and 
             innovative hand dryer designed for modern, eco-conscious spaces. Its 
             advanced filtration system ensures clean air while drying, promoting 

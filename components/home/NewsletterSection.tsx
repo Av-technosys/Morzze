@@ -28,11 +28,11 @@ const   NewsletterSection = () => {
               STAY UPDATED
             </motion.span>
             
-            <h2 className="font-montserrat text-4xl md:text-6xl font-medium text-white tracking-tight leading-tight">
+            <h2 className="font-montserrat text-4xl md:text-5xl font-medium text-white tracking-tight leading-tight">
               Join the World of Style
             </h2>
             
-            <p className="font-inter text-[#928E87] text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+            <p className="font-inter text-[#928E87] text-sm md:text-md max-w-xl mx-auto leading-relaxed">
               Be the first to discover new collections, exclusive offers, and design inspiration.
             </p>
           </div>
@@ -53,7 +53,7 @@ const   NewsletterSection = () => {
             <motion.button 
               whileHover={{ backgroundColor: "#CBA14D", color: "#000" }}
               whileTap={{ scale: 0.98 }}
-              className="w-full md:w-[180px] rounded-md h-14 border-2 border-[#CBA14D] text-[#CBA14D] font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 bg-transparent shrink-0"
+              className="w-full md:w-45 rounded-md h-14 border-2 border-[#CBA14D] text-[#CBA14D] font-bold text-xs uppercase tracking-[0.2em] transition-all duration-500 bg-transparent shrink-0"
             >
               SUBSCRIBE
             </motion.button>

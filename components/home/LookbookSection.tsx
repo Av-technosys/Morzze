@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 
 const LookbookSection = () => {
   return (
-    <section className="bg-black text-white py-8 md:py-24 px-6 md:px-12 overflow-hidden">
+    <section className="bg-black text-white py-8 md:py-24 px-6 md:px-10 overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-16">
         
         {/* -- HEADER SECTION -- */}
@@ -13,7 +13,7 @@ const LookbookSection = () => {
           <span className="block font-inter text-xs md:text-sm font-bold text-[#CBA14D] uppercase tracking-[0.5em]">
             INSPIRATION
           </span>
-          <h2 className="font-montserrat text-4xl md:text-6xl font-medium tracking-tight text-white uppercase">
+          <h2 className="font-montserrat text-4xl md:text-5xl font-medium tracking-tight text-white uppercase">
             The Lookbook
           </h2>
         </div>

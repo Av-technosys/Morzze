@@ -36,7 +36,7 @@ const NaturalElegance = () => {
             transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-5 relative h-full flex items-center justify-center"
           >
-            <div className="relative w-full h-[80%] lg:h-[100%] lg:w-[67%]">
+            <div className="relative w-full h-[80%] lg:h-full lg:w-[67%]">
                {/* Curved Mask Container */}
                <div className="relative w-full h-full overflow-hidden rounded-tr-[100px] rounded-bl-[100px] shadow-2xl">
                   <Image 
@@ -69,8 +69,8 @@ const NaturalElegance = () => {
             </p>
 
             <div className="flex items-center gap-6 py-4">
-              <span className="font-montserrat  text-3xl md:text-4xl font-bold text-white tracking-tight">₹15,999</span>
-              <span className="font-montserrat text-3xl md:text-4xl text-zinc-500 line-through">₹20,899</span>
+              <span className="font-montserrat  text-3xl md:text-2xl font-bold text-white tracking-tight">₹15,999</span>
+              <span className="font-montserrat text-3xl md:text-2xl text-zinc-500 line-through">₹20,899</span>
             </div>
 
             <Button 

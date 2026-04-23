@@ -1,44 +1,38 @@
-"use client"
-import React from 'react'
-import Image from 'next/image'
-import { motion } from 'framer-motion'
-import { Button } from "@/components/ui/button"
+"use client";
+import React from "react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 const TouchlessInnovation = () => {
   return (
     <section className="relative w-full  py-10 lg:py-20 overflow-hidden">
-      
-      {/* -- BACKGROUND IMAGE LAYER -- */}
       <div className="absolute inset-0 z-0">
-        <Image 
-          src="/touchless.jpg" // Yahan apni background image ka naam likho
+        <Image
+          src="/hero-bg.png"
           alt="Innovation Background"
           fill
-          className="object-cover opacity-30" // Opacity 30% rakhi hai taaki dark luxury feel aaye
+          className="object-cover opacity- "
           priority
         />
-        {/* Subtle Gradient Overlay taaki text readability perfect rahe */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-r from-black via-black/80 to-transparent" />
       </div>
 
       <div className="container mx-auto px-6 md:px-10 relative z-10 ">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ">
-          
-          {/* -- LEFT SIDE: IMAGE (Animates from Left) -- */}
           <motion.div
             initial={{ opacity: 0, x: -120, scale: 0.9 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: false }} 
-            transition={{ 
-                duration: 1.6, 
-                ease: [0.19, 1, 0.22, 1] 
+            viewport={{ once: false }}
+            transition={{
+              duration: 1.6,
+              ease: [0.19, 1, 0.22, 1],
             }}
-            className="relative w-full aspect-square max-w-[400px] md:ml-20"
+            className="relative w-full aspect-square max-w-100 md:ml-20"
           >
-            {/* Curved Mask Container */}
             <div className="relative w-full h-full overflow-hidden rounded-tr-[180px] rounded-bl-[180px] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-              <Image 
-                src="/touchless.jpg" 
+              <Image
+                src="/touchless.jpg"
                 alt="Touchless Faucet Technology"
                 fill
                 className="object-cover"
@@ -46,70 +40,73 @@ const TouchlessInnovation = () => {
               />
             </div>
           </motion.div>
-
-          {/* -- RIGHT SIDE: CONTENT (Animates from Right) -- */}
           <div className="space-y-8">
-            {/* Innovation Tag */}
             <motion.span
               initial={{ opacity: 0, x: 60 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false }}
-              transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1], delay: 0.2 }}
+              transition={{
+                duration: 1.2,
+                ease: [0.19, 1, 0.22, 1],
+                delay: 0.2,
+              }}
               className="block font-montserrat text-xs md:text-sm font-bold text-[#CBA14D] uppercase tracking-[0.4em]"
             >
               INNOVATION
             </motion.span>
-
-            {/* Heading */}
             <motion.h2
               initial={{ opacity: 0, x: 100 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false }}
-              transition={{ duration: 1.4, ease: [0.19, 1, 0.22, 1], delay: 0.3 }}
-              className="font-montserrat text-4xl md:text-4xl font-medium text-white leading-tight"
+              transition={{
+                duration: 1.4,
+                ease: [0.19, 1, 0.22, 1],
+                delay: 0.3,
+              }}
+              className="font-montserrat text-4xl md:text-2xl font-medium text-white leading-tight"
             >
-              The Future of <span className="text-[#928E87]">Touchless Living</span>
+              The Future of{" "}
+              <span className="text-[#928E87]">Touchless Living</span>
             </motion.h2>
-
-            {/* Description */}
             <motion.p
               initial={{ opacity: 0, x: 60 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: false }}
-              transition={{ duration: 1.4, ease: [0.19, 1, 0.22, 1], delay: 0.4 }}
-              className="font-inter text-[#928E87] text-sm md:text-base leading-relaxed max-w-lg"
+              transition={{
+                duration: 1.4,
+                ease: [0.19, 1, 0.22, 1],
+                delay: 0.4,
+              }}
+              className="font-inter text-[#928E87] text-sm md:text-md leading-relaxed max-w-lg"
             >
-              Experience the revolution of touchless water control. Our Air Tap technology 
-              combines infrared sensing with precision flow engineering, delivering a 
-              hygienic, water-saving, and effortlessly elegant kitchen experience.
+              Experience the revolution of touchless water control. Our Air Tap
+              technology combines infrared sensing with precision flow
+              engineering, delivering a hygienic, water-saving, and effortlessly
+              elegant kitchen experience.
             </motion.p>
-
-            {/* Points Section */}
             <div className="space-y-4 pt-4">
               {[
                 "90% Germ Reduction",
                 "40% Water Savings",
-                "Sensor-Activated Flow"
+                "Sensor-Activated Flow",
               ].map((point, index) => (
-                <motion.div 
+                <motion.div
                   key={index}
                   initial={{ opacity: 0, x: 40 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: false }}
-                  transition={{ 
-                    duration: 1, 
-                    ease: [0.19, 1, 0.22, 1], 
-                    delay: 0.6 + (index * 0.15) 
+                  transition={{
+                    duration: 1,
+                    ease: [0.19, 1, 0.22, 1],
+                    delay: 0.6 + index * 0.15,
                   }}
-                  className="flex items-center gap-3 text-white/80 font-inter text-sm md:text-base"
+                  className="flex items-center gap-3 text-white/80 font-inter text-sm md:text-md"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[#CBA14D]" />
                   {point}
                 </motion.div>
               ))}
             </div>
-
-            {/* CTA Button */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -117,7 +114,7 @@ const TouchlessInnovation = () => {
               transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1], delay: 1 }}
               className="pt-6"
             >
-              <Button 
+              <Button
                 variant="outline"
                 className="rounded-md border-[#CBA14D] text-[#CBA14D] hover:bg-[#CBA14D] hover:text-black font-bold uppercase tracking-widest px-10 h-14 transition-all duration-700 bg-transparent"
               >
@@ -125,11 +122,10 @@ const TouchlessInnovation = () => {
               </Button>
             </motion.div>
           </div>
-
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default TouchlessInnovation
+export default TouchlessInnovation;

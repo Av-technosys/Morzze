@@ -27,7 +27,7 @@ export default function InstagramCarousel() {
       {/* Optional dark overlay for readability */}
       <div className="absolute inset-0 bg-black/70 " />
 
-      <div className="relative z-10 max-w-7xl mx-auto text-center px-6 md:px-12">
+      <div className="relative z-10 max-w-7xl mx-auto text-center px-6 md:px-10">
         
         {/* Header */}
         <div className="mb-12 space-y-4">
@@ -39,7 +39,7 @@ export default function InstagramCarousel() {
             FOLLOW US ON <span className="text-[#CBA14D]">INSTAGRAM</span>
           </h2>
 
-          <p className="font-inter text-[#928E87] text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+          <p className="font-inter text-[#928E87] text-sm md:text-md max-w-2xl mx-auto leading-relaxed">
             Get inspired by our latest designs and see how our customers transform their spaces
           </p>
         </div>
@@ -56,7 +56,7 @@ export default function InstagramCarousel() {
               {[...images, ...images].map((src, index) => (
                 <div
                   key={index}
-                  className="min-w-[240px] md:min-w-[220px] aspect-square bg-[#111] border border-white/10 group overflow-hidden"
+                  className="min-w-60 md:min-w-55 aspect-square bg-[#111] border border-white/10 group overflow-hidden"
                 >
                   <img
                     src={src}
@@ -69,8 +69,8 @@ export default function InstagramCarousel() {
           </div>
 
           {/* Fades */}
-          <div className="absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-[#0A0A0A] to-transparent z-20" />
-          <div className="absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-[#0A0A0A] to-transparent z-20" />
+          <div className="absolute inset-y-0 left-0 w-5 bg-linear-to-r from-[#0A0A0A] to-transparent z-20" />
+          <div className="absolute inset-y-0 right-0 w-5 bg-linear-to-l from-[#0A0A0A] to-transparent z-20" />
         </div>
 
         {/* Button */}

@@ -47,8 +47,8 @@ const VertexShowcase = () => {
             </p>
 
             <div className="flex items-center gap-6 py-4">
-              <span className="font-montserrat text-3xl md:text-4xl font-bold text-white tracking-tight">₹12,999</span>
-              <span className="font-montserrat text-3xl md:text-4xl text-zinc-500 line-through">₹16,899</span>
+              <span className="font-montserrat text-3xl md:text-2xl font-bold text-white tracking-tight">₹12,999</span>
+              <span className="font-montserrat text-3xl md:text-2xl text-zinc-500 line-through">₹16,899</span>
             </div>
 
             <Button 

@@ -53,7 +53,7 @@ const SignaturePieces = () => {
           </div>
           <div className="hidden md:block absolute right-0 bottom-7">
             <Link
-              href="/all-products"
+              href="/products#"
               className="flex items-center gap-2 font-montserrat text-[10px] font-bold text-[#EDEBE980] hover:text-[#CBA14D] transition-colors uppercase tracking-widest group"
             >
               VIEW ALL
@@ -89,7 +89,7 @@ const SignaturePieces = () => {
                 <p className="font-montserrat text-[10px] font-bold text-[#928E8780] uppercase tracking-widest">
                   {product.category}
                 </p>
-                <h3 className="font-inter text-base md:text-lg font-medium text-white/90">
+                <h3 className="font-inter text-base md:text-md font-medium text-white/90">
                   {product.name}
                 </h3>
                 <p className="font-montserrat text-sm font-bold text-[#CBA14D]">

@@ -89,7 +89,7 @@ const TrendingNow = () => {
                 <p className="font-montserrat text-[10px] font-bold text-[#928E8780] uppercase tracking-widest">
                   {product.category}
                 </p>
-                <h3 className="font-inter text-base md:text-lg font-medium text-white/90">
+                <h3 className="font-inter text-base md:text-md font-medium text-white/90">
                   {product.name}
                 </h3>
                 <p className="font-montserrat text-sm font-bold text-[#CBA14D]">

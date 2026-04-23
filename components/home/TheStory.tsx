@@ -30,7 +30,7 @@ const TheStory = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false}}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-          className="font-montserrat text-3xl md:text-4xl lg:text-4xl font-medium mb-10 leading-tight"
+          className="font-montserrat text-3xl md:text-2xl lg:text-4xl font-medium mb-10 leading-tight"
         >
           <span className="text-[#EDEBE980]">Beyond Excellence,</span>{" "}
           <motion.span 
@@ -51,7 +51,7 @@ const TheStory = () => {
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
           className="max-w-xl mx-auto"
         >
-          <p className="font-inter text-sm md:text-base text-[#928E8780] leading-relaxed md:leading-loose tracking-wide">
+          <p className="font-inter text-sm md:text-md text-[#928E8780] leading-relaxed md:leading-loose tracking-wide">
             Born in New Delhi, Morzze brings together European design sensibility with 
             Indian craftsmanship. Every product in our collection — from precision-
             engineered steel sinks to innovative air taps — is crafted to transform your 

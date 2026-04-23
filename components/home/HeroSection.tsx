@@ -45,7 +45,7 @@ const HeroSection = () => {
               animate: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-            className="font-inter text-4xl md:text-6xl lg:text-7xl font-bold text-[#EDEBE980] leading-[1.1] mb-8 tracking-tight"
+            className="font-inter text-4xl md:text-5xl lg:text-7xl font-bold text-[#EDEBE980] leading-[1.1] mb-8 tracking-tight"
           >
             Luxury Redefined <br className="hidden md:block" /> For Every Space
           </motion.h1>

@@ -136,3 +136,7 @@
 .font-montserrat {
   font-family: var(--font-montserrat);
 }
+
+html {
+  scroll-behavior: smooth;
+}

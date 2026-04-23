@@ -92,12 +92,12 @@ const JustArrived = () => {
                 {/* --- NEW BADGES SECTION --- */}
                 <div className="absolute top-4 left-4 z-10 flex gap-2">
                   {product.isNew && (
-                    <div className="bg-[#CBA14D] font-inter text-black text-[9px] font-bold px-2 py-1 rounded-[2px] uppercase tracking-wider">
+                    <div className="bg-[#CBA14D] font-inter text-black text-[9px] font-bold px-2 py-1 rounded-xs uppercase tracking-wider">
                       NEW
                     </div>
                   )}
                   {product.discount && (
-                    <div className="bg-[#EF4444] font-inter text-white text-[9px] font-bold px-2 py-1 rounded-[2px] uppercase tracking-wider">
+                    <div className="bg-[#EF4444] font-inter text-white text-[9px] font-bold px-2 py-1 rounded-xs uppercase tracking-wider">
                       {product.discount}
                     </div>
                   )}
@@ -115,7 +115,7 @@ const JustArrived = () => {
                 <p className="font-montserrat text-[10px] font-bold text-[#928E8780] uppercase tracking-widest">
                   {product.category}
                 </p>
-                <h3 className="font-inter text-base md:text-lg font-medium text-white/90">
+                <h3 className="font-inter text-base md:text-md font-medium text-white/90">
                   {product.name}
                 </h3>
                 <p className="font-montserrat text-sm font-bold text-[#CBA14D]">

@@ -20,7 +20,7 @@ const page = () => {
   return (
     <section>
       <div className="w-full flex h-screen bg-black text-white ">
-        <div className="w-1/2 z-10">
+        <div className=" lg:block hidden  w-1/2 z-10">
           <Image src="/login.png" alt="Login Image" width={1300} height={800} />
         </div>
         <div className=" space-y-4  max-w-2xl mx-auto  justify-center text-left items-center my-auto">

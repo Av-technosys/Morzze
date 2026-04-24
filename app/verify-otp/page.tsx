@@ -26,7 +26,7 @@ const page = () => {
   return (
     <section>
       <div className="w-full flex h-screen bg-black text-white ">
-        <div className="w-1/2 z-10">
+        <div className=" hidden lg:block w-1/2 z-10">
           <Image
             src="/verify.png"
             alt="Login Image"

@@ -17,7 +17,7 @@ const page = () => {
           height={500}
           className="object-fill z-0"
         />
-        <div className=" absolute top-30  right-90 left-90 text-center z-40 space-y-4">
+        <div className=" lg:absolute lg:top-30  lg:right-90 left-90 text-center z-40 space-y-4">
           <p className="text-xl text-yellow-600">Get in Touch</p>
           <h1 className="text-5xl font-bold">Contact Us</h1>
           <p className="text-xl">
@@ -27,7 +27,7 @@ const page = () => {
         </div>
       </div>
 
-      <div className="flex justify-center -mt-16 gap-10  w-full ">
+      <div className="lg:flex grid grid-cols-1   justify-center lg:-mt-16 gap-10  w-full ">
         {/* Card 1 */}
         <div
           className="w-80 h-72 rounded-xl p-6 
@@ -101,11 +101,11 @@ const page = () => {
           </p>
         </div>
       </div>
-      <div className="py-20 flex justify-center gap-10">
-        <div className="w-1/2 px-20  ">
+      <div className="py-20 lg:flex grid grid-cols-1 justify-center gap-10">
+        <div className="lg:w-1/2 lg:px-20 px-4  ">
           <p>SEND A MESSAGE</p>
           <p>Get In Touch</p>
-          <FieldGroup className="grid max-w-sm grid-cols-2">
+          <FieldGroup className="grid lg:max-w-sm grid-cols-2">
             <Field>
               <FieldLabel htmlFor="first-name">First Name</FieldLabel>
               <Input id="first-name" placeholder="Jordan" />

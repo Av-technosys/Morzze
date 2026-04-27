@@ -112,7 +112,7 @@ const page = () => {
               </InputGroupAddon>
             </InputGroup>
 
-            <Button className="w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
+            <Button className="lg:w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
               Create Account
             </Button>
             <p className="">

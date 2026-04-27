@@ -25,7 +25,7 @@ import React from "react";
 const page = () => {
   return (
     <section>
-      <div className="w-full flex h-screen bg-black text-white ">
+      <div className="w-full px-4 lg:px-0 flex h-screen bg-black text-white ">
         <div className=" hidden lg:block w-1/2 z-10">
           <Image
             src="/verify.png"
@@ -84,13 +84,13 @@ const page = () => {
                     <EyeIcon />
                   </InputGroupAddon>
                 </InputGroup>
-                <div className="w-96 mb-2">
+                <div className="lg:w-96 mb-2">
                   <p className="float-right text-[#FDB813]">
                     {" "}
                     Forgot Password?
                   </p>
                 </div>
-                <Button className="w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
+                <Button className="lg:w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
                   Sign in
                 </Button>
                 <p className="">
@@ -102,7 +102,7 @@ const page = () => {
               </TabsContent>
               <TabsContent
                 value="phone"
-                className=" w-full grid grid-cols-1 gap-4 justify-center items-center mx-auto"
+                className=" w-full  grid grid-cols-1 gap-4 justify-center items-center mx-auto"
               >
                 {/* <InputGroup className="max-w-96 py-5 bg-[#141414] rounded-xs px-3 border border-[#454545]">
                 </InputGroup> */}
@@ -128,7 +128,7 @@ const page = () => {
                   </InputOTPGroup>
                 </InputOTP>
 
-                <Button className="w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
+                <Button className="lg:w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
                   Verify OTP
                 </Button>
                 <p className="">

@@ -73,13 +73,13 @@ const page = () => {
                     <EyeIcon />
                   </InputGroupAddon>
                 </InputGroup>
-                <div className="w-96 mb-2">
+                <div className="lg:w-96 mb-2">
                   <p className="float-right text-[#FDB813]">
                     {" "}
                     Forgot Password?
                   </p>
                 </div>
-                <Button className="w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
+                <Button className="lg:w-96 py-5 rounded-xs bg-[#FDB813] hover:bg-[#e6a700] text-black font-bold">
                   Sign in
                 </Button>
                 <p className="">

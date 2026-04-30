@@ -18,105 +18,118 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-const products = [
-  {
-    id: 1,
-    name: "Oval Vessel Basin",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 38,
-    discount: "-30%",
-    image: "/granite-basin.png", 
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Oval Vessel Basin",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 38,
-    discount: "-30%",
-    image: "/piecedemo2.png", //
-    isNew: true,
-  },
-  {
-    id: 3,
-    name: "Granite Kitchen Sink ( Vo2-116LX)",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 56,
-    discount: "-30%",
-    image: "/piecedemo3.png", 
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Granite Kitchen Sink ( Vo2-116LX)",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 56,
-    discount: "-30%",
-    image: "/piecedemo3.png", 
-    isNew: true,
-  },
-  {
-    id: 5,
-    name: "Oval Vessel Basin",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 38,
-    discount: "-30%",
-    image: "/piecedemo2.png", 
-    isNew: true,
-  },
-  {
-    id: 6,
-    name: "Oval Vessel Basin",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 38,
-    discount: "-30%",
-    image: "/granite-basin.png", 
-    isNew: true,
-  },
-  {
-    id: 7,
-    name: "Granite Kitchen Sink ( Vo2-116LX)",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 56,
-    discount: "-30%",
-    image: "/piecedemo3.png", 
-    isNew: true,
-  },
+import Link from "next/link"; //
 
-  {
-    id: 8,
-    name: "Granite Kitchen Sink ( Vo2-116LX)",
-    category: "GRANITE BASIN",
-    price: "6,400",
-    oldPrice: "8,200",
-    rating: 4,
-    reviews: 56,
-    discount: "-30%",
-    image: "/piecedemo3.png", 
-    isNew: true,
-  },
-];
+import { products } from "../../data/products";
+
+// Added slug to your data
+// const products = [
+//   {
+//     id: 1,
+//     name: "Oval Vessel Basin",
+//     slug: "oval-vessel-basin",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 38,
+//     discount: "-30%",
+//     image: "/granite-basin.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 2,
+//     name: "Oval Vessel Basin",
+//     slug: "oval-vessel-basin-2",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 38,
+//     discount: "-30%",
+//     image: "/piecedemo2.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 3,
+//     name: "Granite Kitchen Sink ( Vo2-116LX)",
+//     slug: "granite-kitchen-sink-v02",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 56,
+//     discount: "-30%",
+//     image: "/piecedemo3.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 4,
+//     name: "Granite Kitchen Sink ( Vo2-116LX)",
+//     slug: "granite-kitchen-sink-v03",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 56,
+//     discount: "-30%",
+//     image: "/piecedemo3.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 5,
+//     name: "Oval Vessel Basin",
+//     slug: "oval-vessel-basin-3",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 38,
+//     discount: "-30%",
+//     image: "/piecedemo2.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 6,
+//     name: "Oval Vessel Basin",
+//     slug: "oval-vessel-basin-4",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 38,
+//     discount: "-30%",
+//     image: "/granite-basin.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 7,
+//     name: "Granite Kitchen Sink ( Vo2-116LX)",
+//     slug: "granite-kitchen-sink-v04",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 56,
+//     discount: "-30%",
+//     image: "/piecedemo3.png", 
+//     isNew: true,
+//   },
+//   {
+//     id: 8,
+//     name: "Granite Kitchen Sink ( Vo2-116LX)",
+//     slug: "granite-kitchen-sink-v05",
+//     category: "GRANITE BASIN",
+//     price: "6,400",
+//     oldPrice: "8,200",
+//     rating: 4,
+//     reviews: 56,
+//     discount: "-30%",
+//     image: "/piecedemo3.png", 
+//     isNew: true,
+//   },
+// ];
+
 const FilterSidebar = () => {
   const filterData = [
     {
@@ -223,7 +236,7 @@ const ProductGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   return (
-    <div  className="w-full space-y-6 md:space-y-10">
+    <div className="w-full space-y-6 md:space-y-10">
       <div className="flex md:hidden items-center justify-between py-4 border-b border-white/5 px-2">
         <Sheet>
           <SheetTrigger>
@@ -252,7 +265,7 @@ const ProductGrid = () => {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
         {products.map((product) => (
-          <div key={product.id} className="group flex flex-col cursor-pointer">
+          <div key={product.id} className="group flex flex-col">
             <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
               <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 font-montserrat">
                 {product.isNew && (
@@ -267,12 +280,16 @@ const ProductGrid = () => {
                 </Badge>
               </div>
 
-              <motion.img
-                src={product.image}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.6 }}
-              />
+              {/* Wrapping Image with Link for product detail navigation */}
+              <Link href={`/products/${product.slug}`}>
+                <motion.img
+                  src={product.image}
+                  className="w-full h-full object-cover cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.6 }}
+                />
+              </Link>
+              
               <div className="absolute inset-x-0 bottom-0 z-30 translate-y-0 md:translate-y-full p-2 group-hover:translate-y-0 transition-transform duration-300">
                 <Button className="w-full bg-[#FFBF3F] hover:bg-[#e5ac37] font-inter text-black rounded-sm h-10 md:h-12 font-bold text-[11px] md:text-sm uppercase flex items-center justify-center gap-2">
                   <IconShoppingBag size={18} />
@@ -280,13 +297,19 @@ const ProductGrid = () => {
                 </Button>
               </div>
             </div>
+            
             <div className="space-y-1.5 px-1 md:px-0">
               <p className="text-[10px] text-[#928E87] tracking-[0.1em] font-montserrat uppercase">
                 {product.category}
               </p>
-              <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1">
-                {product.name}
-              </h3>
+              
+              {/* Wrapping Title with Link */}
+              <Link href={`/products/${product.slug}`}>
+                <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
+                  {product.name}
+                </h3>
+              </Link>
+
               <div className="flex items-center gap-1 py-0.5">
                 {[...Array(5)].map((_, i) => (
                   <IconStarFilled

@@ -12,7 +12,16 @@ const FeaturedInnovation = () => {
   ];
 
   return (
-    <section className="relative w-full bg-black py-20 px-6 md:px-10 overflow-hidden">
+    <section className="relative w-full  py-20 px-6 md:px-10 overflow-hidden">
+       <div className="absolute inset-0 -z-10">
+        <Image
+          src="/gradient-frame.png"
+          alt="background"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
         
         {/* -- LEFT COLUMN: HEADING & TEXT -- */}

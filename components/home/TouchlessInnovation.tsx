@@ -9,13 +9,13 @@ const TouchlessInnovation = () => {
     <section className="relative w-full  py-10 lg:py-20 overflow-hidden">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/hero-bg.png"
+          src="/gradient-frame.png"
           alt="Innovation Background"
           fill
           className="object-cover opacity- "
           priority
         />
-        <div className="absolute inset-0 bg-linear-to-r from-black via-black/80 to-transparent" />
+       
       </div>
 
       <div className="container mx-auto px-6 md:px-10 relative z-10 ">

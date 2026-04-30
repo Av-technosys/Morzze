@@ -12,7 +12,7 @@ const NaturalElegance = () => {
       {/* Iska container 'absolute inset-0' hai taaki ye poore section mein fail jaye */}
       <div className="absolute inset-0 z-0">
         <Image 
-          src="/.png" 
+          src="/oxy-bg.png" 
           alt="Kitchen Background"
           fill
           className="object-cover" // Opacity thodi badha di hai taaki background dikhe

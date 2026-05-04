@@ -9,9 +9,12 @@ const stats = [
   { value: 40, suffix: "%", label: "Avg. Margins" },
 ];
 
-function useCountUp(end, duration = 1800) {
+function useCountUp(
+  end: number,
+  duration: number = 1800,
+): [number, React.RefObject<HTMLDivElement>] {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -41,10 +44,16 @@ function useCountUp(end, duration = 1800) {
     return () => clearInterval(timer);
   }, [visible, end, duration]);
 
-  return [count, ref];
+  return [count, ref] as [number, React.RefObject<HTMLDivElement>];
 }
 
-function CounterItem({ item, index }) {
+function CounterItem({
+  item,
+  index,
+}: {
+  item: (typeof stats)[0];
+  index: number;
+}) {
   const [count, ref] = useCountUp(item.value, 2000 + index * 200);
 
   return (

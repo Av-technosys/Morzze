@@ -27,7 +27,7 @@ const FAQSection = () => {
         {/* General Section */}
         <div className="space-y-6">
           <h3 className="text-center text-white font-bold tracking-[4px] text-sm uppercase">General</h3>
-          <Accordion   className="w-full space-y-3">
+          <Accordion type="single" collapsible className="w-full space-y-3">
             {[1, 2, 3, 4, 5].map((item) => (
               <AccordionItem key={item} value={`item-${item}`} className="border-none bg-[#0D0D0D] px-6">
                 <AccordionTrigger className="text-white hover:no-underline text-sm py-5 font-medium">

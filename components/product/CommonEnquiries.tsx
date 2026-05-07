@@ -30,7 +30,7 @@ const CommonEnquiries = () => {
           Common Enquires
         </h2>
 
-        <Accordion   className="w-full space-y-2">
+        <Accordion type="single" collapsible className="w-full space-y-2">
           {faqs.map((faq, index) => (
             <AccordionItem 
               key={index} 

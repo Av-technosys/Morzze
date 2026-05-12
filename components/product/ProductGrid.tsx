@@ -18,7 +18,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Link from "next/link"; //
+import Link from "next/link";
+import { useCart } from "@/context/CartContext";
 
 import { products } from "../../data/products";
 
@@ -234,6 +235,7 @@ const FilterSidebar = () => {
 
 const ProductGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { addToCart } = useCart();
 
   return (
     <div className="w-full space-y-6 md:space-y-10">
@@ -291,7 +293,10 @@ const ProductGrid = () => {
               </Link>
               
               <div className="absolute inset-x-0 bottom-0 z-30 translate-y-0 md:translate-y-full p-2 group-hover:translate-y-0 transition-transform duration-300">
-                <Button className="w-full bg-[#FFBF3F] hover:bg-[#e5ac37] font-inter text-black rounded-sm h-10 md:h-12 font-bold text-[11px] md:text-sm uppercase flex items-center justify-center gap-2">
+                <Button
+                  onClick={(e) => { e.preventDefault(); addToCart(product.slug); }}
+                  className="w-full bg-[#FFBF3F] hover:bg-[#e5ac37] font-inter text-black rounded-sm h-10 md:h-12 font-bold text-[11px] md:text-sm uppercase flex items-center justify-center gap-2"
+                >
                   <IconShoppingBag size={18} />
                   Add to cart
                 </Button>

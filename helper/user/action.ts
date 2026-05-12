@@ -163,13 +163,24 @@ export async function updateProfile(data: {
 }
 
 
+// Helper to resolve the DB user ID from email (avoids relying on custom:user_id JWT attribute)
+async function getDbUserId(): Promise<string> {
+  const { email }: any = await requireUserWithRefresh();
+  if (!email) throw new Error("UNAUTHORIZED");
+
+  const result = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+
+  if (!result.length) throw new Error("User not found");
+  return result[0].id;
+}
+
 export async function getAddresses() {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
-  if (!userId) {
-
-    throw new Error("UNAUTHORIZED");
-  }
   return await db
     .select()
     .from(address)
@@ -177,7 +188,7 @@ export async function getAddresses() {
 }
 
 export async function getUserAddressById(addressId: number) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   const data = await db
     .select()
@@ -193,7 +204,7 @@ export async function getUserAddressById(addressId: number) {
 }
 
 export async function updateUserAddress(data: any) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   if (data.isDefault) {
     await db
@@ -226,7 +237,7 @@ export async function updateUserAddress(data: any) {
 }
 
 export async function deleteUserAddress(id: number) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   await db
     .delete(address)
@@ -241,7 +252,7 @@ export async function deleteUserAddress(id: number) {
 }
 
 export async function setDefaultAddress(id: number) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   await db
     .update(address)
@@ -262,7 +273,7 @@ export async function setDefaultAddress(id: number) {
 }
 
 export async function createUserAddress(data: NewAddressInput) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   try {
     if (data.isDefault) {

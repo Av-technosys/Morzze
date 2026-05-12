@@ -5,15 +5,17 @@ import { ChevronRight } from "lucide-react";
 import CheckoutSummary from "@/components/checkout/CheckoutSummary";
 import OrderReview from "@/components/checkout/OrderReview";
 import ShippingDetails from "@/components/checkout/ShippingDetails";
-import NotFound from "@/components/commom/NotFound";
 
 const CheckoutPage = () => {
   const [step, setStep] = useState(1);
+  const [shippingData, setShippingData] = useState<any>(null);
 
-  // console.log("step konsa h ?", step);
+  const handleShippingNext = (data: any) => {
+    setShippingData(data);
+    setStep(2);
+  };
 
   return (
-    <>
     <div className="min-h-screen bg-black pt-15 pb-20 px-10">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center gap-4 mb-16">
@@ -24,7 +26,7 @@ const CheckoutPage = () => {
               1
             </span>
             <span
-             onClick={(()=> setStep(1))}
+             onClick={() => setStep(1)}
               className={`${step === 1 ? "text-[#FDB813] " : "text-[#FEFFF1]"} text-[10px] font-bold tracking-[0.2em] uppercase font-montserrat cursor-pointer`}
             >
               Address Details
@@ -46,8 +48,8 @@ const CheckoutPage = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start max-w-5xl mx-auto">
           <div className="lg:col-span-7">
-            {step === 1 && <ShippingDetails onNext={() => setStep(2)} />}
-            {step === 2 && <OrderReview />}
+            {step === 1 && <ShippingDetails onNext={handleShippingNext} />}
+            {step === 2 && <OrderReview shippingData={shippingData} />}
           </div>
           <div className="lg:col-span-5">
             <CheckoutSummary />
@@ -55,8 +57,6 @@ const CheckoutPage = () => {
         </div>
       </div>
     </div>
-    {/* <NotFound/> */}
-    </>
   );
 };
 

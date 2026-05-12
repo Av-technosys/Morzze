@@ -1,13 +1,16 @@
 "use client"
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   IconLayoutDashboard, IconUser, IconShoppingBag, 
   IconAddressBook, IconHeart, IconStar, 
   IconBell, IconLogout, IconChevronRight 
 } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
+import { logout } from "@/helper"
+import { getProfile } from "@/helper/user/action"
+import { toast } from "sonner"
 
 const navItems = [
   { title: "Dashboard", icon: IconLayoutDashboard, href: "/dashboard" },
@@ -21,6 +24,36 @@ const navItems = [
 
 export default function AppSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [loggingOut, setLoggingOut] = React.useState(false)
+  const [user, setUser] = React.useState<{ fullName: string; email: string } | null>(null)
+
+  React.useEffect(() => {
+    getProfile()
+      .then((data) => {
+        setUser({ fullName: data.fullName ?? "", email: data.email ?? "" })
+      })
+      .catch(() => {
+        setUser(null)
+      })
+  }, [])
+
+  const handleLogout = async () => {
+    if (loggingOut) return
+    setLoggingOut(true)
+
+    const toastId = toast.loading("Signing out...")
+
+    try {
+      await logout()
+      toast.success("Signed out successfully", { id: toastId })
+      router.push("/login")
+    } catch (error: any) {
+      toast.error(error.message || "Failed to sign out", { id: toastId })
+    } finally {
+      setLoggingOut(false)
+    }
+  }
 
   return (
     <aside className="w-full lg:w-[280px] flex flex-col gap-4 p-4 lg:h-screen lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#0A0A0A]">
@@ -30,8 +63,17 @@ export default function AppSidebar() {
         <div className="w-14 h-14 bg-zinc-800 rounded-full mx-auto mb-3 flex items-center justify-center border border-zinc-700/50">
           <IconUser className="text-[#FFB800]" size={28} />
         </div>
-        <h3 className="text-white font-medium text-sm">John Doe</h3>
-        <p className="text-zinc-500 text-[11px] mt-0.5">johndoe333@gmail.com</p>
+        {user ? (
+          <>
+            <h3 className="text-white font-medium text-sm">{user.fullName || "User"}</h3>
+            <p className="text-zinc-500 text-[11px] mt-0.5">{user.email}</p>
+          </>
+        ) : (
+          <>
+            <div className="h-4 w-24 bg-zinc-800 rounded mx-auto animate-pulse" />
+            <div className="h-3 w-36 bg-zinc-800 rounded mx-auto mt-1.5 animate-pulse" />
+          </>
+        )}
       </div>
 
       {/* Navigation - Vertical List Style */}
@@ -70,9 +112,13 @@ export default function AppSidebar() {
 
       {/* Sign Out - Bottom Section */}
       <div className="mt-auto pt-4 lg:border-t lg:border-zinc-900">
-        <button className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-500/5 rounded-lg transition-all group">
+        <button
+          onClick={handleLogout}
+          disabled={loggingOut}
+          className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-500/5 rounded-lg transition-all group disabled:opacity-50"
+        >
           <IconLogout size={19} className="group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[13px] font-medium">Sign Out</span>
+          <span className="text-[13px] font-medium">{loggingOut ? "Signing Out..." : "Sign Out"}</span>
         </button>
       </div>
     </aside>

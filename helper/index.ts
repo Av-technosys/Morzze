@@ -55,6 +55,8 @@ export {
   confirmForgotPassword,
   resendOtp,
   forgotPassword,
+  logout,
+  changePassword,
 } from "./auth/action";
 export {
   addToWishlistDB,

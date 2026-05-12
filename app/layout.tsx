@@ -52,6 +52,9 @@ import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/commom/footer";
 import Header from "@/components/commom/header";
+import { Toaster } from "sonner";
+import { WishlistProvider } from "@/context/WishlistContext";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -95,9 +98,14 @@ export default function RootLayout({
       `}
     >
       <body className="min-h-full flex flex-col font-[var(--font-montserrat)]">
-        <Header />
-        {children}
-        <Footer />
+        <CartProvider>
+          <WishlistProvider>
+            <Header />
+            {children}
+            <Footer />
+            <Toaster theme="dark" position="top-right" richColors />
+          </WishlistProvider>
+        </CartProvider>
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import {
   IconShoppingBag,
   IconBolt,
   IconHeart,
+  IconHeartFilled,
   IconRotate360,
   IconChevronLeft,
   IconChevronRight,
@@ -23,12 +24,15 @@ import CareAndMaintenance from "@/components/product/CareAndMaintenance";
 import AteliersGrid from "@/components/product/AteliersGrid";
 import CommonEnquiries from "@/components/product/CommonEnquiries";
 import { useParams, useRouter } from "next/navigation";
+import { useWishlist } from "@/context/WishlistContext";
+import { useCart } from "@/context/CartContext";
 
 const ProductClient = ({ product }: any) => {
-    const router = useRouter()
-    const params = useParams()
-    const slug = params.productslug
-    console.log("yaar slug ye h sayad ",slug)
+  const router = useRouter()
+  const params = useParams()
+  const slug = params.productslug as string
+  const { isInWishlist, toggleWishlist } = useWishlist()
+  const { addToCart } = useCart()
   if (!product) return null;
 
   const [selectedImage, setSelectedImage] = useState(0);
@@ -37,17 +41,9 @@ const ProductClient = ({ product }: any) => {
   );
   const [quantity, setQuantity] = useState(1);
 
- const images = [product.image, ...(product.images || [])];
+  const images = [product.image, ...(product.images || [])];
 
-
- const addInLocal = (slug: any) => {
-
-     if(typeof window !== undefined){
-      localStorage.setItem("cartItemSlug", slug)
-     }
-
-     router.push('/cart')
- }
+  const wishlisted = isInWishlist(slug)
 
   return (
     <>
@@ -60,7 +56,7 @@ const ProductClient = ({ product }: any) => {
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedImage}
-              src={images[selectedImage]}
+                  src={images[selectedImage]}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -207,7 +203,7 @@ const ProductClient = ({ product }: any) => {
             {/* BUTTONS */}
             <div className="flex gap-3">
 
-              <Button onClick={() => addInLocal(slug)} className="flex-1 py-5 bg-[#FDB813] text-black hover:bg-amber-300">
+              <Button onClick={() => addToCart(slug, quantity)} className="flex-1 py-5 bg-[#FDB813] text-black">
                 <IconShoppingBag size={16} /> Add to Cart
               </Button>
 
@@ -215,35 +211,46 @@ const ProductClient = ({ product }: any) => {
                 <IconBolt size={16} /> Buy Now
               </Button>
 
-              <Button variant="outline" className="bg-[#1F1F1F] border-[#2E2E2E] ">
-                <IconHeart />
+              <Button
+                variant="outline"
+                onClick={() => toggleWishlist(slug, product.productId)}
+                className={cn(
+                  "bg-[#1F1F1F] border-[#2E2E2E] transition-all",
+                  wishlisted && "border-red-500/50 bg-red-500/10"
+                )}
+              >
+                {wishlisted ? (
+                  <IconHeartFilled className="text-red-500" />
+                ) : (
+                  <IconHeart />
+                )}
               </Button>
             </div>
             {/* Features Grid */}
-<div className="grid grid-cols-2 gap-y-4 pt-8 border-t border-white/5">
-  {[
-    { label: "Free Shipping", icon: "•" },
-    { label: "12-Month Warranty", icon: "•" },
-    { label: "Easy Returns", icon: "•" },
-    { label: "Quality Assured", icon: "•" }
-  ].map((feature, i) => (
-    <div
-      key={i}
-      className="flex items-center gap-2 text-[11px] text-[#555] uppercase tracking-widest"
-    >
-      <span className="text-[#FFBF3F] text-lg leading-none">
-        {feature.icon}
-      </span>
-      {feature.label}
-    </div>
-  ))}
-</div>
+            <div className="grid grid-cols-2 gap-y-4 pt-8 border-t border-white/5">
+              {[
+                { label: "Free Shipping", icon: "•" },
+                { label: "12-Month Warranty", icon: "•" },
+                { label: "Easy Returns", icon: "•" },
+                { label: "Quality Assured", icon: "•" }
+              ].map((feature, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 text-[11px] text-[#555] uppercase tracking-widest"
+                >
+                  <span className="text-[#FFBF3F] text-lg leading-none">
+                    {feature.icon}
+                  </span>
+                  {feature.label}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* EXTRA SECTIONS */}
-      <DescriptionTabs  product={product} />
+      <DescriptionTabs product={product} />
       <SpecificationsTabs />
       <ProductComparison />
       <CareAndMaintenance />

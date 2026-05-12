@@ -4,12 +4,28 @@ import {
   wishlist,
   wishlistItem,
   product,
+  users,
 } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { requireUserWithRefresh } from "../user/action";
 
+// Helper to resolve the DB user ID from email
+async function getDbUserId(): Promise<string> {
+  const { email }: any = await requireUserWithRefresh();
+  if (!email) throw new Error("UNAUTHORIZED");
+
+  const result = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+
+  if (!result.length) throw new Error("User not found");
+  return result[0].id;
+}
+
 export async function addToWishlistDB(productId: string) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   const userWishlist = await db
     .select()
@@ -49,7 +65,7 @@ export async function addToWishlistDB(productId: string) {
 }
 
 export async function removeFromWishlistDB(productId: string) {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   const userWishlist = await db
     .select()
@@ -70,13 +86,15 @@ export async function removeFromWishlistDB(productId: string) {
 }
 
 export async function getWishlistDB() {
-  const { userId } = await requireUserWithRefresh();
+  const userId = await getDbUserId();
 
   const result = await db
     .select({
       productId: wishlistItem.productId,
       name: product.name,
+      slug: product.slug,
       price: product.basePrice,
+      strikethroughPrice: product.strikethroughPrice,
       image: product.bannerImage,
     })
     .from(wishlistItem)

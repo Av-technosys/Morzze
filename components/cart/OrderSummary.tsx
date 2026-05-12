@@ -2,8 +2,26 @@
 import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { useCart } from '@/context/CartContext'
+import { products } from '@/data/products'
 
 const OrderSummary = () => {
+  const { cartItems } = useCart()
+
+  const parsePrice = (price: string) => {
+    return parseInt(price.replace(/,/g, ""), 10) || 0
+  }
+
+  // Calculate real totals
+  const subtotal = cartItems.reduce((sum, cartItem) => {
+    const productData = products.find((p) => p.slug === cartItem.slug)
+    if (!productData) return sum
+    return sum + parsePrice(productData.price) * cartItem.quantity
+  }, 0)
+
+  const gst = Math.round(subtotal * 0.18)
+  const total = subtotal + gst
+
   return (
     <div className="bg-[#141414] border border-[#454545] rounded-md p-8 sticky top-24 font-montserrat">
       <h2 className="text-white text-xl font-medium mb-8">Order Summary</h2>
@@ -11,7 +29,7 @@ const OrderSummary = () => {
       <div className="space-y-4 mb-4">
         <div className="flex justify-between text-sm">
           <span className="text-zinc-500 font-light">Subtotal</span>
-          <span className="text-zinc-300">₹23,600</span>
+          <span className="text-zinc-300">₹{subtotal.toLocaleString("en-IN")}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-zinc-500 font-light">Shipping</span>
@@ -19,14 +37,14 @@ const OrderSummary = () => {
         </div>
         <div className="flex justify-between text-sm border-b pb-4  ">
           <span className="text-zinc-500 font-light">GST (18%)</span>
-          <span className="text-zinc-300">₹4,248</span>
+          <span className="text-zinc-300">₹{gst.toLocaleString("en-IN")}</span>
         </div>
       </div>
 
       <div className="border-t border-zinc-900  mb-5">
         <div className="flex justify-between items-center">
           <span className="text-white font-medium">Total</span>
-          <span className="text-white text-xl font-semibold">₹27,848</span>
+          <span className="text-white text-xl font-semibold">₹{total.toLocaleString("en-IN")}</span>
         </div>
       </div>
 
@@ -49,7 +67,10 @@ const OrderSummary = () => {
 
       {/* Checkout Button */}
       <Link href={"/checkout"}>
-      <button className="w-full bg-[#FFB800] hover:bg-[#E6A600] text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all group">
+      <button
+        disabled={cartItems.length === 0}
+        className="w-full bg-[#FFB800] hover:bg-[#E6A600] text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
+      >
         Proceed to Checkout
         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
       </button></Link>

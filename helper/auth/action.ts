@@ -124,3 +124,13 @@ export async function isUserLoggedIn(): Promise<boolean> {
     return false;
   }
 }
+
+export async function changePassword(payload: {
+  previousPassword: string;
+  proposedPassword: string;
+}) {
+  return request("/change-password", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}

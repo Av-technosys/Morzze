@@ -11,9 +11,11 @@ import {
   IconX,
   IconHeart,
 } from "@tabler/icons-react";
+import { useCart } from "@/context/CartContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { totalItems } = useCart();
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -27,7 +29,7 @@ const Header = () => {
   return (
     <header className="bg-black text-white w-full border-b border-zinc-900 sticky top-0 z-50">
       <nav className="max-w-[1440px] mx-auto px-5 md:px-10 h-20 flex items-center justify-between">
-        
+
         {/* -- MOBILE: Hamburger Menu (Left) [From Code 2] -- */}
         <div className="lg:hidden flex-1">
           <button
@@ -70,7 +72,7 @@ const Header = () => {
 
         {/* -- RIGHT SECTION: Search & Icons -- */}
         <div className="flex items-center justify-end space-x-4 lg:space-x-6 flex-1">
-          
+
           {/* WEB: Search Bar Input [From Code 1] */}
           <div className="relative hidden lg:block">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-500">
@@ -90,7 +92,7 @@ const Header = () => {
 
           {/* Icons Actions [Merged Styles] */}
           <div className="flex items-center space-x-4">
-            <Link href={"/wishlist"}>
+            <Link href={"/"}> {/* href={"/wishlist"} */}
               <button className="hidden lg:block hover:text-[#B88E2F] transition-colors">
                 <IconHeart size={20} stroke={1.5} />
               </button>
@@ -100,15 +102,15 @@ const Header = () => {
                 <IconUser size={20} stroke={1.5} />
               </button>
             </Link>
-            
+
             {/* Cart with Badge [From Code 2 Style] */}
             <div className="relative mt-1">
               <Link href={'/cart'}>
-              <button className="text-white hover:text-[#B88E2F] transition-colors">
-                <IconShoppingBag size={24} stroke={1.5} />
-              </button></Link>
+                <button className="text-white hover:text-[#B88E2F] transition-colors">
+                  <IconShoppingBag size={24} stroke={1.5} />
+                </button></Link>
               <span className="absolute -top-1.5 -right-2 bg-[#B88E2F] text-black text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-black">
-                0
+                {totalItems}
               </span>
             </div>
           </div>
@@ -156,9 +158,9 @@ const Header = () => {
 
             {/* Bottom Actions for Mobile */}
             <div className="mt-auto p-8 border-t border-zinc-900 bg-zinc-950 flex justify-around">
-               <IconHeart size={24} className="text-zinc-500" />
-               <IconUser size={24} className="text-zinc-500" />
-               <IconSearch size={24} className="text-zinc-500" />
+              <IconHeart size={24} className="text-zinc-500" />
+              <IconUser size={24} className="text-zinc-500" />
+              <IconSearch size={24} className="text-zinc-500" />
             </div>
           </motion.div>
         )}

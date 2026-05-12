@@ -1,3 +1,4 @@
+import Header from "@/components/commom/header";
 import AppSidebar from "@/components/dashboard/sidebar";
 
 export default function DashboardLayout({
@@ -6,6 +7,8 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
+    <>
+    <Header />
     <div className="bg-black min-h-screen">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-6">
         {/* flex-col se mobile pe niche aayega, lg:flex-row se desktop pe side-by-side */}
@@ -24,5 +27,6 @@ export default function DashboardLayout({
         </div>
       </div>
     </div>
+    </>
   );
 }

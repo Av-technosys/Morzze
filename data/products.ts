@@ -140,7 +140,7 @@ export const products = [
     reviews: 56,
     discount: "-30%",
     image: "/piecedemo3.png", 
-    isNew: true,
+    isNew: true,  
   },
   {
     id: 8,

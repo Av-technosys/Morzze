@@ -22,6 +22,8 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
 import { products } from "../../data/products";
+import Pagination from "../commom/Pagination";
+
 
 // Added slug to your data
 // const products = [
@@ -235,6 +237,16 @@ const FilterSidebar = () => {
 
 const ProductGrid = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+const totalPages = Math.ceil(products.length / itemsPerPage);
+
+const startIndex = (currentPage - 1) * itemsPerPage;
+
+const currentProducts = products.slice(
+  startIndex,
+  startIndex + itemsPerPage
+);
   const { addToCart } = useCart();
 
   return (
@@ -266,7 +278,7 @@ const ProductGrid = () => {
         </span>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
-        {products.map((product) => (
+        {currentProducts.map((product) => (
           <div key={product.id} className="group flex flex-col">
             <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
               <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 font-montserrat">
@@ -342,24 +354,14 @@ const ProductGrid = () => {
         ))}
       </div>
       <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-        <p className="text-xs md:text-sm text-[#555] font-inter">
+        <p className="text-xs md:text-sm text-[#FEFFF1] font-inter">
           Showing 1 to 8 of 128 results
         </p>
-        <div className="flex items-center gap-1.5">
-          {[1, 2, 3, 4, "...", 70].map((num, i) => (
-            <button
-              key={i}
-              className={cn(
-                "w-8 h-8 text-[12px] flex items-center justify-center transition-all border",
-                currentPage === num
-                  ? "border-[#FFBF3F] text-[#FFBF3F] bg-[#FFBF3F]/5"
-                  : "border-transparent text-[#555] hover:text-white",
-              )}
-            >
-              {num}
-            </button>
-          ))}
-        </div>
+      <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={(page:number) => setCurrentPage(page)}
+/>
       </div>
     </div>
   );

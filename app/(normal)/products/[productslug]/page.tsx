@@ -1,28 +1,38 @@
-import React from 'react'
-import ProductClient from './productClient'
+import React from "react";
+import ProductClient from "./productClient";
+import { notFound } from "next/navigation";
+// Direct wahi helper use kar rahe hain jo aapne sample code mein dikhaya
+import { getFullProductDetails } from "@/helper/product/action";
 
-import { notFound } from 'next/navigation';
-import { products } from '@/data/products';
+export const dynamic = "force-dynamic";
 
-const page = async ({ params }: { params: Promise<{ productslug: string }> }) => {
-
+const page = async ({
+  params,
+}: {
+  params: Promise<{ productslug: string }>;
+}) => {
+  // 1. Slug ko await karein
   const { productslug } = await params;
 
-  const product = products.find(
-    (p) => p.slug === productslug
-  );
+  console.log("Fetching data for:", productslug);
 
-  // console.log("product:", product);
+  try {
+    const product = await getFullProductDetails(productslug);
 
-  if (!product) {
+    console.log("API Se Aaya Hua Product:", product);
+
+    // 3. Agar data nahi mila toh direct 404
+    if (!product || Object.keys(product).length === 0) {
+      return notFound();
+    }
+
+    // 4. Client component ko data pass karein
+    return <ProductClient product={product} />;
+    
+  } catch (error) {
+    console.error("Fetch Error:", error);
     return notFound();
   }
-
-  return (
-    <>
-      <ProductClient product={product} />
-    </>
-  );
 };
 
 export default page;

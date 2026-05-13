@@ -711,6 +711,10 @@ export async function getProducts({
         id: product.id,
         name: product.name,
         slug: product.slug,
+        sku: product.sku,
+        description: product.description,
+       
+        isInStock: product.isInStock,
         hasVarientBox: product.hasVarientBox,
         basePrice: product.basePrice,
         strikethroughPrice: product.strikethroughPrice,

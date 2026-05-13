@@ -14,6 +14,8 @@ const companyLinks = [
   { name: "Catalogue", href: "/catalogue" },
   { name: "Media", href: "/media-center" },
   { name: "Careers", href: "/career" },
+  { name: "Blogs", href: "/blogs" },
+   { name: "Stores", href: "/stores" },
 ];
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -162,8 +164,9 @@ const Footer = () => {
                 { name: "Contact Us", link: "/contact" },
                 { name: "Warranty", link: "/warranty" },
                 { name: "Shipping & Returns", link: "/shipping-returns" },
-                { name: "FAQ", link: "/dealer#faq" },
+                { name: "FAQ", link: "/support" },
                 { name: "Track Order", link: "" },
+               
               ].map((item) => (
                 <li key={item.name}>
                   <Link

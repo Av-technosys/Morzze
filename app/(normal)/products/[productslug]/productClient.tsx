@@ -28,6 +28,7 @@ import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 
 const ProductClient = ({ product }: any) => {
+  console.log("Product Data in Client Component:", product);
   const router = useRouter()
   const params = useParams()
   const slug = params.productslug as string
@@ -44,6 +45,23 @@ const ProductClient = ({ product }: any) => {
   const images = [product.image, ...(product.images || [])];
 
   const wishlisted = isInWishlist(slug)
+
+
+// 1. Sare Attributes ko as variables nikal lo
+const attributes = product.productAttributeRes || [];
+
+const tabDescription = attributes.find((a: any) => a.attribute === "DESCRIPTION")?.value;
+const tabDimensions = attributes.find((a: any) => a.attribute === "DIMENSIONS")?.value;
+const tabFeatures = attributes.find((a: any) => a.attribute === "FEATURES")?.value;
+const tabAccessories = attributes.find((a: any) => a.attribute === "Accessories Included")?.value;
+const tabDocumentation = attributes.find((a: any) => a.attribute === "Documentation")?.value;
+
+
+// 1. "size" wala attribute find karein
+const sizeAttr = product.productAttributeRes?.find((a: any) => a.attribute === "size")?.value;
+
+// 2. Comma se split karke array banayein (agar data nahi hai to empty array)
+const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
 
   return (
     <>
@@ -121,7 +139,7 @@ const ProductClient = ({ product }: any) => {
 
             <div>
               <p className="text-[11px] tracking-[0.3em] text-[#928E87] uppercase font-bold mb-2">
-                {product.brand}
+                {/* {product.brand} */}
               </p>
 
               <h1 className="text-2xl md:text-3xl font-medium">
@@ -149,9 +167,9 @@ const ProductClient = ({ product }: any) => {
 
             {/* PRICE */}
             <div className="flex items-baseline gap-4">
-              <span className="text-3xl font-bold">₹{product.price}</span>
+              <span className="text-3xl font-bold">₹{product.basePrice}</span>
               <span className="text-lg text-[#555] line-through">
-                ₹{product.oldPrice}
+                ₹{product.strikethroughPrice}
               </span>
               <span className="text-sm text-[#EF4444] font-bold">
                 {product.discount}
@@ -170,7 +188,7 @@ const ProductClient = ({ product }: any) => {
               </p>
 
               <div className="flex gap-2 flex-wrap">
-                {product.finishes?.map((finish: string) => (
+                {finishesArray.map((finish: string) => (
                   <button
                     key={finish}
                     onClick={() => setSelectedFinish(finish)}
@@ -250,7 +268,7 @@ const ProductClient = ({ product }: any) => {
       </div>
 
       {/* EXTRA SECTIONS */}
-      <DescriptionTabs product={product} />
+      <DescriptionTabs productAttributeRes={product?.productAttributeRes} />
       <SpecificationsTabs />
       <ProductComparison />
       <CareAndMaintenance />

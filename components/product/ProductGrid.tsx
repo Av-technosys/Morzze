@@ -21,117 +21,8 @@ import {
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
-import { products } from "../../data/products";
 import Pagination from "../commom/Pagination";
 
-
-// Added slug to your data
-// const products = [
-//   {
-//     id: 1,
-//     name: "Oval Vessel Basin",
-//     slug: "oval-vessel-basin",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 38,
-//     discount: "-30%",
-//     image: "/granite-basin.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 2,
-//     name: "Oval Vessel Basin",
-//     slug: "oval-vessel-basin-2",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 38,
-//     discount: "-30%",
-//     image: "/piecedemo2.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 3,
-//     name: "Granite Kitchen Sink ( Vo2-116LX)",
-//     slug: "granite-kitchen-sink-v02",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 56,
-//     discount: "-30%",
-//     image: "/piecedemo3.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 4,
-//     name: "Granite Kitchen Sink ( Vo2-116LX)",
-//     slug: "granite-kitchen-sink-v03",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 56,
-//     discount: "-30%",
-//     image: "/piecedemo3.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 5,
-//     name: "Oval Vessel Basin",
-//     slug: "oval-vessel-basin-3",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 38,
-//     discount: "-30%",
-//     image: "/piecedemo2.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 6,
-//     name: "Oval Vessel Basin",
-//     slug: "oval-vessel-basin-4",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 38,
-//     discount: "-30%",
-//     image: "/granite-basin.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 7,
-//     name: "Granite Kitchen Sink ( Vo2-116LX)",
-//     slug: "granite-kitchen-sink-v04",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 56,
-//     discount: "-30%",
-//     image: "/piecedemo3.png", 
-//     isNew: true,
-//   },
-//   {
-//     id: 8,
-//     name: "Granite Kitchen Sink ( Vo2-116LX)",
-//     slug: "granite-kitchen-sink-v05",
-//     category: "GRANITE BASIN",
-//     price: "6,400",
-//     oldPrice: "8,200",
-//     rating: 4,
-//     reviews: 56,
-//     discount: "-30%",
-//     image: "/piecedemo3.png", 
-//     isNew: true,
-//   },
-// ];
 
 const FilterSidebar = () => {
   const filterData = [
@@ -235,7 +126,7 @@ const FilterSidebar = () => {
   );
 };
 
-const ProductGrid = () => {
+const ProductGrid = ({products}:any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
@@ -278,7 +169,7 @@ const currentProducts = products.slice(
         </span>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
-        {currentProducts.map((product) => (
+        {currentProducts.map((product:any) => (
           <div key={product.id} className="group flex flex-col">
             <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
               <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 font-montserrat">
@@ -343,10 +234,10 @@ const currentProducts = products.slice(
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-bold text-white font-inter text-sm md:text-base">
-                  ₹{product.price}
+                  ₹{product.basePrice}
                 </span>
                 <span className="text-[11px] md:text-sm text-[#555] line-through">
-                  ₹{product.oldPrice}
+                  ₹{product.strikethroughPrice}
                 </span>
               </div>
             </div>

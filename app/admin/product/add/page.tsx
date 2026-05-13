@@ -29,6 +29,7 @@ import { apiFetch } from "@/lib/apiFetch";
 import ProductFilters from "../productFilter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import TechnicalSpecsSection from "../TechnicalSpecsSection";
 
 type ImageItem = {
   key: string;
@@ -511,13 +512,13 @@ export default function AddProductForm() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-3">
-                  <Label>Select Size (Multi-select)</Label>
+                  <Label>Select Finish (Multi-select)</Label>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      "Small (240mm)",
-                      "Medium (280mm)",
-                      "Large (320mm)",
-                      "Extra Large (360mm)",
+                      "chrome",
+                      "Brushed Gold",
+                      "Matte Black",
+                      "Rose Gold",
                     ].map((s) => {
                       const isSelected = variants.attributes["size"]?.value
                         .split(",")
@@ -536,7 +537,7 @@ export default function AddProductForm() {
                     })}
                   </div>
                 </div>
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <Label>Flow Type (Multi-select)</Label>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -561,7 +562,7 @@ export default function AddProductForm() {
                       );
                     })}
                   </div>
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 
@@ -608,7 +609,7 @@ export default function AddProductForm() {
 
             {/* Varient size boxes */}
 
-            <Card>
+            {/* <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">Variant Sizes</span>
@@ -622,7 +623,7 @@ export default function AddProductForm() {
 
               {varientBox && (
                 <CardContent className="space-y-4">
-                  {/* LIST */}
+                
                   {variantBoxes.map((item, index) => (
                     <div
                       key={index}
@@ -645,7 +646,7 @@ export default function AddProductForm() {
                           )}
                         </div>
 
-                        {/* Hidden Input */}
+                       
                         <input
                           type="file"
                           accept="image/*"
@@ -655,7 +656,7 @@ export default function AddProductForm() {
                         />
                       </div>
 
-                      {/* Name */}
+                    
                       <div className="col-span-2">
                         <Input
                           placeholder="Size Name (e.g. Small)"
@@ -666,7 +667,7 @@ export default function AddProductForm() {
                         />
                       </div>
 
-                      {/* Description */}
+                    
                       <div className="col-span-2">
                         <Input
                           placeholder="Description"
@@ -681,7 +682,7 @@ export default function AddProductForm() {
                         />
                       </div>
 
-                      {/* Delete */}
+                    
                       <div className="col-span-1 flex justify-end">
                         <Button
                           type="button"
@@ -695,7 +696,7 @@ export default function AddProductForm() {
                     </div>
                   ))}
 
-                  {/* ADD BUTTON */}
+                
                   <Button
                     type="button"
                     variant="outline"
@@ -706,7 +707,7 @@ export default function AddProductForm() {
                   </Button>
                 </CardContent>
               )}
-            </Card>
+            </Card> */}
 
             {/* --- SUBSCRIPTION PLANS --- */}
             {/* <Card>
@@ -771,6 +772,9 @@ export default function AddProductForm() {
                 });
               }}
             />
+            {/* <TechnicalSpecsSection/> */}
+            
+
           </div>
         </div>
       </form>

@@ -185,7 +185,7 @@ const page = () => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <section>
-      <div className="w-full flex h-screen bg-black text-white ">
+      <div className="w-full flex min-h-screen bg-black text-white ">
         <div className=" lg:block hidden  w-1/2 z-10">
           <Image src="/login.png" alt="Login Image" width={1300} height={800} />
         </div>

@@ -11,7 +11,7 @@ type Props = {
   handleValueChange: (attribute: string, value: string) => void;
 };
 
-const TABS = ["Description", "Usage", "Benefits", "Ingredients", "Safety"];
+const TABS = ["DESCRIPTION", "DIMENSIONS", "FEATURES", "Accessories Included", "Documentation"];
 
 export default function AttributeSection({ productAttributes, handleValueChange }: Props) {
   const [activeTab, setActiveTab] = useState(TABS[0]);

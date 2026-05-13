@@ -50,8 +50,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Montserrat } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/commom/footer";
-import Header from "@/components/commom/header";
 import { Toaster } from "sonner";
 import { WishlistProvider } from "@/context/WishlistContext";
 import { CartProvider } from "@/context/CartContext";
@@ -99,10 +97,8 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-[var(--font-montserrat)]">
         <CartProvider>
-          <WishlistProvider>
-            <Header />
+          <WishlistProvider>         
             {children}
-            <Footer />
             <Toaster theme="dark" position="top-right" richColors />
           </WishlistProvider>
         </CartProvider>

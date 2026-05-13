@@ -162,7 +162,7 @@ const Footer = () => {
                 { name: "Contact Us", link: "/contact" },
                 { name: "Warranty", link: "/warranty" },
                 { name: "Shipping & Returns", link: "/shipping-returns" },
-                { name: "FAQ", link: "/faq" },
+                { name: "FAQ", link: "/dealer#faq" },
                 { name: "Track Order", link: "" },
               ].map((item) => (
                 <li key={item.name}>
@@ -189,24 +189,28 @@ const Footer = () => {
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-[11px] font-inter order-1 md:order-2">
             <Link
               href="/privacy-policy"
+              target="_blank"
               className="text-white/80 hover:text-white transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
               href="terms-of-use"
+              target="_blank"
               className="text-white/80 hover:text-white transition-colors"
             >
               Terms of Service
             </Link>
             <Link
               href="return-exchange"
+              target="_blank"
               className="text-white/80 hover:text-white transition-colors"
             >
               Refund
             </Link>
             <Link
               href="return-exchange"
+              target="_blank"
               className="text-white/80 hover:text-white transition-colors"
             >
               Return Policy

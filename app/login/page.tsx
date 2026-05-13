@@ -182,6 +182,7 @@ const page = () => {
     }
   };
 
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <section>
       <div className="w-full flex h-screen bg-black text-white ">
@@ -234,8 +235,8 @@ const page = () => {
                 <InputGroup className="max-w-96 py-5 bg-[#141414] rounded-xs px-3 border border-[#454545]">
                   <InputGroupInput
                     id="inline-end-input"
-                    type="password"
                     name="password"
+                    type={showPassword ? "text" : "password" }
                     placeholder="Password"
                     value={formData.password}
                     onChange={handleChange}
@@ -244,7 +245,11 @@ const page = () => {
                     <LockIcon />
                   </InputGroupAddon>
                   <InputGroupAddon align="inline-end">
-                    <EyeIcon />
+                    <Button
+                    type="button"
+                    onClick={()=>setShowPassword(!showPassword)}>  
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </Button>
                   </InputGroupAddon>
                   {errors.password && (
                     <p className="text-red-500 text-xs mt-1">{errors.password}</p>

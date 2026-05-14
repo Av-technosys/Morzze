@@ -9,7 +9,7 @@ export default function DashboardLayout({
   return (
     <>
     <Header />
-    <div className="bg-black min-h-screen">
+    <div className="bg-black">
       <div className="max-w-6xl mx-auto px-4 lg:px-6 py-6">
         {/* flex-col se mobile pe niche aayega, lg:flex-row se desktop pe side-by-side */}
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
@@ -20,7 +20,7 @@ export default function DashboardLayout({
           </div>
 
           {/* Content area */}
-          <div className="flex-1">
+          <div className="overflow-hidden">
             {children}
           </div>
           

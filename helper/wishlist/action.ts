@@ -90,22 +90,22 @@ export async function getWishlistDB() {
 
   const result = await db
     .select({
+      id: product.id,
       productId: wishlistItem.productId,
       name: product.name,
       slug: product.slug,
+      sku: product.sku,
+      basePrice: product.basePrice,
       price: product.basePrice,
       strikethroughPrice: product.strikethroughPrice,
       image: product.bannerImage,
+      isInStock: product.isInStock,
+      rateing4Star: product.rateing4Star,
+      rateing5Star: product.rateing5Star,
     })
     .from(wishlistItem)
-    .innerJoin(
-      product,
-      eq(product.id, wishlistItem.productId)
-    )
-    .innerJoin(
-      wishlist,
-      eq(wishlist.id, wishlistItem.wishlistId)
-    )
+    .innerJoin(product, eq(product.id, wishlistItem.productId))
+    .innerJoin(wishlist, eq(wishlist.id, wishlistItem.wishlistId))
     .where(eq(wishlist.userId, userId));
 
   return result;

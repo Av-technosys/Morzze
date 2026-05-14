@@ -56,7 +56,7 @@ export default function AppSidebar() {
   }
 
   return (
-    <aside className="w-full lg:w-[280px] flex flex-col gap-4 p-4 lg:h-screen lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#0A0A0A]">
+    <aside className="w-full lg:w-[280px] flex flex-col gap-4 p-4  lg:sticky lg:top-0 border-b lg:border-b-0 lg:border-r border-zinc-900 bg-[#0A0A0A]">
       
       {/* Profile Section - Centered Like Image */}
       <div className="bg-[#141414] rounded-xl p-6 text-center border border-zinc-900 shadow-sm">
@@ -108,10 +108,7 @@ export default function AppSidebar() {
             )
           })}
         </div>
-      </nav>
-
-      {/* Sign Out - Bottom Section */}
-      <div className="mt-auto pt-4 lg:border-t lg:border-zinc-900">
+        <div className="mt-auto pt-4 lg:border-t lg:border-zinc-900">
         <button
           onClick={handleLogout}
           disabled={loggingOut}
@@ -121,6 +118,10 @@ export default function AppSidebar() {
           <span className="text-[13px] font-medium">{loggingOut ? "Signing Out..." : "Sign Out"}</span>
         </button>
       </div>
+      </nav>
+
+      {/* Sign Out - Bottom Section */}
+     
     </aside>
   )
 }

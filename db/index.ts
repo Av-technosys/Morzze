@@ -4,7 +4,24 @@ import * as schema from "./schema";
 
 const connectionString = process.env.DATABASE_URL!;
 
-// Disable prefetch as it is not supported for "Transaction" pool mode
-const client = postgres(connectionString, { prepare: false });
+type PostgresSql = ReturnType<typeof postgres>;
+
+const globalForDb = globalThis as typeof globalThis & {
+  __morzzePostgres?: PostgresSql;
+};
+
+function createClient(): PostgresSql {
+  return postgres(connectionString, {
+    prepare: false,
+    max: 10,
+  });
+}
+
+/** One shared client; survives Next.js dev HMR so connections are not leaked. */
+const client = globalForDb.__morzzePostgres ?? createClient();
+if (process.env.NODE_ENV !== "production") {
+  globalForDb.__morzzePostgres = client;
+}
+
 export const db = drizzle(client, { schema });
 

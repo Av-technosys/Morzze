@@ -254,7 +254,7 @@ const ProductClient = ({ product, slug }: any) => {
 
               <Button
                 variant="outline"
-                onClick={() => toggleWishlist(slug, product.productId)}
+                onClick={() => toggleWishlist(slug, product.id)}
                 className={cn(
                   "bg-[#1F1F1F] border-[#2E2E2E] transition-all",
                   wishlisted && "border-red-500/50 bg-red-500/10"

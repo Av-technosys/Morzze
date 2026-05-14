@@ -1,7 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import { 
   IconPackage, 
   
@@ -34,6 +35,12 @@ const notifications = [
 ];
 
 const NotificationPage = () => {
+  const initialPrefs = useMemo(
+    () => Object.fromEntries(notifications.map((n) => [n.id, n.defaultChecked])) as Record<string, boolean>,
+    []
+  );
+  const [prefs, setPrefs] = useState<Record<string, boolean>>(initialPrefs);
+
   return (
     <div className="min-h-screen bg-black text-[#EDEBE9] p-6 md:p-3 font-inter">
       <div className="max-w-3xl mx-auto">
@@ -63,8 +70,16 @@ const NotificationPage = () => {
 
               <div className="flex items-center pt-1">
                 <Switch 
-                  defaultChecked={item.defaultChecked}
-                  className="data-[state=checked]:bg-[#FFBF3F] data-[state=unchecked]:bg-zinc-700"
+                  checked={prefs[item.id]}
+                  onCheckedChange={(checked) => {
+                    setPrefs((prev) => ({ ...prev, [item.id]: checked }));
+                    toast.success(
+                      checked
+                        ? `${item.title} notifications are on`
+                        : `${item.title} notifications are off`
+                    );
+                  }}
+                  className="data-checked:bg-[#FFBF3F] data-unchecked:bg-zinc-700"
                 />
               </div>
             </div>

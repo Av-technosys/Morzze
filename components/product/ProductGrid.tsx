@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/button";
 import {
   IconShoppingBag,
   IconStarFilled,
-  IconStar,
   IconAdjustmentsHorizontal,
 } from "@tabler/icons-react";
-import { cn } from "@/lib/utils";
 import {
   Sheet,
   SheetContent,
@@ -20,136 +18,37 @@ import {
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
-
 import Pagination from "../commom/Pagination";
+import FilterSidebar from "@/components/product/FilterSidebar";
 
-
-const FilterSidebar = () => {
-  const filterData = [
-    {
-      title: "CATEGORY",
-      options: [
-        "Kitchen Faucets",
-        "Bathroom Faucets",
-        "Kitchen Sink",
-        "Washbasin",
-        "Floor Drainer",
-        "Food Waste Disposer",
-        "Kitchen Assessories",
-        "Towel Warmer",
-      ],
-    },
-    {
-      title: "MATERIAL",
-      options: [
-        "304 Stainless Steel",
-        "Granite Composite",
-        "Brass",
-        "Zinc Alloy",
-        "ABS Polymer",
-      ],
-    },
-    {
-      title: "FINISH",
-      options: [
-        "Chrome",
-        "Brushed Gold",
-        "Matte Black",
-        "Rose Gold",
-        "Brushed Nickel",
-        "Antique Brass",
-      ],
-    },
-    {
-      title: "PRICE RANGE",
-      options: [
-        "Under ₹5,000",
-        "₹5,000 – ₹10,000",
-        "₹10,000 – ₹20,000",
-        "Above ₹20,000",
-      ],
-    },
-  ];
-
-  return (
-    <div className="space-y-8 py-4">
-      {filterData.map((section) => (
-        <div key={section.title}>
-          <h4 className="text-[11px] tracking-[0.2em] text-[#928E87] mb-5 uppercase font-montserrat font-bold">
-            {section.title}
-          </h4>
-          <div className="space-y-4">
-            {section.options.map((option) => (
-              <label
-                key={option}
-                className="flex items-center gap-3 group cursor-pointer"
-              >
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    className="peer appearance-none w-4 h-4 border border-[#FFBF3F]/30 checked:bg-[#FFBF3F] checked:border-[#FFBF3F] transition-all"
-                  />
-                  <div className="absolute text-black opacity-0 peer-checked:opacity-100 pointer-events-none">
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="4"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <span className="text-[13px] text-[#EDEBE9] font-inter group-hover:text-[#FFBF3F] transition-colors">
-                  {option}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
-      ))}
-      <div className="flex items-center gap-3 pt-4">
-        <input
-          type="checkbox"
-          className="peer appearance-none w-4 h-4 border border-[#FFBF3F]/30 checked:bg-[#FFBF3F]"
-        />
-        <span className="text-[13px] text-[#EDEBE9] font-inter">
-          In Stock Only
-        </span>
-      </div>
-    </div>
-  );
-};
-
-const ProductGrid = ({products}:any) => {
+const ProductGrid = ({
+  products,
+  categories,
+}: {
+  products: any[];
+  categories: any[];
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-const totalPages = Math.ceil(products.length / itemsPerPage);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
 
-const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentProducts = products.slice(startIndex, startIndex + itemsPerPage);
 
-const currentProducts = products.slice(
-  startIndex,
-  startIndex + itemsPerPage
-);
   const { addToCart } = useCart();
 
   return (
     <div className="w-full space-y-6 md:space-y-10">
       <div className="flex md:hidden items-center justify-between py-4 border-b border-white/5 px-2">
         <Sheet>
-          <SheetTrigger>
+          <SheetTrigger asChild>
             <button className="flex items-center gap-2.5 text-[13px] text-[#EDEBE9] font-inter uppercase tracking-[0.15em] font-medium">
               <IconAdjustmentsHorizontal size={20} className="text-[#FFBF3F]" />
               Filters
             </button>
           </SheetTrigger>
+
           <SheetContent
             side="left"
             className="bg-[#0A0A0A] border-r border-white/10 w-[300px] text-white p-0 overflow-y-auto custom-scrollbar"
@@ -159,17 +58,20 @@ const currentProducts = products.slice(
                 Product Filters
               </SheetTitle>
             </SheetHeader>
+
             <div className="px-6 pb-10">
-              <FilterSidebar />
+              <FilterSidebar categories={categories} />
             </div>
           </SheetContent>
         </Sheet>
+
         <span className="text-[10px] text-[#555] uppercase tracking-widest font-inter">
-          128 Results
+          {products.length} Results
         </span>
       </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
-        {currentProducts.map((product:any) => (
+        {currentProducts.map((product: any) => (
           <div key={product.id} className="group flex flex-col">
             <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
               <div className="absolute top-3 left-3 z-20 flex flex-col gap-2 font-montserrat">
@@ -179,25 +81,29 @@ const currentProducts = products.slice(
                   </Badge>
                 )}
               </div>
+
               <div className="absolute top-2 right-3 z-20">
                 <Badge className="bg-[#EF4444] text-white hover:bg-[#EF4444] rounded-none px-2 py-0.5 text-[9px] font-semibold">
                   {product.discount}
                 </Badge>
               </div>
 
-              {/* Wrapping Image with Link for product detail navigation */}
               <Link href={`/products/${product.slug}`}>
                 <motion.img
                   src={product.bannerImage}
+                  alt={product.name}
                   className="w-full h-full object-cover cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.6 }}
                 />
               </Link>
-              
+
               <div className="absolute inset-x-0 bottom-0 z-30 translate-y-0 md:translate-y-full p-2 group-hover:translate-y-0 transition-transform duration-300">
                 <Button
-                  onClick={(e) => { e.preventDefault(); addToCart(product.slug); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addToCart(product.slug);
+                  }}
                   className="w-full bg-[#FFBF3F] hover:bg-[#e5ac37] font-inter text-black rounded-sm h-10 md:h-12 font-bold text-[11px] md:text-sm uppercase flex items-center justify-center gap-2"
                 >
                   <IconShoppingBag size={18} />
@@ -205,13 +111,12 @@ const currentProducts = products.slice(
                 </Button>
               </div>
             </div>
-            
+
             <div className="space-y-1.5 px-1 md:px-0">
               <p className="text-[10px] text-[#928E87] tracking-[0.1em] font-montserrat uppercase">
                 {product.category}
               </p>
-              
-              {/* Wrapping Title with Link */}
+
               <Link href={`/products/${product.slug}`}>
                 <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
                   {product.name}
@@ -228,14 +133,17 @@ const currentProducts = products.slice(
                     }
                   />
                 ))}
+
                 <span className="text-[10px] text-[#555] ml-1">
                   ({product.reviews})
                 </span>
               </div>
+
               <div className="flex items-center gap-3">
                 <span className="font-bold text-white font-inter text-sm md:text-base">
                   ₹{product.basePrice}
                 </span>
+
                 <span className="text-[11px] md:text-sm text-[#555] line-through">
                   ₹{product.strikethroughPrice}
                 </span>
@@ -244,15 +152,19 @@ const currentProducts = products.slice(
           </div>
         ))}
       </div>
+
       <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
         <p className="text-xs md:text-sm text-[#FEFFF1] font-inter">
-          Showing 1 to 8 of 128 results
+          Showing {products.length > 0 ? startIndex + 1 : 0} to{" "}
+          {Math.min(startIndex + itemsPerPage, products.length)} of{" "}
+          {products.length} results
         </p>
-      <Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={(page:number) => setCurrentPage(page)}
-/>
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page: number) => setCurrentPage(page)}
+        />
       </div>
     </div>
   );

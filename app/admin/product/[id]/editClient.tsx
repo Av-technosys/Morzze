@@ -317,53 +317,94 @@ export default function EditProduct({ productDetails }: any) {
     setVariants((prev: any) => ({ ...prev, gallery: nextGallery }));
   };
 
-  const handleUpdateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (selectedCategories.length === 0)
-      return toast.error("Select a category");
+  const handleUpdateProduct = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("id", variants.id);
-    selectedCategories.forEach((catId) => formData.append("category[]", catId));
+  if (selectedCategories.length === 0) {
+    return toast.error("Select a category");
+  }
 
-    const payload = {
-      ...variants,
-      id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
-      brand: brand,
-      bannerImage: variants.banner?.preview,
-      media: variants.gallery.map((g: any) => g.preview),
-      highlights: variants.highlights.filter(
-        (h: string) => h.trim().length > 0,
-      ),
-      attributes: Object.entries(variants.attributes)
-        .map(([attr, val]: [string, any]) => ({
-          attribute: attr,
-          value: val.value,
-        }))
-        .filter((a: any) => a.value.trim().length > 0),
-      filters: [
-        ...(productType || []),
-        ...(size || []),
-        ...(flowType || []),
-        ...(material || []),
-        ...(cramps || []),
-        ...(sensitive || []),
-      ],
-      VarientBoxes: varientBox ? variantBoxes : [],
-      hasVarientBox:varientBox
-    };
+  if (!variants?.id) {
+    console.log("MISSING PRODUCT ID:", variants);
+    return toast.error("Product id missing");
+  }
 
-    formData.append("variants", JSON.stringify(payload));
+  const formData = new FormData();
 
+  // important fix
+  formData.set("id", String(variants.id));
 
-    try {
-      await updateProduct(formData);
-      toast.success("Product updated successfully!");
-      router.push("/admin/product");
-    } catch (err) {
-      toast.error("Failed to update product");
-    }
+  selectedCategories.forEach((catId) =>
+    formData.append("category[]", catId)
+  );
+
+  const payload = {
+    ...variants,
+    brand,
+    bannerImage: variants.banner?.preview || variants.bannerImage,
+
+    media:
+      variants.gallery?.map((g: any) => g.preview || g) || [],
+
+    highlights:
+      variants.highlights?.filter(
+        (h: string) => h.trim().length > 0
+      ) || [],
+
+    attributes: Object.entries(
+      variants.attributes || {}
+    )
+      .map(([attr, val]: [string, any]) => ({
+        attribute: attr,
+        value: val.value,
+      }))
+      .filter((a: any) => a.value?.trim()?.length > 0),
+
+filters: [
+  ...new Map(
+    [
+      ...(productType || []),
+      ...(size || []),
+      ...(flowType || []),
+      ...(material || []),
+      ...(cramps || []),
+      ...(sensitive || []),
+    ].map((filter: any) => [filter.slug, filter])
+  ).values(),
+],
+
+    VarientBoxes: varientBox ? variantBoxes : [],
+    hasVarientBox: varientBox,
   };
+
+  formData.set(
+    "variants",
+    JSON.stringify(payload)
+  );
+
+  try {
+    console.log(
+      "UPDATE ID:",
+      formData.get("id")
+    );
+
+    await updateProduct(formData);
+
+    toast.success(
+      "Product updated successfully!"
+    );
+
+    router.push("/admin/product");
+  } catch (err) {
+    console.log(err);
+
+    toast.error(
+      "Failed to update product"
+    );
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">

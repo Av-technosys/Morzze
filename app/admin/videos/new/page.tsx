@@ -8,13 +8,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Loader2, Video, LinkIcon, Upload } from "lucide-react";
 import { createVideo } from "@/helper/videos/action";
-import { useRouter } from "next/navigation";
 import { useFileUpload } from "@/helper";
+import { toast } from "sonner";
 
 export default function VideoForm() {
-  const router = useRouter();
   const { upload, uploading } = useFileUpload();
-
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -34,14 +32,26 @@ export default function VideoForm() {
     if (!file) return;
 
     try {
+      toast.loading("Uploading thumbnail...", {
+        id: "thumbnail-upload",
+      });
+
       const { fileUrl } = await upload(file, "videos");
 
       setFormData((prev) => ({
         ...prev,
         [field]: fileUrl,
       }));
+
+      toast.success("Thumbnail uploaded successfully!", {
+        id: "thumbnail-upload",
+      });
     } catch (error) {
       console.error("Upload failed", error);
+
+      toast.error("Thumbnail upload failed", {
+        id: "thumbnail-upload",
+      });
     }
   };
 
@@ -61,13 +71,15 @@ export default function VideoForm() {
     const res = await createVideo(data);
 
     if (res.success) {
-      alert("Video Added Successfully!");
-    window.location.href = "/admin/videos";
-    } else {
-      alert("Error: Video could not be added.");
-    }
+      toast.success("Video added successfully!");
 
-    setLoading(false);
+      setTimeout(() => {
+        window.location.href = "/admin/videos";
+      }, 700);
+    } else {
+      toast.error("Video could not be added.");
+      setLoading(false);
+    }
   }
 
   return (
@@ -108,7 +120,9 @@ export default function VideoForm() {
                 <option value="Product Demos">Product Demos</option>
                 <option value="Brand Films">Brand Films</option>
                 <option value="Installation Guides">Installation Guides</option>
-                <option value="Customer Testimonials">Customer Testimonials</option>
+                <option value="Customer Testimonials">
+                  Customer Testimonials
+                </option>
               </select>
             </div>
           </div>

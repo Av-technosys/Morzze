@@ -100,7 +100,7 @@ export async function deleteVideo(id: string) {
 
     return {
       success: true,
-      message: "Video deleted successfully",
+  
     };
   } catch (error) {
     console.error("Error deleting video:", error);

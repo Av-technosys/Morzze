@@ -16,6 +16,7 @@ import {
   IconVideo,
 } from "@tabler/icons-react";
 import { useFileUpload } from "@/helper";
+import { toast } from "sonner";
 
 export default function EditVideosForm({ initialData }: { initialData: any }) {
   const router = useRouter();
@@ -39,41 +40,55 @@ export default function EditVideosForm({ initialData }: { initialData: any }) {
     if (!file) return;
 
     try {
+      toast.loading("Uploading thumbnail...", {
+        id: "thumbnail-upload",
+      });
+
       const { fileUrl } = await upload(file, "videos");
 
       setFormData((prev) => ({
         ...prev,
         [field]: fileUrl,
       }));
+
+      toast.success("Thumbnail uploaded successfully!", {
+        id: "thumbnail-upload",
+      });
     } catch (error) {
       console.error("Upload failed", error);
+
+      toast.error("Thumbnail upload failed", {
+        id: "thumbnail-upload",
+      });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  const data = new FormData();
+    const data = new FormData();
 
-  data.append("title", formData.title);
-  data.append("link", formData.link);
-  data.append("thumbnail", formData.thumbnail);
-  data.append("videoDescription", formData.videoDescription);
-  data.append("videoCategory", formData.videoCategory);
-  data.append("isVisible", formData.isVisible ? "on" : "off");
+    data.append("title", formData.title);
+    data.append("link", formData.link);
+    data.append("thumbnail", formData.thumbnail);
+    data.append("videoDescription", formData.videoDescription);
+    data.append("videoCategory", formData.videoCategory);
+    data.append("isVisible", formData.isVisible ? "on" : "off");
 
-  const res = await updateVideo(initialData.id, data);
+    const res = await updateVideo(initialData.id, data);
 
-  if (res.success) {
-    alert("Video Updated Successfully!");
-    window.location.href = "/admin/videos";
-  } else {
-    alert("Something went wrong!");
-  }
+    if (res.success) {
+      toast.success("Video updated successfully!");
 
-  setLoading(false);
-};
+      setTimeout(() => {
+        window.location.href = "/admin/videos";
+      }, 700);
+    } else {
+      toast.error("Something went wrong!");
+      setLoading(false);
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 max-w-5xl mx-auto pb-20">
@@ -128,7 +143,9 @@ export default function EditVideosForm({ initialData }: { initialData: any }) {
               <option value="Product Demos">Product Demos</option>
               <option value="Brand Films">Brand Films</option>
               <option value="Installation Guides">Installation Guides</option>
-              <option value="Customer Testimonials">Customer Testimonials</option>
+              <option value="Customer Testimonials">
+                Customer Testimonials
+              </option>
             </select>
           </div>
 

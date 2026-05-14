@@ -92,7 +92,7 @@ const Header = () => {
 
           {/* Icons Actions [Merged Styles] */}
           <div className="flex items-center space-x-4">
-            <Link href={"/"}> {/* href={"/wishlist"} */}
+            <Link href={"/dashboard/wishlist"}  >
               <button className="hidden lg:block hover:text-[#B88E2F] transition-colors">
                 <IconHeart size={20} stroke={1.5} />
               </button>

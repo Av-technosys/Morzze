@@ -23,15 +23,13 @@ import ProductComparison from "@/components/product/ProductComparison";
 import CareAndMaintenance from "@/components/product/CareAndMaintenance";
 import AteliersGrid from "@/components/product/AteliersGrid";
 import CommonEnquiries from "@/components/product/CommonEnquiries";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useWishlist } from "@/context/WishlistContext";
 import { useCart } from "@/context/CartContext";
 
-const ProductClient = ({ product }: any) => {
+const ProductClient = ({ product, slug }: any) => {
   console.log("Product Data in Client Component:", product);
   const router = useRouter()
-  const params = useParams()
-  const slug = params.productslug as string
   const { isInWishlist, toggleWishlist } = useWishlist()
   const { addToCart } = useCart()
   if (!product) return null;
@@ -47,21 +45,21 @@ const ProductClient = ({ product }: any) => {
   const wishlisted = isInWishlist(slug)
 
 
-// 1. Sare Attributes ko as variables nikal lo
-const attributes = product.productAttributeRes || [];
+  // 1. Sare Attributes ko as variables nikal lo
+  const attributes = product.productAttributeRes || [];
 
-const tabDescription = attributes.find((a: any) => a.attribute === "DESCRIPTION")?.value;
-const tabDimensions = attributes.find((a: any) => a.attribute === "DIMENSIONS")?.value;
-const tabFeatures = attributes.find((a: any) => a.attribute === "FEATURES")?.value;
-const tabAccessories = attributes.find((a: any) => a.attribute === "Accessories Included")?.value;
-const tabDocumentation = attributes.find((a: any) => a.attribute === "Documentation")?.value;
+  const tabDescription = attributes.find((a: any) => a.attribute === "DESCRIPTION")?.value;
+  const tabDimensions = attributes.find((a: any) => a.attribute === "DIMENSIONS")?.value;
+  const tabFeatures = attributes.find((a: any) => a.attribute === "FEATURES")?.value;
+  const tabAccessories = attributes.find((a: any) => a.attribute === "Accessories Included")?.value;
+  const tabDocumentation = attributes.find((a: any) => a.attribute === "Documentation")?.value;
 
 
-// 1. "size" wala attribute find karein
-const sizeAttr = product.productAttributeRes?.find((a: any) => a.attribute === "size")?.value;
+  // 1. "size" wala attribute find karein
+  const sizeAttr = product.productAttributeRes?.find((a: any) => a.attribute === "size")?.value;
 
-// 2. Comma se split karke array banayein (agar data nahi hai to empty array)
-const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
+  // 2. Comma se split karke array banayein (agar data nahi hai to empty array)
+  const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
 
   return (
     <>
@@ -221,11 +219,36 @@ const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
             {/* BUTTONS */}
             <div className="flex gap-3">
 
-              <Button onClick={() => addToCart(slug, quantity)} className="flex-1 py-5 bg-[#FDB813] text-black">
+              <Button
+                onClick={() => {
+                  addToCart(slug, quantity, {
+                    name: product.name,
+                    price: product.basePrice,
+                    oldPrice: product.strikethroughPrice,
+                    image: product.bannerImage,
+                    sku: product.sku,
+                    productId: product.id,
+                  });
+                }}
+                className="flex-1 py-5 bg-[#FDB813] text-black"
+              >
                 <IconShoppingBag size={16} /> Add to Cart
               </Button>
 
-              <Button className="flx-1 py-5 border border-white/20">
+              <Button
+                onClick={() => {
+                  addToCart(slug, quantity, {
+                    name: product.name,
+                    price: product.basePrice,
+                    oldPrice: product.strikethroughPrice,
+                    image: product.bannerImage,
+                    sku: product.sku,
+                    productId: product.id,
+                  });
+                  router.push("/checkout");
+                }}
+                className="flex-1 py-5 border border-white/20"
+              >
                 <IconBolt size={16} /> Buy Now
               </Button>
 
@@ -269,7 +292,7 @@ const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
 
       {/* EXTRA SECTIONS */}
       <DescriptionTabs productAttributeRes={product?.productAttributeRes} />
-      <SpecificationsTabs  productAttributeRes={product?.productAttributeRes}/>
+      <SpecificationsTabs productAttributeRes={product?.productAttributeRes} />
       <ProductComparison />
       <CareAndMaintenance />
       <AteliersGrid />

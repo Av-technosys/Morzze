@@ -1,23 +1,11 @@
 "use client"
 import React from 'react'
 import { useCart } from '@/context/CartContext'
-import { products } from '@/data/products'
 
 const CheckoutSummary = () => {
   const { cartItems } = useCart()
 
-  const parsePrice = (price: string) => parseInt(price.replace(/,/g, ""), 10) || 0
-
-  const resolvedItems = cartItems
-    .map((ci) => {
-      const p = products.find((prod) => prod.slug === ci.slug)
-      if (!p) return null
-      const unitPrice = parsePrice(p.price)
-      return { name: p.name, quantity: ci.quantity, unitPrice, total: unitPrice * ci.quantity }
-    })
-    .filter(Boolean) as { name: string; quantity: number; unitPrice: number; total: number }[]
-
-  const subtotal = resolvedItems.reduce((s, i) => s + i.total, 0)
+  const subtotal = cartItems.reduce((s, item) => s + (item.price ?? 0) * item.quantity, 0)
   const gst = Math.round(subtotal * 0.18)
   const total = subtotal + gst
 
@@ -28,13 +16,24 @@ const CheckoutSummary = () => {
       <div className="space-y-6">
         {/* Product Line Items */}
         <div className="space-y-4">
-          {resolvedItems.map((item, i) => (
+          {cartItems.map((item, i) => (
             <div key={i} className="flex justify-between items-start gap-4">
-              <span className="text-zinc-500 text-sm font-light leading-snug">
-                {item.name} {item.quantity > 1 && `×${item.quantity}`}
-              </span>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                {item.image && (
+                  <div className="w-10 h-10 bg-zinc-900 rounded overflow-hidden shrink-0">
+                    <img
+                      src={item.image}
+                      alt={item.name ?? "Product"}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <span className="text-zinc-500 text-sm font-light leading-snug truncate">
+                  {item.name ?? item.slug} {item.quantity > 1 && `×${item.quantity}`}
+                </span>
+              </div>
               <span className="text-zinc-300 text-sm font-medium text-nowrap">
-                ₹{item.total.toLocaleString("en-IN")}
+                ₹{((item.price ?? 0) * item.quantity).toLocaleString("en-IN")}
               </span>
             </div>
           ))}

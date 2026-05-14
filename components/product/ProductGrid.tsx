@@ -197,7 +197,17 @@ const currentProducts = products.slice(
               
               <div className="absolute inset-x-0 bottom-0 z-30 translate-y-0 md:translate-y-full p-2 group-hover:translate-y-0 transition-transform duration-300">
                 <Button
-                  onClick={(e) => { e.preventDefault(); addToCart(product.slug); }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addToCart(product.slug, 1, {
+                      name: product.name,
+                      price: product.basePrice,
+                      oldPrice: product.strikethroughPrice,
+                      image: product.bannerImage,
+                      sku: product.sku,
+                      productId: product.id,
+                    });
+                  }}
                   className="w-full bg-[#FFBF3F] hover:bg-[#e5ac37] font-inter text-black rounded-sm h-10 md:h-12 font-bold text-[11px] md:text-sm uppercase flex items-center justify-center gap-2"
                 >
                   <IconShoppingBag size={18} />

@@ -27,8 +27,8 @@ const page = async ({
     }
 
     // 4. Client component ko data pass karein
-    return <ProductClient product={product} />;
-    
+    return <ProductClient product={product} slug={productslug} />;
+
   } catch (error) {
     console.error("Fetch Error:", error);
     return notFound();

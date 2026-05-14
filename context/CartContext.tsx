@@ -8,11 +8,18 @@ const CART_STORAGE_KEY = "morzze_cart";
 export type CartItem = {
   slug: string;
   quantity: number;
+  // Rich product snapshot (set at add-to-cart time)
+  name?: string;
+  price?: number;        // basePrice in ₹
+  oldPrice?: number;     // strikethroughPrice in ₹
+  image?: string;        // bannerImage URL
+  sku?: string;
+  productId?: string;    // DB uuid
 };
 
 type CartContextType = {
   cartItems: CartItem[];
-  addToCart: (slug: string, quantity?: number) => void;
+  addToCart: (slug: string, quantity?: number, productData?: Partial<CartItem>) => void;
   removeFromCart: (slug: string) => void;
   updateQuantity: (slug: string, quantity: number) => void;
   clearCart: () => void;
@@ -64,22 +71,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cartItems, loaded]);
 
-  const addToCart = useCallback((slug: string, quantity: number = 1) => {
-    setCartItems((prev) => {
-      const existing = prev.find((item) => item.slug === slug);
-      if (existing) {
-        toast.success("Cart updated");
-        return prev.map((item) =>
-          item.slug === slug
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      } else {
-        toast.success("Added to cart");
-        return [...prev, { slug, quantity }];
-      }
-    });
-  }, []);
+  const addToCart = useCallback(
+    (slug: string, quantity: number = 1, productData?: Partial<CartItem>) => {
+      setCartItems((prev) => {
+        const existing = prev.find((item) => item.slug === slug);
+        if (existing) {
+          toast.success("Cart updated");
+          return prev.map((item) =>
+            item.slug === slug
+              ? {
+                  ...item,
+                  quantity: item.quantity + quantity,
+                  // Refresh rich data if provided
+                  ...(productData ? productData : {}),
+                }
+              : item
+          );
+        } else {
+          toast.success("Added to cart");
+          return [...prev, { slug, quantity, ...(productData ?? {}) }];
+        }
+      });
+    },
+    []
+  );
 
   const removeFromCart = useCallback((slug: string) => {
     setCartItems((prev) => prev.filter((item) => item.slug !== slug));

@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { cart, cartItem, product, rewardCoinsHistory } from "@/db/schema";
 import { order, orderItem, payment, users } from "@/db/schema";
-import { requireUserWithRefresh } from "../user/action";
+import { getProfile } from "../user/action";
 
 export const fetchOrders = async ({
   page = 1,
@@ -362,7 +362,7 @@ export async function checkUserFirstOrder(userId: string) {
 
 export async function getOrdersByUserId() {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const { userId } = await getProfile();
     const orders = await db
       .select()
       .from(order)

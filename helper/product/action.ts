@@ -1023,3 +1023,31 @@ export async function getQuizSuggestedProducts(userAnswers: any) {
 //   return [];
 // }
 // }
+export async function getProductsBySlugList(slugs: string[]) {
+  try {
+    if (!slugs || slugs.length === 0) return [];
+    const safeSlugs = slugs.filter(Boolean);
+    if (!safeSlugs.length) return [];
+
+    const results = await db
+      .select({
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        sku: product.sku,
+        basePrice: product.basePrice,
+        strikethroughPrice: product.strikethroughPrice,
+        bannerImage: product.bannerImage,
+        isInStock: product.isInStock,
+        rateing4Star: product.rateing4Star,
+        rateing5Star: product.rateing5Star,
+      })
+      .from(product)
+      .where(inArray(product.slug, safeSlugs));
+
+    return results;
+  } catch (error) {
+    console.error("getProductsBySlugList failed:", error);
+    return [];
+  }
+}

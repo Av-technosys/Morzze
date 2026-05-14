@@ -3,20 +3,14 @@ import React from 'react'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
-import { products } from '@/data/products'
 
 const OrderSummary = () => {
   const { cartItems } = useCart()
 
-  const parsePrice = (price: string) => {
-    return parseInt(price.replace(/,/g, ""), 10) || 0
-  }
-
-  // Calculate real totals
-  const subtotal = cartItems.reduce((sum, cartItem) => {
-    const productData = products.find((p) => p.slug === cartItem.slug)
-    if (!productData) return sum
-    return sum + parsePrice(productData.price) * cartItem.quantity
+  // Calculate real totals from embedded cart data
+  const subtotal = cartItems.reduce((sum, item) => {
+    const unitPrice = item.price ?? 0
+    return sum + unitPrice * item.quantity
   }, 0)
 
   const gst = Math.round(subtotal * 0.18)

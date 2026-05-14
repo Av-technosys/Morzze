@@ -1,23 +1,13 @@
-"use client"
-import React from 'react'
-import { Trash2, Minus, Plus, ShoppingBag } from 'lucide-react'
-import { products } from '@/data/products'
-import { useCart } from '@/context/CartContext'
-import Link from 'next/link'
+"use client";
+import React from "react";
+import { Trash2, Minus, Plus, ShoppingBag } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import Link from "next/link";
 
 const CartItemList = () => {
-  const { cartItems, removeFromCart, updateQuantity } = useCart()
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
-  // Resolve full product data for each cart item
-  const resolvedItems = cartItems
-    .map((cartItem) => {
-      const productData = products.find((p) => p.slug === cartItem.slug)
-      if (!productData) return null
-      return { ...productData, quantity: cartItem.quantity }
-    })
-    .filter(Boolean) as (typeof products[number] & { quantity: number })[]
-
-  if (resolvedItems.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="w-full">
         <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -31,11 +21,7 @@ const CartItemList = () => {
           </Link>
         </div>
       </div>
-    )
-  }
-
-  const parsePrice = (price: string) => {
-    return parseInt(price.replace(/,/g, ""), 10) || 0
+    );
   }
 
   return (
@@ -49,23 +35,44 @@ const CartItemList = () => {
           <div className="col-span-2 text-right">Total</div>
         </div>
 
-        {resolvedItems.map((item) => {
-          const unitPrice = parsePrice(item.price)
-          const totalPrice = unitPrice * item.quantity
+        {cartItems.map((item) => {
+          const unitPrice = item.price ?? 0;
+          const totalPrice = unitPrice * item.quantity;
 
           return (
-            <div key={item.slug} className="grid grid-cols-12 py-8 border-b border-zinc-900 items-center group">
+            <div
+              key={item.slug}
+              className="grid grid-cols-12 py-8 border-b border-zinc-900 items-center group"
+            >
               <div className="col-span-6 flex gap-6">
-                <Link href={`/products/${item.slug}`} className="w-24 h-24 bg-zinc-900 rounded-md overflow-hidden shrink-0">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                <Link
+                  href={`/products/${item.slug}`}
+                  className="w-24 h-24 bg-zinc-900 rounded-md overflow-hidden shrink-0"
+                >
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name ?? "Product"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-zinc-700">
+                      <ShoppingBag size={24} />
+                    </div>
+                  )}
                 </Link>
                 <div className="flex flex-col justify-center">
                   <Link href={`/products/${item.slug}`}>
-                    <h3 className="text-white text-sm font-medium mb-1 font-montserrat hover:text-zinc-300 transition-colors">{item.name}</h3>
+                    <h3 className="text-white text-sm font-medium mb-1 font-montserrat hover:text-zinc-300 transition-colors">
+                      {item.name ?? item.slug}
+                    </h3>
                   </Link>
-                  <p className="text-zinc-500 text-xs font-light">{item.category}</p>
+                  {item.sku && (
+                    <p className="text-zinc-500 text-xs font-light">SKU: {item.sku}</p>
+                  )}
                 </div>
               </div>
+
               <div className="col-span-2 flex justify-center">
                 <div className="flex items-center px-3 py-1 gap-4">
                   <button
@@ -74,7 +81,9 @@ const CartItemList = () => {
                   >
                     <Minus size={14} />
                   </button>
-                  <span className="text-white text-sm w-4 text-center">{item.quantity}</span>
+                  <span className="text-white text-sm w-4 text-center">
+                    {item.quantity}
+                  </span>
                   <button
                     onClick={() => updateQuantity(item.slug, item.quantity + 1)}
                     className="text-zinc-500 hover:text-white transition-colors"
@@ -83,12 +92,16 @@ const CartItemList = () => {
                   </button>
                 </div>
               </div>
+
               <div className="col-span-2 text-center text-zinc-300 text-sm font-light text-nowrap">
                 ₹{unitPrice.toLocaleString("en-IN")}
               </div>
+
               <div className="col-span-2 text-right">
                 <div className="flex items-center justify-end gap-4 mb-2">
-                  <span className="text-white text-sm font-medium">₹{totalPrice.toLocaleString("en-IN")}</span>
+                  <span className="text-white text-sm font-medium">
+                    ₹{totalPrice.toLocaleString("en-IN")}
+                  </span>
                   <button
                     onClick={() => removeFromCart(item.slug)}
                     className="text-red-500/80 hover:text-red-500 transition-colors"
@@ -98,7 +111,7 @@ const CartItemList = () => {
                 </div>
               </div>
             </div>
-          )
+          );
         })}
       </div>
 
@@ -106,26 +119,47 @@ const CartItemList = () => {
       <div className="md:hidden flex flex-col gap-6 py-4">
         <h2 className="text-white text-lg font-medium font-montserrat mb-2">Your Cart</h2>
 
-        {resolvedItems.map((item) => {
-          const unitPrice = parsePrice(item.price)
+        {cartItems.map((item) => {
+          const unitPrice = item.price ?? 0;
 
           return (
             <div key={item.slug} className="flex gap-4 items-start relative">
               {/* Product Image */}
-              <Link href={`/products/${item.slug}`} className="w-32 h-32 bg-zinc-900 rounded-lg overflow-hidden shrink-0">
-                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+              <Link
+                href={`/products/${item.slug}`}
+                className="w-32 h-32 bg-zinc-900 rounded-lg overflow-hidden shrink-0"
+              >
+                {item.image ? (
+                  <img
+                    src={item.image}
+                    alt={item.name ?? "Product"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-zinc-700">
+                    <ShoppingBag size={24} />
+                  </div>
+                )}
               </Link>
 
               {/* Details */}
               <div className="flex-1 pt-1">
                 <Link href={`/products/${item.slug}`}>
-                  <h3 className="text-white text-[15px] font-medium leading-tight mb-1">{item.name}</h3>
+                  <h3 className="text-white text-[15px] font-medium leading-tight mb-1">
+                    {item.name ?? item.slug}
+                  </h3>
                 </Link>
-                <p className="text-zinc-500 text-xs mb-6">{item.category}</p>
+                {item.sku && (
+                  <p className="text-zinc-500 text-xs mb-6">SKU: {item.sku}</p>
+                )}
 
                 <div className="mt-auto">
-                  <span className="text-white text-lg font-medium block">₹{unitPrice.toLocaleString("en-IN")}</span>
-                  <span className="text-zinc-500 text-xs mt-1 block font-light">Quantity: {item.quantity}x</span>
+                  <span className="text-white text-lg font-medium block">
+                    ₹{unitPrice.toLocaleString("en-IN")}
+                  </span>
+                  <span className="text-zinc-500 text-xs mt-1 block font-light">
+                    Quantity: {item.quantity}x
+                  </span>
                 </div>
               </div>
 
@@ -156,11 +190,11 @@ const CartItemList = () => {
                 <Trash2 size={14} />
               </button>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CartItemList
+export default CartItemList;

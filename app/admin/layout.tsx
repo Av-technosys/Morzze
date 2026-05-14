@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/admin/sidebar"
 import { MobileSidebar } from "@/components/admin/mobileSidebar"
 
+
 export default function AdminLayout({
   children,
 }: {

@@ -2,8 +2,9 @@ import React from "react";
 import { getVideos, deleteVideo } from "@/helper/videos/action";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PlusCircle, Video, Pencil, Trash2 } from "lucide-react";
+import { PlusCircle, Video, Pencil } from "lucide-react";
 import { revalidatePath } from "next/cache";
+import DeleteVideoButton from "@/components/admin/DeleteVideoButton";
 
 async function Page() {
   const allVideos = await getVideos();
@@ -69,17 +70,7 @@ async function Page() {
                   </Button>
                 </Link>
 
-                <form action={deleteAction.bind(null, video.id)}>
-                  <Button
-                    type="submit"
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-1 border-red-200 hover:bg-red-50 text-red-600"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Delete
-                  </Button>
-                </form>
+                <DeleteVideoButton action={deleteAction.bind(null, video.id)} />
               </div>
             </div>
           ))

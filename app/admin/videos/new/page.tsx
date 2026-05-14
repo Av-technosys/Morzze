@@ -45,31 +45,30 @@ export default function VideoForm() {
     }
   };
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setLoading(true);
 
-    const data = new FormData();
+  const data = new FormData();
 
-    data.append("title", formData.title);
-    data.append("link", formData.link);
-    data.append("thumbnail", formData.thumbnail);
-    data.append("videoDescription", formData.videoDescription);
-    data.append("videoCategory", formData.videoCategory);
-    data.append("isVisible", formData.isVisible ? "on" : "off");
+  data.append("title", formData.title);
+  data.append("link", formData.link);
+  data.append("thumbnail", formData.thumbnail);
+  data.append("videoDescription", formData.videoDescription);
+  data.append("videoCategory", formData.videoCategory);
+  data.append("isVisible", formData.isVisible ? "on" : "off");
 
-    const res = await createVideo(data);
+  const res = await createVideo(data);
 
-    if (res.success) {
-      alert("Video Added Successfully!");
-      router.push("/admin/videos");
-      router.refresh();
-    } else {
-      alert("Error: Video could not be added.");
-    }
-
-    setLoading(false);
+  if (res.success) {
+    alert("Video Added Successfully!");
+    window.location.href = "/admin/videos";
+  } else {
+    alert("Error: Video could not be added.");
   }
+
+  setLoading(false);
+}
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-xl border-none my-10">
@@ -106,15 +105,10 @@ export default function VideoForm() {
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <option value="">Select category</option>
-                <option value="Air Taps">Air Taps</option>
-                <option value="Bathroom Faucet">Bathroom Faucet</option>
-                <option value="Food Waste Disposers">Food Waste Disposers</option>
-                <option value="Floor Drainer">Floor Drainer</option>
-                <option value="Granite Wash Basin">Granite Wash Basin</option>
-                <option value="Kitchen Accessories">Kitchen Accessories</option>
-                <option value="Kitchen Faucet">Kitchen Faucet</option>
-                <option value="Steel Sinks">Steel Sinks</option>
-                <option value="Towel Warmer">Towel Warmer</option>
+                <option value="Product Demos">Product Demos</option>
+                <option value="Brand Films">Brand Films</option>
+                <option value="Installation Guides">Installation Guides</option>
+                <option value="Customer Testimonials">Customer Testimonials</option>
               </select>
             </div>
           </div>

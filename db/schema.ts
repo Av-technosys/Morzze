@@ -96,6 +96,18 @@ export const blog = pgTable("blog", {
   isVisible: boolean("is_visible").default(true),
 });
 
+// ================= VIDEOS =================
+
+export const videos = pgTable("videos", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  link: text("link").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  thumbnail: text("thumbnail"),
+  videoDescription: text("video_description"),
+  videoCategory: varchar("video_category", { length: 100 }),
+  isVisible: boolean("is_visible").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
 // ================= CATEGORY =================
 

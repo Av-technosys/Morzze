@@ -92,10 +92,10 @@ export default function RootLayout({
         ${geistMono.variable}
         ${inter.variable}
         ${montserrat.variable}
-        h-full antialiased
+        max-h-full overflow-y-scroll antialiased
       `}
     >
-      <body className="min-h-full flex flex-col font-[var(--font-montserrat)]">
+      <body className=" max-h-full overflow-y-scroll flex flex-col font-[var(--font-montserrat)]">
         <CartProvider>
           <WishlistProvider>         
             {children}

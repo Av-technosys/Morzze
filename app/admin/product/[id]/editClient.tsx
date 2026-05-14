@@ -35,6 +35,7 @@ import ProductFilters from "../productFilter";
 import { PRODUCT_FILTER } from "@/const/filters";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import ProductSpecificationSection from "../ProductSpecificationSection";
 
 type ImageItem = {
   key: string;
@@ -772,16 +773,45 @@ export default function EditProduct({ productDetails }: any) {
               setGallery={setGalleryForActive}
             />
 
-            <AttributeSection
-              productAttributes={variants.attributes}
-              handleValueChange={(k, v) => {
-                const current = variants.attributes;
-                setVariants({
-                  ...variants,
-                  attributes: { ...current, [k]: { ...current[k], value: v } },
-                });
-              }}
-            />
+            <>
+  <AttributeSection
+    productAttributes={variants.attributes}
+    handleValueChange={(k, v) => {
+      const current = variants.attributes;
+
+      setVariants({
+        ...variants,
+        attributes: {
+          ...current,
+          [k]: {
+            ...current[k],
+            value: v,
+          },
+        },
+      });
+    }}
+  />
+
+  <ProductSpecificationSection
+    productSpecifications={variants.attributes}
+    handleSpecificationChange={(k, v) => {
+      const current = variants.attributes;
+
+      setVariants({
+        ...variants,
+        attributes: {
+          ...current,
+          [k]: {
+            ...current[k],
+            value: v,
+          },
+        },
+      });
+    }}
+  />
+</>
+ 
+
           </div>
         </div>
       </form>

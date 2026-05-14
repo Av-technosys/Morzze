@@ -29,7 +29,8 @@ import { apiFetch } from "@/lib/apiFetch";
 import ProductFilters from "../productFilter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import TechnicalSpecsSection from "../TechnicalSpecsSection";
+import ProductSpecificationSection from "../ProductSpecificationSection";
+
 
 type ImageItem = {
   key: string;
@@ -168,6 +169,11 @@ export default function AddProductForm() {
       selectedArray.push(val);
     }
 
+
+// add for new component
+
+
+
     const newValue = selectedArray.join(",");
     setVariants((prev: any) => ({
       ...prev,
@@ -180,6 +186,8 @@ export default function AddProductForm() {
       },
     }));
   };
+
+
 
   const handleGallery = async (files: FileList | null) => {
     if (!files) return;
@@ -302,13 +310,20 @@ export default function AddProductForm() {
     formData.append("variants", JSON.stringify(payload));
 
     try {
-      await createProduct(formData);
+console.log(
+  "PAYLOAD =>",
+  JSON.stringify(payload, null, 2)
+);      
+ await createProduct(formData);
       toast.success("Product created!");
       router.push("/admin/product");
     } catch (err) {
       toast.error("Failed to create product");
     }
   };
+
+
+
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
@@ -772,7 +787,24 @@ export default function AddProductForm() {
                 });
               }}
             />
-            {/* <TechnicalSpecsSection/> */}
+         
+ <ProductSpecificationSection
+  productSpecifications={variants.attributes}
+  handleSpecificationChange={(k, v) => {
+    const current = variants.attributes;
+
+    setVariants({
+      ...variants,
+      attributes: {
+        ...current,
+        [k]: {
+          ...current[k],
+          value: v,
+        },
+      },
+    });
+  }}
+/>
             
 
           </div>

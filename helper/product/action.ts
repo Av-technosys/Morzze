@@ -27,8 +27,8 @@ interface GetProductsOptions {
   material?: string;
   size?: string;
   flow?: string;
-  cramps?:string;
-  allergies?:string;
+  cramps?: string;
+  allergies?: string;
   min?: any;
   max?: any;
   stock?: any;
@@ -233,12 +233,12 @@ export async function createProduct(formData: FormData): Promise<void> {
       }
 
       // 3. Insert Media
-      if (variants.gallery?.length) {
+      if (variants.media?.length) {
         await tx.insert(productMedia).values(
-          variants.gallery.map((url: any) => ({
+          variants.media.map((url: string) => ({
             productId,
             mediaType: "image",
-            mediaURL: url.preview,
+            mediaURL: url,
           })),
         );
       }
@@ -636,7 +636,7 @@ export async function getProducts({
   min = "",
   max = "",
   stock = "",
-  brand="",
+  brand = "",
 }: GetProductsOptions) {
   const filters = [];
 
@@ -646,7 +646,9 @@ export async function getProducts({
 
   const offset = (page - 1) * pageSize;
 
-  const filterValues = [type, material, size, flow, cramps, allergies].filter(Boolean);
+  const filterValues = [type, material, size, flow, cramps, allergies].filter(
+    Boolean,
+  );
 
   if (filterValues.length > 0) {
     filters.push(
@@ -680,8 +682,8 @@ export async function getProducts({
     filters.push(eq(product.isInStock, true));
   }
 
-  if(brand){
-    filters.push(eq(product.brand, brand))
+  if (brand) {
+    filters.push(eq(product.brand, brand));
   }
 
   let categoryId;
@@ -713,7 +715,7 @@ export async function getProducts({
         slug: product.slug,
         sku: product.sku,
         description: product.description,
-       
+
         isInStock: product.isInStock,
         hasVarientBox: product.hasVarientBox,
         basePrice: product.basePrice,
@@ -881,72 +883,79 @@ export async function getBestSellingProducts() {
   }
 }
 
-export async function getBrandBestSellingProducts(slug:any){
+export async function getBrandBestSellingProducts(slug: any) {
   try {
-    const brandProducts = await db.select({
-      id: product.id,
-      name: product.name,
-      price: product.basePrice,
-      image: product.bannerImage,
-      slug: product.slug,
-      brand: product.brand,
-      oldPrice: product.strikethroughPrice
-    }).from(product).where(eq(product.brand, slug)).limit(4);
-    return brandProducts
+    const brandProducts = await db
+      .select({
+        id: product.id,
+        name: product.name,
+        price: product.basePrice,
+        image: product.bannerImage,
+        slug: product.slug,
+        brand: product.brand,
+        oldPrice: product.strikethroughPrice,
+      })
+      .from(product)
+      .where(eq(product.brand, slug))
+      .limit(4);
+    return brandProducts;
   } catch (error) {
     console.error(error);
     return [];
   }
 }
 
-export async function getBrandNewArrivalProducts(slug:any){
+export async function getBrandNewArrivalProducts(slug: any) {
   try {
-    const brandProducts = await db.select({
-      id: product.id,
-      name: product.name,
-      price: product.basePrice,
-      image: product.bannerImage,
-      slug: product.slug,
-      brand: product.brand,
-      oldPrice: product.strikethroughPrice
-    }).from(product).where(eq(product.brand, slug)).orderBy(desc(product.createdAt)).limit(4);
-    return brandProducts
+    const brandProducts = await db
+      .select({
+        id: product.id,
+        name: product.name,
+        price: product.basePrice,
+        image: product.bannerImage,
+        slug: product.slug,
+        brand: product.brand,
+        oldPrice: product.strikethroughPrice,
+      })
+      .from(product)
+      .where(eq(product.brand, slug))
+      .orderBy(desc(product.createdAt))
+      .limit(4);
+    return brandProducts;
   } catch (error) {
     console.error(error);
     return [];
   }
 }
 
+export async function getQuizSuggestedProducts(userAnswers: any) {
+  try {
+    const filters: string[] = userAnswers.map((a: any) => a.answer);
 
+    // Step 1: find matching filters
+    const matchedFilters = await db
+      .select({ productId: productFilter.productId })
+      .from(productFilter)
+      .where(inArray(productFilter.filter, filters));
 
-export async function getQuizSuggestedProducts(userAnswers:any){
- try {
-  const filters:string[] = userAnswers.map((a: any) => a.answer);
+    // Step 2: unique productIds
+    const productIds: any = [
+      ...new Set(matchedFilters.map((f) => f.productId)),
+    ];
 
-  // Step 1: find matching filters
-  const matchedFilters = await db
-    .select({ productId: productFilter.productId })
-    .from(productFilter)
-    .where(inArray(productFilter.filter, filters));
+    if (productIds.length === 0) return [];
 
-  // Step 2: unique productIds
-  const productIds:any = [
-    ...new Set(matchedFilters.map((f) => f.productId)),
-  ];
+    // Step 3: fetch products
+    const products = await db
+      .select()
+      .from(product)
+      .where(inArray(product.id, productIds));
 
-  if (productIds.length === 0) return [];
-
-  // Step 3: fetch products
-  const products = await db
-    .select()
-    .from(product)
-    .where(inArray(product.id, productIds));
-
-  return products;
-} catch (error) {
-  console.log(error);
-  return [];
-}
+    return products;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 }
 
 // export async function getBrandBestSellingProducts(slug:any){
@@ -984,8 +993,6 @@ export async function getQuizSuggestedProducts(userAnswers:any){
 //     return [];
 //   }
 // }
-
-
 
 // export async function getQuizSuggestedProducts(userAnswers:any){
 //  try {

@@ -74,7 +74,7 @@ const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedImage}
-                  src={images[selectedImage]}
+                  src={product.bannerImage}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -269,7 +269,7 @@ const finishesArray = sizeAttr ? sizeAttr.split(",") : [];
 
       {/* EXTRA SECTIONS */}
       <DescriptionTabs productAttributeRes={product?.productAttributeRes} />
-      <SpecificationsTabs />
+      <SpecificationsTabs  productAttributeRes={product?.productAttributeRes}/>
       <ProductComparison />
       <CareAndMaintenance />
       <AteliersGrid />

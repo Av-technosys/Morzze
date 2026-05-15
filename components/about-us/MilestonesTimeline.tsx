@@ -95,7 +95,7 @@ const MilestonesTimeline = () => {
                 <span className="text-[#FBBF24] font-bold text-lg md:text-xl mb-2 tracking-widest">{item.year}</span>
                 <h3 className="text-2xl md:text-3xl font-medium text-[#FFFFFF] mb-4 leading-tight uppercase">{item.title}</h3>
                 {/* Paragraph Alignment Fixed */}
-                <p className="text-[#928E87] font-inter text-sm md:text-base leading-relaxed max-w-sm">
+                <p className="text-white/80 font-inter text-sm md:text-base leading-relaxed max-w-sm">
                   {item.desc}
                 </p>
               </div>

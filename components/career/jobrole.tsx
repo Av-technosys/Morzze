@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MoveRight, Upload, X } from "lucide-react";
+import GeneralApplicationPopup from "./GeneralApplicationPopup";
 
 const jobs = [
   {
@@ -44,6 +45,8 @@ const jobs = [
 
 export default function CareersPositionsModal() {
   const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [applicationOpen, setApplicationOpen] = useState(false);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -208,14 +211,14 @@ export default function CareersPositionsModal() {
               <div>
                 <p className="text-[11px] text-[#b97712] tracking-[0.18em] mb-3">
                   {job.dept}{" "}
-                  <span className="text-[#666] normal-case tracking-normal">
+                  <span className="text-white/60 normal-case tracking-normal">
                     • {job.location} • {job.type}
                   </span>
                 </p>
                 <h3 className="text-[28px] md:text-[34px] font-medium mb-2">
                   {job.title}
                 </h3>
-                <p className="text-[13px] text-[#6f6f6f]">{job.exp}</p>
+                <p className="text-[13px] text-white/60">{job.exp}</p>
               </div>
 
               <button
@@ -240,7 +243,12 @@ export default function CareersPositionsModal() {
           We&apos;re always interested in meeting talented people. Drop your
           resume and we&apos;ll be in touch.
         </p>
-        <button className="px-10 h-11 bg-[#e6aa12] text-black text-[13px] font-medium">
+
+        <button
+          type="button"
+          onClick={() => setApplicationOpen(true)}
+          className="px-10 h-11 bg-[#e6aa12] text-black text-[13px] font-medium"
+        >
           careers@morzze.com
         </button>
       </div>
@@ -366,6 +374,11 @@ export default function CareersPositionsModal() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <GeneralApplicationPopup
+        open={applicationOpen}
+        onClose={() => setApplicationOpen(false)}
+      />
     </section>
   );
 }

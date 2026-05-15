@@ -80,7 +80,7 @@ const RecognitionSection = () => {
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="max-w-2xl mx-auto text-[#928E87] font-inter text-sm md:text-md leading-relaxed"
+            className="max-w-2xl mx-auto text-white/80 font-inter text-sm md:text-md leading-relaxed"
           >
             Our facilities combine cutting-edge technology with time-honored craftsmanship to deliver products that exceed expectations.
           </motion.p>

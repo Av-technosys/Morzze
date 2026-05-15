@@ -150,7 +150,7 @@ const FilterSidebar = ({ categories }: FilterSidebarProps) => {
     <div className="w-full bg-black p-0 select-none md:block hidden">
       {filterData.map((section) => (
         <div key={section.id} className="mb-8">
-          <h3 className="text-sm tracking-[0.15em] font-montserrat text-[#928E87] uppercase mb-4">
+          <h3 className="text-sm tracking-[0.15em] font-montserrat text-white/80 uppercase mb-4">
             {section.title}
           </h3>
 

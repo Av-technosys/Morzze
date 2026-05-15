@@ -14,7 +14,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-muted/40">
+    <div className="flex h-full overflow-hidden bg-muted/40">
       <div className="sticky top-0 hidden h-screen lg:block">
         <Sidebar />
       </div>

@@ -300,7 +300,7 @@ const page = () => {
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className="w-full bg-[#171717] border border-[#928E87] text-[#928E87] placeholder:text-gray-500 px-4 py-3 rounded-xs focus:border-yellow-400 focus:outline-none transition"
+                      className="w-full bg-[#171717] border border-[#928E87] text-white/80 placeholder:text-gray-500 px-4 py-3 rounded-xs focus:border-yellow-400 focus:outline-none transition"
                     >
                       <option value="" className="text-gray-500">
                         Select a category
@@ -387,13 +387,13 @@ const page = () => {
                 <div className="space-y-3 text-sm">
                   <div className="flex border-b border-b-[#928E87] py-4 justify-between">
                     <span className="text-[#FEFFF1]">Monday - Friday</span>
-                    <span className="text-[#928E87]">
+                    <span className="text-white/80">
                       9:00 AM - 6:00 PM IST
                     </span>
                   </div>
                   <div className="flex border-b border-b-[#928E87] py-4 justify-between">
                     <span className="text-[#FEFFF1]">Saturday</span>
-                    <span className="text-[#928E87]">
+                    <span className="text-white/80">
                       10:00 AM - 4:00 PM IST
                     </span>
                   </div>

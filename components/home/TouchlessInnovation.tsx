@@ -67,7 +67,7 @@ const TouchlessInnovation = () => {
               className="font-montserrat text-4xl md:text-2xl font-medium text-white leading-tight"
             >
               The Future of{" "}
-              <span className="text-[#928E87]">Touchless Living</span>
+              <span className="text-white/80">Touchless Living</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, x: 60 }}
@@ -78,7 +78,7 @@ const TouchlessInnovation = () => {
                 ease: [0.19, 1, 0.22, 1],
                 delay: 0.4,
               }}
-              className="font-inter text-[#928E87] text-sm md:text-md leading-relaxed max-w-lg"
+              className="font-inter text-white/80 text-sm md:text-md leading-relaxed max-w-lg"
             >
               Experience the revolution of touchless water control. Our Air Tap
               technology combines infrared sensing with precision flow

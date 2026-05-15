@@ -49,7 +49,7 @@ const HeritageSection = () => {
 
             <motion.div
               variants={fadeInUp}
-              className="space-y-6 text-[#928E87] text-sm md:text-md leading-relaxed  font-inter"
+              className="space-y-6 text-white/80 text-sm md:text-md leading-relaxed  font-inter"
             >
               <p>
                 Morzze began with a simple belief: that everyday objects deserve

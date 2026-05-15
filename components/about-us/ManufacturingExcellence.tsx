@@ -90,7 +90,7 @@ const ManufacturingExcellence = () => {
             initial="initial"
             whileInView="whileInView"
             viewport={{ once: false }}
-            className="max-w-3xl mx-auto text-[#928E87] font-inter text-sm md:text-md leading-relaxed"
+            className="max-w-3xl mx-auto text-white/80 font-inter text-sm md:text-md leading-relaxed"
           >
             Our facilities combine cutting-edge technology with time-honored
             craftsmanship to deliver products that exceed expectations.
@@ -118,7 +118,7 @@ const ManufacturingExcellence = () => {
                 <h3 className="text-lg md:text-xl font-semibold text-[#FEFFF1] tracking-wide">
                   {item.title}
                 </h3>
-                <p className="font-inter text-[#928E87] text-sm leading-relaxed max-w-65 mx-auto">
+                <p className="font-inter text-white/80 text-sm leading-relaxed max-w-65 mx-auto">
                   {item.desc}
                 </p>
               </div>

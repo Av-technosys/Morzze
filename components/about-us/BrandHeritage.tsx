@@ -59,7 +59,7 @@ const BrandHeritage = () => {
             </motion.div>
             <motion.div
               variants={fadeInUp}
-              className="space-y-3 font-inter text-[#928E87] text-sm md:text-md leading-relaxed max-w-2xl"
+              className="space-y-3 font-inter text-white/80 text-sm md:text-md leading-relaxed max-w-2xl"
             >
               <p>
                 Morzze began with a simple belief: that everyday objects deserve
@@ -91,7 +91,7 @@ const BrandHeritage = () => {
                   <h4 className="text-4xl md:text-5xl font-semibold text-white leading-none">
                     16+
                   </h4>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#928E87]">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/80">
                     Years of Craft
                   </p>
                 </div>
@@ -103,7 +103,7 @@ const BrandHeritage = () => {
                   <h4 className="text-4xl md:text-5xl font-semibold text-white leading-none">
                     18
                   </h4>
-                  <p className="text-[10px] uppercase tracking-[0.3em] text-[#928E87]">
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-white/80">
                     Countries Served
                   </p>
                 </div>

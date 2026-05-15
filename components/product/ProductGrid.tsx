@@ -116,7 +116,7 @@ const ProductGrid = ({
             </div>
 
             <div className="space-y-1.5 px-1 md:px-0">
-              <p className="text-[10px] text-[#928E87] tracking-[0.1em] font-montserrat uppercase">
+              <p className="text-[10px] text-white/80 tracking-[0.1em] font-montserrat uppercase">
                 {product.category}
               </p>
 

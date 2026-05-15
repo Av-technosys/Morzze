@@ -52,7 +52,7 @@ const TheARTSection = () => {
             <h2 className="font-montserrat text-3xl md:text-5xl font-medium tracking-tight mb-6">
               Crafted with <span className="text-[#CBA14D]">Obsession</span>
             </h2>
-            <p className="font-inter text-[#928E87] leading-relaxed max-w-xl">
+            <p className="font-inter text-white/80 leading-relaxed max-w-xl">
               Every Morzze product passes through the hands of master craftsmen
               who treat precision as an art form. From raw material to finished
               product, our commitment to excellence is unwavering.
@@ -80,7 +80,7 @@ const TheARTSection = () => {
                     <h4 className="font-montserrat text-lg font-medium text-white mb-2 group-hover:text-[#CBA14D] transition-colors">
                       {point.title}
                     </h4>
-                    <p className="font-inter text-sm text-[#928E87] leading-relaxed">
+                    <p className="font-inter text-sm text-white/80 leading-relaxed">
                       {point.desc}
                     </p>
                   </div>

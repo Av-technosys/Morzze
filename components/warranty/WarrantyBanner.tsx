@@ -73,7 +73,7 @@ const WarrantyBanner = () => {
           {/* Paragraph */}
           <motion.p
             variants={itemVariants}
-            className="font-inter text-[#928E87] text-sm md:text-base max-w-xl mx-auto leading-relaxed"
+            className="font-inter text-white/80 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
           >
             Shop with confidence. Every Morzze bathroom and kitchen product is backed by our industry-leading warranty program.
           </motion.p>

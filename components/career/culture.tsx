@@ -39,7 +39,7 @@ export default function WorkCultureSection() {
             <span className="text-[#d39b10]">Culture</span>
           </h2>
 
-          <p className="max-w-[520px] text-[14px] md:text-[15px] leading-8 text-[#7b7b7b] mb-10">
+          <p className="max-w-[520px] text-[14px] md:text-[15px] leading-8 text-white/70 mb-10">
             We believe that the best furniture comes from the best environments.
             That’s why we invest heavily in our workplace — creating spaces
             where creativity and collaboration flourish naturally.

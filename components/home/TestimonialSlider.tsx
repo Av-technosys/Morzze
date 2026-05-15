@@ -83,7 +83,7 @@ const TestimonialSlider = () => {
                 <h4 className="font-montserrat text-white text-lg font-semibold">
                   {testimonials[currentIndex].name}
                 </h4>
-                <p className="font-inter text-[#928E87] text-sm tracking-wide">
+                <p className="font-inter text-white/80 text-sm tracking-wide">
                   {testimonials[currentIndex].location}
                 </p>
               </div>

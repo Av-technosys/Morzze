@@ -18,7 +18,7 @@ const CallbackForm = () => {
     <div className="max-w-4xl mx-auto bg-[#0A0A0A] border border-white/5 p-8 md:p-12">
       <div className="text-center mb-10">
         <h2 className="text-2xl md:text-3xl font-semibold text-white">Connect with Us</h2>
-        <p className="text-[#928E87] text-sm mt-2">Reach out for personalised support.</p>
+        <p className="text-white/80 text-sm mt-2">Reach out for personalised support.</p>
       </div>
 
       <form className="space-y-6">

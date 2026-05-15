@@ -55,7 +55,7 @@ const FeaturesGrid = () => {
                 <h3 className="text-white text-[15px] font-bold tracking-tight">
                   {feature.title}
                 </h3>
-                <p className="text-[#928E87] text-[13px] font-medium opacity-80">
+                <p className="text-white/80 text-[13px] font-medium opacity-80">
                   {feature.description}
                 </p>
               </div>

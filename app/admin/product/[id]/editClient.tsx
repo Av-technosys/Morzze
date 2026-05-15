@@ -1,12 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -47,26 +44,6 @@ type AttributeValue = {
   value: string;
 };
 
-type Variant = {
-  id: string;
-  isExisting: boolean; // Track if variant is old or new
-  name: string;
-  sku: string;
-  price: number;
-  strikethroughPrice: number;
-  description: string;
-  banner: ImageItem | null;
-  gallery: ImageItem[];
-  highlights: string[];
-  attributes: Record<string, AttributeValue>;
-  isInStock: boolean;
-  isReturnable: boolean;
-  isCancelable: boolean;
-  isReplacement: boolean;
-  returnDays: number;
-  replacementDays: number;
-};
-
 type ProductDetailsType = {
   prodcutVarientBoxRes: productVarientType[];
   categoryRes: any;
@@ -76,23 +53,21 @@ type ProductDetailsType = {
 
 export default function EditProduct({ productDetails }: any) {
   const router = useRouter();
-  const { upload, uploading } = useFileUpload();
+  const { upload } = useFileUpload();
   const bannerRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
+  const fileRefs = useRef<any[]>([]);
 
   const [productType, setProductType] = useState<any[]>([]);
   const [size, setSize] = useState<any[]>([]);
   const [flowType, setFlowType] = useState<any[]>([]);
   const [material, setMaterial] = useState<any[]>([]);
   const [cramps, setCramps] = useState<any[]>([]);
-  const [sensitive, setSensitive]=useState<any[]>([]);
+  const [sensitive, setSensitive] = useState<any[]>([]);
 
-  const[brand,setBrand] = useState<any>(productDetails.brand);
-
+  const [brand, setBrand] = useState<any>(productDetails.brand);
   const [varientBox, setVarientBox] = useState(productDetails.hasVarientBox);
-
   const [variantBoxes, setVariantBoxes] = useState<any[]>([]);
-
-  const fileRefs = useRef<any>([]);
 
   useEffect(() => {
     if (productDetails?.prodcutVarientBoxRes?.length) {
@@ -107,7 +82,6 @@ export default function EditProduct({ productDetails }: any) {
     }
   }, [productDetails]);
 
-
   const extractSlugs = (filters: any[]) => filters.map((f) => f.filter);
 
   const mapSlugsToObjects = (slugs: string[], source: any[]) =>
@@ -119,20 +93,16 @@ export default function EditProduct({ productDetails }: any) {
     const slugs = extractSlugs(productDetails.filters);
 
     setProductType(mapSlugsToObjects(slugs, PRODUCT_FILTER.product_type));
-
     setSize(mapSlugsToObjects(slugs, PRODUCT_FILTER.size));
-
     setFlowType(mapSlugsToObjects(slugs, PRODUCT_FILTER.flow_or_usage_type));
-
     setMaterial(mapSlugsToObjects(slugs, PRODUCT_FILTER.material));
-
     setCramps(mapSlugsToObjects(slugs, PRODUCT_FILTER.cramps_or_discomfort));
-
-    setSensitive(mapSlugsToObjects(slugs, PRODUCT_FILTER.allergies_or_sensitivities));
+    setSensitive(
+      mapSlugsToObjects(slugs, PRODUCT_FILTER.allergies_or_sensitivities),
+    );
   }, [productDetails]);
 
   const {
-    prodcutVarientBoxRes,
     categoryRes,
     productAttributeRes,
     productMediaRes,
@@ -143,7 +113,6 @@ export default function EditProduct({ productDetails }: any) {
     categoryRes.map((c: any) => c?.categories?.id),
   );
 
-  // Mapping Initial Data to Variant State
   const [variants, setVariants] = useState<any>({
     id: product?.id || "",
     isExisting: true,
@@ -168,21 +137,6 @@ export default function EditProduct({ productDetails }: any) {
     isInStock: product.isInStock ?? true,
     highlights: product.highlights || [],
   });
-
-  // const initialActiveIndex = initialVariants.findIndex(
-  //   (v) => v.id === targetVariantId,
-  // );
-  // const [activeIndex, setActiveIndex] = useState(
-  //   initialActiveIndex !== -1 ? initialActiveIndex : 0,
-  // );
-  const galleryRef = useRef<HTMLInputElement>(null);
-
-  // Helper to update state
-  // const updateVariant = (index: number, updates: Partial<Variant>) => {
-  //   const newVariants = [...variants];
-  //   newVariants[index] = { ...newVariants[index], ...updates };
-  //   setVariants(newVariants);
-  // };
 
   const updateVariantBox = (index: number, key: string, value: any) => {
     const updated = [...variantBoxes];
@@ -214,13 +168,6 @@ export default function EditProduct({ productDetails }: any) {
 
       const { fileKey, fileUrl } = await upload(file, "product");
 
-      // updateVariant(activeIndex, {
-      //   banner: {
-      //     key: fileKey,
-      //     preview: fileUrl as any, // ✅ S3 URL
-      //   },
-      // });
-
       setVariants((prev: any) => ({
         ...prev,
         banner: {
@@ -235,7 +182,6 @@ export default function EditProduct({ productDetails }: any) {
     }
   };
 
-  // Multi-select Logic (Toggle)
   const toggleSpecAttribute = (key: string, val: string) => {
     const currentAttrValue = variants.attributes[key]?.value || "";
     let selectedArray = currentAttrValue ? currentAttrValue.split(",") : [];
@@ -247,6 +193,7 @@ export default function EditProduct({ productDetails }: any) {
     }
 
     const newValue = selectedArray.join(",");
+
     setVariants((prev: any) => ({
       ...prev,
       attributes: {
@@ -270,18 +217,14 @@ export default function EditProduct({ productDetails }: any) {
           maxHeight: 2000,
           ratio: 2000 / 2000,
         });
-        const { preview, fileKey, fileUrl } = await upload(file, "product");
-        const currentGallery = variants.gallery;
-        // updateVariant(activeIndex, {
-        //   gallery: [
-        //     ...currentGallery,
-        //     { key: fileKey, preview: fileUrl as any },
-        //   ],
-        // });
+
+        const { fileKey, fileUrl } = await upload(file, "product");
+
         setVariants((prev: any) => ({
           ...prev,
           gallery: [...prev.gallery, { key: fileKey, preview: fileUrl as any }],
         }));
+
         toast.success("Image uploaded");
       } catch (err: any) {
         toast.info(err.message);
@@ -297,7 +240,7 @@ export default function EditProduct({ productDetails }: any) {
     if (!file) return;
 
     try {
-      const { fileKey, fileUrl } = await upload(file, "product"); // tera existing upload fn
+      const { fileUrl } = await upload(file, "product");
 
       const updated = [...variantBoxes];
       updated[index].image = fileUrl;
@@ -311,56 +254,68 @@ export default function EditProduct({ productDetails }: any) {
     const currentGallery = variants.gallery;
     const nextGallery =
       typeof action === "function" ? (action as any)(currentGallery) : action;
-    // updateVariant(activeIndex, {
-    //   gallery: nextGallery,
-    // });
+
     setVariants((prev: any) => ({ ...prev, gallery: nextGallery }));
   };
 
   const handleUpdateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (selectedCategories.length === 0)
+
+    if (selectedCategories.length === 0) {
       return toast.error("Select a category");
+    }
+
+    if (!variants?.id) {
+      console.log("MISSING PRODUCT ID:", variants);
+      return toast.error("Product id missing");
+    }
 
     const formData = new FormData();
-    formData.append("id", variants.id);
-    selectedCategories.forEach((catId) => formData.append("category[]", catId));
+
+    formData.set("id", String(variants.id));
+
+    selectedCategories.forEach((catId) =>
+      formData.append("category[]", catId),
+    );
 
     const payload = {
       ...variants,
-      id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
-      brand: brand,
-      bannerImage: variants.banner?.preview,
-      media: variants.gallery.map((g: any) => g.preview),
-      highlights: variants.highlights.filter(
-        (h: string) => h.trim().length > 0,
-      ),
-      attributes: Object.entries(variants.attributes)
+      id: variants.isExisting ? variants.id : undefined,
+      brand,
+      bannerImage: variants.banner?.preview || variants.bannerImage,
+      media: variants.gallery?.map((g: any) => g.preview || g) || [],
+      highlights:
+        variants.highlights?.filter((h: string) => h.trim().length > 0) || [],
+      attributes: Object.entries(variants.attributes || {})
         .map(([attr, val]: [string, any]) => ({
           attribute: attr,
           value: val.value,
         }))
-        .filter((a: any) => a.value.trim().length > 0),
+        .filter((a: any) => a.value?.trim()?.length > 0),
       filters: [
-        ...(productType || []),
-        ...(size || []),
-        ...(flowType || []),
-        ...(material || []),
-        ...(cramps || []),
-        ...(sensitive || []),
+        ...new Map(
+          [
+            ...(productType || []),
+            ...(size || []),
+            ...(flowType || []),
+            ...(material || []),
+            ...(cramps || []),
+            ...(sensitive || []),
+          ].map((filter: any) => [filter.slug, filter]),
+        ).values(),
       ],
       VarientBoxes: varientBox ? variantBoxes : [],
-      hasVarientBox:varientBox
+      hasVarientBox: varientBox,
     };
 
-    formData.append("variants", JSON.stringify(payload));
-
+    formData.set("variants", JSON.stringify(payload));
 
     try {
       await updateProduct(formData);
       toast.success("Product updated successfully!");
       router.push("/admin/product");
     } catch (err) {
+      console.log(err);
       toast.error("Failed to update product");
     }
   };
@@ -386,7 +341,6 @@ export default function EditProduct({ productDetails }: any) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
-          {/* Sidebar */}
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -401,7 +355,6 @@ export default function EditProduct({ productDetails }: any) {
             </Card>
           </div>
 
-          {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             <Card>
               <CardHeader>
@@ -430,6 +383,7 @@ export default function EditProduct({ productDetails }: any) {
                     />
                   </div>
                 </div>
+
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Price</Label>
@@ -467,6 +421,7 @@ export default function EditProduct({ productDetails }: any) {
                     <Label>In Stock</Label>
                   </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label>Description</Label>
                   <Textarea
@@ -476,6 +431,7 @@ export default function EditProduct({ productDetails }: any) {
                     }
                   />
                 </div>
+
                 <div className="space-y-2">
                   <Label>Highlights</Label>
 
@@ -527,9 +483,9 @@ export default function EditProduct({ productDetails }: any) {
                     </Button>
                   </div>
                 </div>
+
                 <div className="space-y-3">
                   <Label>Banner Image</Label>
-                  {/* <ImageUpload onUploadSuccess={handleBannerSuccess} /> */}
                   <div
                     onClick={() => bannerRef.current?.click()}
                     className="border-2 border-dashed rounded-xl h-48 flex items-center justify-center cursor-pointer relative overflow-hidden"
@@ -551,6 +507,7 @@ export default function EditProduct({ productDetails }: any) {
                     accept="image/*"
                     onChange={(e) => handleBanner(e.target.files?.[0])}
                   />
+
                   {variants.banner && (
                     <img
                       src={variants.banner.preview}
@@ -562,7 +519,6 @@ export default function EditProduct({ productDetails }: any) {
               </CardContent>
             </Card>
 
-            {/* --- SPECIFICATIONS SECTION --- */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">
@@ -582,6 +538,7 @@ export default function EditProduct({ productDetails }: any) {
                       const isSelected = variants.attributes["size"]?.value
                         .split(",")
                         .includes(s);
+
                       return (
                         <Button
                           key={s}
@@ -596,6 +553,7 @@ export default function EditProduct({ productDetails }: any) {
                     })}
                   </div>
                 </div>
+
                 <div className="space-y-3">
                   <Label>Flow Type (Multi-select)</Label>
                   <div className="flex flex-wrap gap-2">
@@ -608,6 +566,7 @@ export default function EditProduct({ productDetails }: any) {
                       const isSelected = variants.attributes["flow"]?.value
                         .split(",")
                         .includes(f);
+
                       return (
                         <Button
                           key={f}
@@ -625,14 +584,13 @@ export default function EditProduct({ productDetails }: any) {
               </CardContent>
             </Card>
 
-             <Card>
+            <Card>
               <CardHeader>Brand Name</CardHeader>
               <CardContent>
                 <RadioGroup
                   value={brand}
                   onValueChange={(value) => {
                     setBrand(value);
-                   
                   }}
                   className="w-fit"
                 >
@@ -649,7 +607,6 @@ export default function EditProduct({ productDetails }: any) {
               </CardContent>
             </Card>
 
-            {/* filter section */}
             <ProductFilters
               productType={productType}
               setProductType={setProductType}
@@ -679,13 +636,11 @@ export default function EditProduct({ productDetails }: any) {
 
               {varientBox && (
                 <CardContent className="space-y-4">
-                  {/* LIST */}
                   {variantBoxes.map((item, index) => (
                     <div
                       key={index}
                       className="border rounded-xl p-4 grid md:grid-cols-6 gap-4 items-center"
                     >
-                      
                       <div className="col-span-1">
                         <div
                           onClick={() => fileRefs.current[index]?.click()}
@@ -703,17 +658,17 @@ export default function EditProduct({ productDetails }: any) {
                           )}
                         </div>
 
-                        {/* Hidden Input */}
                         <input
                           type="file"
                           accept="image/*"
                           hidden
-                          ref={(el:any) => (fileRefs.current[index] = el)} 
+                          ref={(el: any) => {
+                            fileRefs.current[index] = el;
+                          }}
                           onChange={(e) => handleVariantImage(e, index)}
                         />
                       </div>
 
-                      {/* Name */}
                       <div className="col-span-2">
                         <Input
                           placeholder="Size Name (e.g. Small)"
@@ -724,7 +679,6 @@ export default function EditProduct({ productDetails }: any) {
                         />
                       </div>
 
-                      {/* Description */}
                       <div className="col-span-2">
                         <Input
                           placeholder="Description"
@@ -739,10 +693,9 @@ export default function EditProduct({ productDetails }: any) {
                         />
                       </div>
 
-                      {/* Delete */}
                       <div className="col-span-1 flex justify-end">
                         <Button
-                        type="button"
+                          type="button"
                           variant="destructive"
                           size="icon"
                           onClick={() => removeVariantBox(index)}
@@ -753,7 +706,6 @@ export default function EditProduct({ productDetails }: any) {
                     </div>
                   ))}
 
-                  {/* ADD BUTTON */}
                   <Button
                     type="button"
                     variant="outline"
@@ -774,44 +726,42 @@ export default function EditProduct({ productDetails }: any) {
             />
 
             <>
-  <AttributeSection
-    productAttributes={variants.attributes}
-    handleValueChange={(k, v) => {
-      const current = variants.attributes;
+              <AttributeSection
+                productAttributes={variants.attributes}
+                handleValueChange={(k, v) => {
+                  const current = variants.attributes;
 
-      setVariants({
-        ...variants,
-        attributes: {
-          ...current,
-          [k]: {
-            ...current[k],
-            value: v,
-          },
-        },
-      });
-    }}
-  />
+                  setVariants({
+                    ...variants,
+                    attributes: {
+                      ...current,
+                      [k]: {
+                        ...current[k],
+                        value: v,
+                      },
+                    },
+                  });
+                }}
+              />
 
-  <ProductSpecificationSection
-    productSpecifications={variants.attributes}
-    handleSpecificationChange={(k, v) => {
-      const current = variants.attributes;
+              <ProductSpecificationSection
+                productSpecifications={variants.attributes}
+                handleSpecificationChange={(k, v) => {
+                  const current = variants.attributes;
 
-      setVariants({
-        ...variants,
-        attributes: {
-          ...current,
-          [k]: {
-            ...current[k],
-            value: v,
-          },
-        },
-      });
-    }}
-  />
-</>
- 
-
+                  setVariants({
+                    ...variants,
+                    attributes: {
+                      ...current,
+                      [k]: {
+                        ...current[k],
+                        value: v,
+                      },
+                    },
+                  });
+                }}
+              />
+            </>
           </div>
         </div>
       </form>

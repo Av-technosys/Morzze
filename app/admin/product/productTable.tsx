@@ -28,11 +28,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteProduct } from "@/helper/product/action";
 
-const ProductTable = ({ products, total, currentPage }: any) => {
+const ProductTable = ({ products }: any) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
- 
+
   const handleDelete = (id: string) => {
+    if (!id) {
+      toast.error("Product id missing");
+      return;
+    }
+
     startTransition(async () => {
       try {
         const res = await deleteProduct(id);
@@ -43,12 +48,9 @@ const ProductTable = ({ products, total, currentPage }: any) => {
         }
 
         toast.success(res.message ?? "Product deleted");
-
-        // ✅ IMPORTANT FIX
         router.refresh();
-
       } catch {
-        toast.error("Server crashed while deleting");
+        toast.error("Server error while deleting");
       }
     });
   };
@@ -80,8 +82,6 @@ const ProductTable = ({ products, total, currentPage }: any) => {
                 <TableCell>{item.isDeleted ? "Yes" : "No"}</TableCell>
 
                 <TableCell className="flex gap-2">
-
-                  {/* EDIT */}
                   <Button
                     variant="outline"
                     onClick={() => router.push(`/admin/product/${item.id}`)}
@@ -89,7 +89,6 @@ const ProductTable = ({ products, total, currentPage }: any) => {
                     <Edit size={16} />
                   </Button>
 
-                  {/* DELETE */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="outline" disabled={isPending}>
@@ -114,11 +113,11 @@ const ProductTable = ({ products, total, currentPage }: any) => {
                           Cancel
                         </AlertDialogCancel>
 
-                      <AlertDialogAction
-  disabled={isPending}
-  onClick={() => handleDelete(item.productId)} // ✅ yaha change
-  className="bg-red-600 hover:bg-red-700"
->
+                        <AlertDialogAction
+                          disabled={isPending}
+                          onClick={() => handleDelete(item.id)}
+                          className="bg-red-600 hover:bg-red-700"
+                        >
                           {isPending ? (
                             <Loader2 className="animate-spin" size={16} />
                           ) : (
@@ -128,7 +127,6 @@ const ProductTable = ({ products, total, currentPage }: any) => {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-
                 </TableCell>
               </TableRow>
             ))

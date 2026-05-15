@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import { db } from "@/lib/db";
@@ -25,6 +24,7 @@ interface GetProductsOptions {
   category?: string;
   type?: string;
   material?: string;
+  finish?: string;
   size?: string;
   flow?: string;
   cramps?: string;
@@ -257,9 +257,15 @@ export async function createProduct(formData: FormData): Promise<void> {
       // 5. Insert Filters
       if (variants.filters?.length) {
         await tx.insert(productFilter).values(
-          variants.filters.map((fltr: any) => ({
+          Array.from(
+            new Set(
+              variants.filters
+                .map((fltr: any) => fltr.slug)
+                .filter(Boolean)
+            )
+          ).map((slug: any) => ({
             productId,
-            filter: fltr.slug,
+            filter: slug,
           })),
         );
       }
@@ -343,7 +349,7 @@ export async function updateProduct(formData: FormData): Promise<void> {
           variants.gallery.map((url: any) => ({
             productId: vId!,
             mediaType: "image",
-            mediaURL: url.preview,
+            mediaURL: url.preview || url,
           })),
         );
       }
@@ -366,9 +372,15 @@ export async function updateProduct(formData: FormData): Promise<void> {
       await tx.delete(productFilter).where(eq(productFilter.productId, vId!));
       if (variants.filters?.length) {
         await tx.insert(productFilter).values(
-          variants.filters.map((fltr: any) => ({
+          Array.from(
+            new Set(
+              variants.filters
+                .map((fltr: any) => fltr.slug)
+                .filter(Boolean)
+            )
+          ).map((slug: any) => ({
             productId: vId!,
-            filter: fltr.slug,
+            filter: slug,
           })),
         );
       }
@@ -629,6 +641,7 @@ export async function getProducts({
   category: categorySlug,
   type = "",
   material = "",
+  finish = "",
   size = "",
   flow = "",
   cramps = "",
@@ -646,9 +659,15 @@ export async function getProducts({
 
   const offset = (page - 1) * pageSize;
 
-  const filterValues = [type, material, size, flow, cramps, allergies].filter(
-    Boolean,
-  );
+  const filterValues = [
+    type,
+    material,
+    finish,
+    size,
+    flow,
+    cramps,
+    allergies,
+  ].filter(Boolean);
 
   if (filterValues.length > 0) {
     filters.push(
@@ -678,7 +697,7 @@ export async function getProducts({
     filters.push(lte(product.basePrice, Number(max)));
   }
 
-  if (stock) {
+  if (stock === "true") {
     filters.push(eq(product.isInStock, true));
   }
 
@@ -738,10 +757,12 @@ export async function getProducts({
       .where(whereClause),
   ]);
 
-  const totalPages = Math.ceil(total[0].count / pageSize);
+  const totalItems = Number(total[0]?.count || 0);
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   return {
     items,
+    totalItems,
     totalPages,
     page,
   };

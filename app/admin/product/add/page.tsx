@@ -831,7 +831,13 @@ export default function AddProductForm() {
                 });
               }}
               documents={variants.documents}
-handlePdfUpload={handlePdfUpload}
+              handlePdfUpload={handlePdfUpload}
+              setPdfDocuments={(docs: any) => {
+                setVariants((prev: any) => ({
+                  ...prev,
+                  documents: docs,
+                }));
+              }}
             />
 
             <ProductSpecificationSection

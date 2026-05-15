@@ -70,6 +70,31 @@ interface VariantInput {
   subscriptionPlans?: number[];
 }
 
+function isMissingProductFaqTableError(error: any) {
+  return error?.code === "42P01" || error?.cause?.code === "42P01";
+}
+
+async function getProductFaqRows(productId: string) {
+  try {
+    return await db
+      .select()
+      .from(productFaq)
+      .where(eq(productFaq.productId, productId));
+  } catch (error) {
+    if (!isMissingProductFaqTableError(error)) throw error;
+    console.warn("product_faq table is missing; returning empty product FAQs");
+    return [];
+  }
+}
+
+async function hasProductFaqTable() {
+  const result = (await db.execute(
+    sql`select to_regclass('public.product_faq') as table_name`,
+  )) as unknown as { table_name: string | null }[];
+
+  return Boolean(result[0]?.table_name);
+}
+
 // export async function createProduct(formData: FormData) {
 //   try {
 //     // const categoryIds = [
@@ -198,6 +223,7 @@ export async function createProduct(formData: FormData): Promise<void> {
     if (!variantsData) throw new Error("No variants provided");
 
     const variants: any = JSON.parse(variantsData);
+    const canWriteProductFaq = await hasProductFaqTable();
 
     await db.transaction(async (tx) => {
       const slug = await generateUniqueSlug(tx, variants.name, product.slug);
@@ -271,7 +297,7 @@ export async function createProduct(formData: FormData): Promise<void> {
 
       // 8. Insert FAQ DATA
       // 7. Insert FAQs
-      if (variants.faqs?.length) {
+      if (canWriteProductFaq && variants.faqs?.length) {
         await tx.insert(productFaq).values(
           variants.faqs.map((faq: any) => ({
             productId,
@@ -315,6 +341,7 @@ export async function updateProduct(formData: FormData): Promise<void> {
 
     const variants: any = JSON.parse(variantsData);
     const faqs = variants.faqs || [];
+    const canWriteProductFaq = await hasProductFaqTable();
 
     await db.transaction(async (tx) => {
       // 1. Update categories for the parent product
@@ -356,12 +383,21 @@ export async function updateProduct(formData: FormData): Promise<void> {
 
       // Update Media
       await tx.delete(productMedia).where(eq(productMedia.productId, vId!));
-      if (variants.gallery?.length) {
-        await tx.insert(productMedia).values(
-          variants.gallery.map((url: any) => ({
-            productId: vId!,
+
+      const mediaItems = Array.isArray(variants.media)
+        ? variants.media
+        : (variants.gallery || []).map((url: any) => ({
             mediaType: "image",
             mediaURL: url.preview || url,
+          }));
+      const validMediaItems = mediaItems.filter((item: any) => item?.mediaURL);
+
+      if (validMediaItems.length) {
+        await tx.insert(productMedia).values(
+          validMediaItems.map((item: any) => ({
+            productId: vId!,
+            mediaType: item.mediaType || "image",
+            mediaURL: item.mediaURL,
           })),
         );
       }
@@ -412,16 +448,18 @@ export async function updateProduct(formData: FormData): Promise<void> {
       //update faq
 
       // FAQ UPDATE
-      await tx.delete(productFaq).where(eq(productFaq.productId, vId!));
+      if (canWriteProductFaq) {
+        await tx.delete(productFaq).where(eq(productFaq.productId, vId!));
 
-      if (faqs.length) {
-        await tx.insert(productFaq).values(
-          faqs.map((faq: any) => ({
-            productId: vId!,
-            question: faq.question,
-            answer: faq.answer,
-          })),
-        );
+        if (faqs.length) {
+          await tx.insert(productFaq).values(
+            faqs.map((faq: any) => ({
+              productId: vId!,
+              question: faq.question,
+              answer: faq.answer,
+            })),
+          );
+        }
       }
 
       // Update Subscriptions
@@ -500,7 +538,7 @@ export async function getFullProductDetails(identifier: string) {
         .where(eq(productFilter.productId, productId)),
 
       // FAQ FETCH
-      db.select().from(productFaq).where(eq(productFaq.productId, productId)),
+      getProductFaqRows(productId),
     ]);
 
     // 4. Final response
@@ -539,6 +577,7 @@ export async function getFullProduct(identifier: string) {
       productAttributeRes,
       productMediaRes,
       filters,
+      productFaqRes,
     ] = await Promise.all([
       db
         .select()
@@ -562,6 +601,8 @@ export async function getFullProduct(identifier: string) {
         .select()
         .from(productFilter)
         .where(eq(productFilter.productId, identifier)),
+
+      getProductFaqRows(productDeails.id),
     ]);
 
     return {
@@ -571,6 +612,7 @@ export async function getFullProduct(identifier: string) {
       productAttributeRes,
       productMediaRes,
       filters,
+      productFaqRes,
     };
   } catch (error) {
     console.error("getFullProduct failed:", error);

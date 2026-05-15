@@ -6,7 +6,7 @@ import React from "react";
 
 const page = async () => {
   const rows = await getActiveCatalogues();
-  const items = rows.map((r) => ({
+  const items = rows.map((r:any) => ({
     id: r.id,
     title: r.title,
     shortDescription: r.shortDescription,

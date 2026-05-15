@@ -140,6 +140,15 @@ export default function EditProduct({ productDetails }: any) {
     price: product.basePrice || 0,
     strikethroughPrice: product.strikethroughPrice || 0,
     description: product.description || "",
+     // for pdf edit
+    documents: (productMediaRes || [])
+  .filter((m: any) => m.mediaType === "pdf")
+  .map((m: any) => ({
+    key: m.mediaURL,
+    url: m.mediaURL,
+    type: "pdf",
+    name: m.mediaURL.split("/").pop(),
+  })),
 pdfDocuments:
   productAttributeRes
     ?.find((a: any) => a.attribute === "Documentation")
@@ -154,10 +163,12 @@ pdfDocuments:
     banner: product.bannerImage
       ? { key: product.bannerImage, preview: product.bannerImage }
       : null,
-    gallery: (productMediaRes || []).map((m: any) => ({
-      key: m.mediaURL,
-      preview: m.mediaURL,
-    })),
+    gallery: (productMediaRes || [])
+      .filter((m: any) => m.mediaType === "image")
+      .map((m: any) => ({
+        key: m.mediaURL,
+        preview: m.mediaURL,
+      })),
     attributes: Object.fromEntries(
       (productAttributeRes || []).map((a: any) => [
         a.attribute,
@@ -313,7 +324,17 @@ pdfDocuments:
       id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
       brand: brand,
       bannerImage: variants.banner?.preview,
-      media: variants.gallery.map((g: any) => g.preview),
+     media: [
+  ...variants.gallery.map((g: any) => ({
+    mediaType: "image",
+    mediaURL: g.preview,
+  })),
+
+  ...variants.documents.map((d: any) => ({
+    mediaType: "pdf",
+    mediaURL: d.url,
+  })),
+],
       highlights: variants.highlights.filter(
         (h: string) => h.trim().length > 0,
       ),
@@ -355,6 +376,44 @@ pdfDocuments:
       toast.error("Failed to update product");
     }
   };
+
+
+  const handlePdfUpload = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
+
+  if (!file) return;
+
+  if (file.type !== "application/pdf") {
+    toast.error("Only PDF files allowed");
+    return;
+  }
+
+  try {
+    const { fileKey, fileUrl } = await upload(
+      file,
+      "product-documents"
+    );
+
+    setVariants((prev: any) => ({
+      ...prev,
+      documents: [
+        ...prev.documents,
+        {
+          key: fileKey,
+          url: fileUrl,
+          type: "pdf",
+          name: file.name,
+        },
+      ],
+    }));
+
+    toast.success("PDF uploaded");
+  } catch (err: any) {
+    toast.error(err.message);
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
@@ -764,6 +823,14 @@ pdfDocuments:
             <>
               <AttributeSection
                 productAttributes={variants.attributes}
+                 documents={variants.documents}
+  handlePdfUpload={handlePdfUpload}
+  setPdfDocuments={(docs: any) => {
+  setVariants((prev: any) => ({
+    ...prev,
+    documents: docs,
+  }));
+}}
                 handleValueChange={(k, v) => {
                   const current = variants.attributes;
 

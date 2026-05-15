@@ -43,6 +43,13 @@
       "when": 1778842774316,
       "tag": "0005_amused_toro",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1778849299289,
+      "tag": "0006_common_jackal",
+      "breakpoints": true
     }
   ]
 }

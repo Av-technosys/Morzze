@@ -14,6 +14,7 @@ import {
   Code,
   Feather,
   Video,
+  BriefcaseBusiness,
   ShoppingCart,
   IndianRupee,
   BookOpen
@@ -31,7 +32,7 @@ const navItems = [
   { label: "User", href: "/admin/users", icon: User },
   { label: "Review", href: "/admin/reviews", icon: MessageSquare },
   { label: "Payment", href: "/admin/payment", icon: IndianRupee },
-  { label: "Applications", href: "/admin/applications", icon: IndianRupee },
+  { label: "Applications", href: "/admin/applications", icon: BriefcaseBusiness },
 
   {
     label: "Featured Products",

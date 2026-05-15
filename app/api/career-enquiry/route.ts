@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { db } from "@/db";
 import { careerEnquiries } from "@/db/schema";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+const s3 = new S3Client({
+  region: process.env.AWS_REGION!,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+});
 
 export async function POST(req: Request) {
   try {
@@ -36,6 +45,18 @@ export async function POST(req: Request) {
     }
 
     if (
+      !process.env.AWS_REGION ||
+      !process.env.AWS_ACCESS_KEY_ID ||
+      !process.env.AWS_SECRET_ACCESS_KEY ||
+      !process.env.AWS_BUCKET
+    ) {
+      return NextResponse.json(
+        { success: false, message: "AWS env variables are missing" },
+        { status: 500 }
+      );
+    }
+
+    if (
       !process.env.CAREER_EMAIL_USER ||
       !process.env.CAREER_EMAIL_PASS ||
       !process.env.CAREER_RECEIVER_EMAIL
@@ -49,13 +70,26 @@ export async function POST(req: Request) {
     const bytes = await resume.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    const fileName = `career-resumes/${Date.now()}-${resume.name}`;
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET,
+        Key: fileName,
+        Body: buffer,
+        ContentType: "application/pdf",
+      })
+    );
+
+    const resumeUrl = `https://${process.env.AWS_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+
     await db.insert(careerEnquiries).values({
       name,
       email,
       subject,
       description,
       mobileNumber,
-      resumeUrl: resume.name,
+      resumeUrl,
     });
 
     const transporter = nodemailer.createTransport({
@@ -77,6 +111,12 @@ export async function POST(req: Request) {
         <p><b>Mobile Number:</b> ${mobileNumber}</p>
         <p><b>Subject:</b> ${subject}</p>
         <p><b>Description:</b> ${description}</p>
+        <p>
+          <b>Resume:</b>
+          <a href="${resumeUrl}" target="_blank">
+            Open Resume
+          </a>
+        </p>
       `,
       attachments: [
         {
@@ -94,8 +134,13 @@ export async function POST(req: Request) {
       html: `
         <h2>Hello ${name},</h2>
         <p>Thank you for submitting your application.</p>
-        <p>We have received your details successfully. Our team will contact you if your profile matches our requirements.</p>
+        <p>
+          We have received your details successfully.
+          Our team will contact you if your profile matches our requirements.
+        </p>
+
         <br />
+
         <p>Regards,</p>
         <p>HR Team</p>
       `,
@@ -109,7 +154,13 @@ export async function POST(req: Request) {
     console.error("Career enquiry error:", error);
 
     return NextResponse.json(
-      { success: false, message: "Something went wrong" },
+      {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Something went wrong",
+      },
       { status: 500 }
     );
   }

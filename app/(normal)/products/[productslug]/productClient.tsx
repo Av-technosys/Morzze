@@ -40,7 +40,20 @@ const ProductClient = ({ product, slug }: any) => {
   );
   const [quantity, setQuantity] = useState(1);
 
-  const images = [product.image, ...(product.images || [])];
+
+  // FOR MEDIA AND PDF DOCUMENTATION
+const mediaImages = (product.productMediaRes || [])
+  .filter((item: any) => item.mediaType === "image")
+  .map((item: any) => item.mediaURL);
+
+const pdfDocuments = (product.productMediaRes || [])
+  .filter((item: any) => item.mediaType === "pdf");
+
+const images = [
+  product.bannerImage,
+  product.image,
+  ...mediaImages,
+].filter(Boolean);
 
   const wishlisted = isInWishlist(slug)
 
@@ -72,7 +85,7 @@ const ProductClient = ({ product, slug }: any) => {
               <AnimatePresence mode="wait">
                 <motion.img
                   key={selectedImage}
-                  src={product.bannerImage}
+                  src={images[selectedImage]}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -137,7 +150,7 @@ const ProductClient = ({ product, slug }: any) => {
 
             <div>
               <p className="text-[11px] tracking-[0.3em] text-white/80 uppercase font-bold mb-2">
-                {/* {product.brand} */}
+                mORzee
               </p>
 
               <h1 className="text-2xl md:text-3xl font-medium">
@@ -291,12 +304,12 @@ const ProductClient = ({ product, slug }: any) => {
       </div>
 
       {/* EXTRA SECTIONS */}
-      <DescriptionTabs productAttributeRes={product?.productAttributeRes} />
+      <DescriptionTabs productAttributeRes={product?.productAttributeRes} pdfDocuments={pdfDocuments} />
       <SpecificationsTabs productAttributeRes={product?.productAttributeRes} />
-      <ProductComparison />
+      {/* <ProductComparison /> */}
       <CareAndMaintenance />
       <AteliersGrid />
-      <CommonEnquiries />
+      <CommonEnquiries   faqs={product?.productFaqRes || []} />
     </>
   );
 };

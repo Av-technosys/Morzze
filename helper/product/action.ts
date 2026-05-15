@@ -14,6 +14,7 @@ import {
   productMedia,
   productVarientBox,
   productFilter,
+  productFaq,
 } from "@/db/schema";
 import { bestSellingSlug, isUUID } from "@/const/globalconst";
 
@@ -235,10 +236,10 @@ export async function createProduct(formData: FormData): Promise<void> {
       // 3. Insert Media
       if (variants.media?.length) {
         await tx.insert(productMedia).values(
-          variants.media.map((url: string) => ({
+          variants.media.map((media: any) => ({
             productId,
-            mediaType: "image",
-            mediaURL: url,
+            mediaType: media.mediaType,
+            mediaURL: media.mediaURL,
           })),
         );
       }
@@ -259,13 +260,23 @@ export async function createProduct(formData: FormData): Promise<void> {
         await tx.insert(productFilter).values(
           Array.from(
             new Set(
-              variants.filters
-                .map((fltr: any) => fltr.slug)
-                .filter(Boolean)
-            )
+              variants.filters.map((fltr: any) => fltr.slug).filter(Boolean),
+            ),
           ).map((slug: any) => ({
             productId,
             filter: slug,
+          })),
+        );
+      }
+
+      // 8. Insert FAQ DATA
+      // 7. Insert FAQs
+      if (variants.faqs?.length) {
+        await tx.insert(productFaq).values(
+          variants.faqs.map((faq: any) => ({
+            productId,
+            question: faq.question,
+            answer: faq.answer,
           })),
         );
       }
@@ -303,6 +314,7 @@ export async function updateProduct(formData: FormData): Promise<void> {
     if (!variantsData) throw new Error("No variants provided");
 
     const variants: any = JSON.parse(variantsData);
+    const faqs = variants.faqs || [];
 
     await db.transaction(async (tx) => {
       // 1. Update categories for the parent product
@@ -374,10 +386,8 @@ export async function updateProduct(formData: FormData): Promise<void> {
         await tx.insert(productFilter).values(
           Array.from(
             new Set(
-              variants.filters
-                .map((fltr: any) => fltr.slug)
-                .filter(Boolean)
-            )
+              variants.filters.map((fltr: any) => fltr.slug).filter(Boolean),
+            ),
           ).map((slug: any) => ({
             productId: vId!,
             filter: slug,
@@ -395,6 +405,21 @@ export async function updateProduct(formData: FormData): Promise<void> {
             name: varient.name,
             description: varient.description,
             image: varient.image,
+          })),
+        );
+      }
+
+      //update faq
+
+      // FAQ UPDATE
+      await tx.delete(productFaq).where(eq(productFaq.productId, vId!));
+
+      if (faqs.length) {
+        await tx.insert(productFaq).values(
+          faqs.map((faq: any) => ({
+            productId: vId!,
+            question: faq.question,
+            answer: faq.answer,
           })),
         );
       }
@@ -420,51 +445,65 @@ export async function updateProduct(formData: FormData): Promise<void> {
   }
 }
 
+// add new query for get faq by id
+
 export async function getFullProductDetails(identifier: string) {
+ console.log("reciving slug", identifier)
   try {
     if (!identifier) throw new Error("Missing product identifier");
 
-    // const isThroughId = isUUID(identifier);
-    // if (!isThroughId) throw new Error("Invalid product identifier");
-
+    // 1. Slug se product lao
     const [productDeails] = await db
       .select()
       .from(product)
       .where(eq(product.slug, identifier))
       .limit(1);
+
     if (!productDeails) throw new Error("Product not found");
 
+    // 2. Product ID nikalo
+    const productId = productDeails.id;
+
+    // 3. Parallel me sab data fetch karo
     const [
       prodcutVarientBoxRes,
       categoryRes,
       productAttributeRes,
       productMediaRes,
       filters,
+      productFaqRes,
     ] = await Promise.all([
       db
         .select()
         .from(productVarientBox)
-        .where(eq(productVarientBox.productId, productDeails.id)),
+        .where(eq(productVarientBox.productId, productId)),
+
       db
         .select()
         .from(category)
         .leftJoin(productCategory, eq(category.id, productCategory.categoryId))
-        .where(eq(productCategory.productId, productDeails.id)),
+        .where(eq(productCategory.productId, productId)),
+
       db
         .select()
         .from(productAttribute)
-        .where(eq(productAttribute.productId, productDeails.id)),
+        .where(eq(productAttribute.productId, productId)),
+
       db
         .select()
         .from(productMedia)
-        .where(eq(productMedia.productId, productDeails.id)),
+        .where(eq(productMedia.productId, productId)),
 
       db
         .select()
         .from(productFilter)
-        .where(eq(productFilter.productId, productDeails.id)),
+        .where(eq(productFilter.productId, productId)),
+
+      // FAQ FETCH
+      db.select().from(productFaq).where(eq(productFaq.productId, productId)),
     ]);
 
+    // 4. Final response
     return {
       ...productDeails,
       prodcutVarientBoxRes,
@@ -472,6 +511,7 @@ export async function getFullProductDetails(identifier: string) {
       productAttributeRes,
       productMediaRes,
       filters,
+      productFaqRes, // <-- ye add karna important h
     };
   } catch (error) {
     console.error("getFullProduct failed:", error);

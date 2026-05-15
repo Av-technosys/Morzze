@@ -5,16 +5,43 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import RichTextEditor from "@/components/ui/rich-text-editor";
+import { Input } from "@/components/ui/input";
 
 type Props = {
   productAttributes: Record<string, { value: string }>;
   handleValueChange: (attribute: string, value: string) => void;
+
+  documents?: {
+    key?: string;
+    url: string;
+    type?: string;
+    name: string;
+  }[];
+
+  pdfDocuments?: {
+    name: string;
+    url: string;
+  }[];
+
+  handlePdfUpload?: (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => void;
+
+  setPdfDocuments?: any;
 };
 
 const TABS = ["DESCRIPTION", "DIMENSIONS", "FEATURES", "Accessories Included", "Documentation"];
 
-export default function AttributeSection({ productAttributes, handleValueChange }: Props) {
+export default function AttributeSection({
+  productAttributes,
+  handleValueChange,
+  documents = [],
+  pdfDocuments = [],
+  handlePdfUpload,
+}: Props) {
   const [activeTab, setActiveTab] = useState(TABS[0]);
+  const allDocuments =
+  pdfDocuments.length > 0 ? pdfDocuments : documents;
 
   return (
     <Card className="m-1">
@@ -50,10 +77,33 @@ export default function AttributeSection({ productAttributes, handleValueChange 
             {activeTab === "Usage" ? "How to Use" : activeTab}
           </Label>
           
-          <RichTextEditor
-            value={productAttributes[activeTab]?.value ?? ""}
-            onChange={(val) => handleValueChange(activeTab, val)}
-          />
+          {activeTab === "Documentation" ? (
+  <div className="space-y-4">
+    <Input
+      type="file"
+      accept="application/pdf"
+      onChange={handlePdfUpload}
+    />
+
+    <div className="space-y-2">
+      {documents.map((doc, index) => (
+        <a
+          key={index}
+          href={doc.url}
+          target="_blank"
+          className="block text-blue-600 underline"
+        >
+          {doc.name}
+        </a>
+      ))}
+    </div>
+  </div>
+) : (
+  <RichTextEditor
+    value={productAttributes[activeTab]?.value ?? ""}
+    onChange={(val) => handleValueChange(activeTab, val)}
+  />
+)}
         </div>
       </CardContent>
     </Card>

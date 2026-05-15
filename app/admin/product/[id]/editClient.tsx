@@ -33,6 +33,7 @@ import { PRODUCT_FILTER } from "@/const/filters";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ProductSpecificationSection from "../ProductSpecificationSection";
+import ProductFaqSection from "../ProductFaqSection";
 
 type ImageItem = {
   key: string;
@@ -49,6 +50,7 @@ type ProductDetailsType = {
   categoryRes: any;
   productAttributeRes: productAttributeType[];
   productMediaRes: productMediaType[];
+   productFaqRes: any[];
 } & productType;
 
 export default function EditProduct({ productDetails }: any) {
@@ -67,6 +69,22 @@ export default function EditProduct({ productDetails }: any) {
 
   const [brand, setBrand] = useState<any>(productDetails.brand);
   const [varientBox, setVarientBox] = useState(productDetails.hasVarientBox);
+
+  const [faqs, setFaqs] = useState(
+  productDetails?.productFaqRes?.length
+    ? productDetails.productFaqRes.map((faq: any) => ({
+        id: faq.id,
+        question: faq.question,
+        answer: faq.answer,
+      }))
+    : [
+        {
+          question: "",
+          answer: "",
+        },
+      ]
+);
+
   const [variantBoxes, setVariantBoxes] = useState<any[]>([]);
 
   useEffect(() => {
@@ -106,6 +124,7 @@ export default function EditProduct({ productDetails }: any) {
     categoryRes,
     productAttributeRes,
     productMediaRes,
+    productFaqRes,
     ...product
   }: ProductDetailsType = productDetails;
 
@@ -121,6 +140,17 @@ export default function EditProduct({ productDetails }: any) {
     price: product.basePrice || 0,
     strikethroughPrice: product.strikethroughPrice || 0,
     description: product.description || "",
+pdfDocuments:
+  productAttributeRes
+    ?.find((a: any) => a.attribute === "Documentation")
+    ?.value
+    ? JSON.parse(
+        productAttributeRes.find(
+          (a: any) => a.attribute === "Documentation"
+        )?.value || "[]"
+      )
+    : [],
+
     banner: product.bannerImage
       ? { key: product.bannerImage, preview: product.bannerImage }
       : null,
@@ -280,13 +310,19 @@ export default function EditProduct({ productDetails }: any) {
 
     const payload = {
       ...variants,
-      id: variants.isExisting ? variants.id : undefined,
-      brand,
-      bannerImage: variants.banner?.preview || variants.bannerImage,
-      media: variants.gallery?.map((g: any) => g.preview || g) || [],
-      highlights:
-        variants.highlights?.filter((h: string) => h.trim().length > 0) || [],
-      attributes: Object.entries(variants.attributes || {})
+      id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
+      brand: brand,
+      bannerImage: variants.banner?.preview,
+      media: variants.gallery.map((g: any) => g.preview),
+      highlights: variants.highlights.filter(
+        (h: string) => h.trim().length > 0,
+      ),
+      faqs: faqs.filter(
+  (faq: any) =>
+    faq.question.trim().length > 0 &&
+    faq.answer.trim().length > 0
+),
+      attributes: Object.entries(variants.attributes)
         .map(([attr, val]: [string, any]) => ({
           attribute: attr,
           value: val.value,
@@ -749,19 +785,28 @@ export default function EditProduct({ productDetails }: any) {
                 handleSpecificationChange={(k, v) => {
                   const current = variants.attributes;
 
-                  setVariants({
-                    ...variants,
-                    attributes: {
-                      ...current,
-                      [k]: {
-                        ...current[k],
-                        value: v,
-                      },
-                    },
-                  });
-                }}
-              />
-            </>
+      setVariants({
+        ...variants,
+        attributes: {
+          ...current,
+          [k]: {
+            ...current[k],
+            value: v,
+          },
+        },
+      });
+    }}
+  />
+
+  <ProductFaqSection
+  faqs={faqs}
+  setFaqs={setFaqs}
+/>
+
+
+</>
+ 
+
           </div>
         </div>
       </form>

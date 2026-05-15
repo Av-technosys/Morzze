@@ -30,7 +30,7 @@ import ProductFilters from "../productFilter";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ProductSpecificationSection from "../ProductSpecificationSection";
-
+import ProductFaqSection from "../ProductFaqSection";
 
 type ImageItem = {
   key: string;
@@ -67,12 +67,12 @@ export default function AddProductForm() {
   const { upload, uploading } = useFileUpload();
   const bannerRef = useRef<HTMLInputElement>(null);
 
-   const [productType, setProductType] = useState<any[]>([]);
-   const [size, setSize] = useState<any[]>([]);
-   const [flowType, setFlowType] = useState<any[]>([]);
-   const [material, setMaterial] = useState<any[]>([]);
-   const [cramps, setCramps] = useState<any[]>([]);
-   const [sensitive, setSensitive]=useState<any[]>([]);
+  const [productType, setProductType] = useState<any[]>([]);
+  const [size, setSize] = useState<any[]>([]);
+  const [flowType, setFlowType] = useState<any[]>([]);
+  const [material, setMaterial] = useState<any[]>([]);
+  const [cramps, setCramps] = useState<any[]>([]);
+  const [sensitive, setSensitive] = useState<any[]>([]);
 
   const [varientBox, setVarientBox] = useState(false);
 
@@ -84,6 +84,13 @@ export default function AddProductForm() {
 
   const [availablePlans, setAvailablePlans] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const [faqs, setFaqs] = useState<any[]>([
+  {
+    question: "",
+    answer: "",
+  },
+]);
 
   // const [variants, setVariants] = useState<Variant[]>([
   //   {
@@ -117,6 +124,7 @@ export default function AddProductForm() {
     description: "",
     banner: null,
     gallery: [],
+    documents: [],
     attributes: {},
     isInStock: true,
     highlights: [],
@@ -169,10 +177,7 @@ export default function AddProductForm() {
       selectedArray.push(val);
     }
 
-
-// add for new component
-
-
+    // add for new component
 
     const newValue = selectedArray.join(",");
     setVariants((prev: any) => ({
@@ -186,8 +191,6 @@ export default function AddProductForm() {
       },
     }));
   };
-
-
 
   const handleGallery = async (files: FileList | null) => {
     if (!files) return;
@@ -284,7 +287,17 @@ export default function AddProductForm() {
       // id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
       brand: brand,
       bannerImage: variants.banner?.preview,
-      media: variants.gallery.map((g: any) => g.preview),
+      media: [
+  ...variants.gallery.map((g: any) => ({
+    mediaType: "image",
+    mediaURL: g.preview,
+  })),
+
+  ...variants.documents.map((d: any) => ({
+    mediaType: "pdf",
+    mediaURL: d.url,
+  })),
+],
       highlights: variants.highlights.filter(
         (h: string) => h.trim().length > 0,
       ),
@@ -294,7 +307,12 @@ export default function AddProductForm() {
           value: val.value,
         }))
         .filter((a: any) => a.value.trim().length > 0),
-       filters: [
+        faqs: faqs.filter(
+  (f) =>
+    f.question.trim().length > 0 &&
+    f.answer.trim().length > 0
+),
+      filters: [
         ...(productType || []),
         ...(size || []),
         ...(flowType || []),
@@ -302,19 +320,17 @@ export default function AddProductForm() {
         ...(cramps || []),
         ...(sensitive || []),
       ],
+      
       VarientBoxes: varientBox ? variantBoxes : [],
       hasVarientBox: varientBox,
     };
 
-  
     formData.append("variants", JSON.stringify(payload));
 
     try {
-console.log(
-  "PAYLOAD =>",
-  JSON.stringify(payload, null, 2)
-);      
- await createProduct(formData);
+      console.log("PAYLOAD =>", JSON.stringify(payload, null, 2));
+      
+      await createProduct(formData);
       toast.success("Product created!");
       router.push("/admin/product");
     } catch (err) {
@@ -322,13 +338,46 @@ console.log(
     }
   };
 
+  const handlePdfUpload = async (
+  e: React.ChangeEvent<HTMLInputElement>
+) => {
+  const file = e.target.files?.[0];
 
+  if (!file) return;
 
+  if (file.type !== "application/pdf") {
+    toast.error("Only PDF files allowed");
+    return;
+  }
+
+  try {
+    const { fileKey, fileUrl } = await upload(file, "product-documents");
+     console.log("pdf getting ", fileKey, fileUrl);
+
+    setVariants((prev: any) => ({
+      ...prev,
+      documents: [
+        ...prev.documents,
+        {
+          key: fileKey,
+          url: fileUrl,
+          type: "pdf",
+          name: file.name,
+        },
+      ],
+    }));
+
+    toast.success("PDF uploaded");
+  } catch (err: any) {
+    toast.error(err.message);
+  }
+};
 
   return (
-    <div className="max-w-7xl mx-auto p-4 space-y-6">
-      <form onSubmit={handleCreateProduct}>
-        <div className="flex justify-between items-center sticky top-0 z-10 py-4 bg-white border-b">
+  
+    <div className="max-w-7xl  mx-auto p-4 pb-10">
+      <form onSubmit={handleCreateProduct} className="space-y-6">
+       <div className="flex justify-between items-center  z-10 py-4 border-b mb-6">
           <h1 className="text-2xl font-bold">Add New Product</h1>
           <div className="flex gap-4">
             <Button
@@ -342,7 +391,7 @@ console.log(
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
+       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="space-y-6">
             <Card>
               <CardHeader>
@@ -529,27 +578,24 @@ console.log(
                 <div className="space-y-3">
                   <Label>Select Finish (Multi-select)</Label>
                   <div className="flex flex-wrap gap-2">
-                    {[
-                      "chrome",
-                      "Brushed Gold",
-                      "Matte Black",
-                      "Rose Gold",
-                    ].map((s) => {
-                      const isSelected = variants.attributes["size"]?.value
-                        .split(",")
-                        .includes(s);
-                      return (
-                        <Button
-                          key={s}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => toggleSpecAttribute("size", s)}
-                        >
-                          {s} {isSelected && <X size={12} className="ml-1" />}
-                        </Button>
-                      );
-                    })}
+                    {["chrome", "Brushed Gold", "Matte Black", "Rose Gold"].map(
+                      (s) => {
+                        const isSelected = variants.attributes["size"]?.value
+                          .split(",")
+                          .includes(s);
+                        return (
+                          <Button
+                            key={s}
+                            type="button"
+                            variant={isSelected ? "default" : "outline"}
+                            className="rounded-full"
+                            onClick={() => toggleSpecAttribute("size", s)}
+                          >
+                            {s} {isSelected && <X size={12} className="ml-1" />}
+                          </Button>
+                        );
+                      },
+                    )}
                   </div>
                 </div>
                 {/* <div className="space-y-3">
@@ -588,7 +634,6 @@ console.log(
                   value={brand}
                   onValueChange={(value) => {
                     setBrand(value);
-                   
                   }}
                   className="w-fit"
                 >
@@ -607,20 +652,19 @@ console.log(
 
             {/* filter section */}
             <ProductFilters
-                         productType={productType}
-                         setProductType={setProductType}
-                         size={size}
-                         setSize={setSize}
-                         flowType={flowType}
-                         setFlowType={setFlowType}
-                         material={material}
-                         setMaterial={setMaterial}
-                         cramps={cramps}
-                         setCramps={setCramps}
-                         sensitive={sensitive}
-                         setSensitive={setSensitive}
-                       />
-           
+              productType={productType}
+              setProductType={setProductType}
+              size={size}
+              setSize={setSize}
+              flowType={flowType}
+              setFlowType={setFlowType}
+              material={material}
+              setMaterial={setMaterial}
+              cramps={cramps}
+              setCramps={setCramps}
+              sensitive={sensitive}
+              setSensitive={setSensitive}
+            />
 
             {/* Varient size boxes */}
 
@@ -786,26 +830,33 @@ console.log(
                   attributes: { ...current, [k]: { ...current[k], value: v } },
                 });
               }}
+              documents={variants.documents}
+handlePdfUpload={handlePdfUpload}
             />
-         
- <ProductSpecificationSection
-  productSpecifications={variants.attributes}
-  handleSpecificationChange={(k, v) => {
-    const current = variants.attributes;
 
-    setVariants({
-      ...variants,
-      attributes: {
-        ...current,
-        [k]: {
-          ...current[k],
-          value: v,
-        },
-      },
-    });
-  }}
-/>
-            
+            <ProductSpecificationSection
+              productSpecifications={variants.attributes}
+              handleSpecificationChange={(k, v) => {
+                const current = variants.attributes;
+
+                setVariants({
+                  ...variants,
+                  attributes: {
+                    ...current,
+                    [k]: {
+                      ...current[k],
+                      value: v,
+                    },
+                  },
+                });
+              }}
+            />
+
+
+            <ProductFaqSection   faqs={faqs}
+  setFaqs={setFaqs}/>
+
+
 
           </div>
         </div>

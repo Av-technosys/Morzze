@@ -62,7 +62,7 @@ const NotificationPage = () => {
                   <h3 className="text-sm font-medium text-zinc-200">
                     {item.title}
                   </h3>
-                  <p className="text-xs text-[#928E87] leading-relaxed max-w-md">
+                  <p className="text-xs text-white/80 leading-relaxed max-w-md">
                     {item.description}
                   </p>
                 </div>

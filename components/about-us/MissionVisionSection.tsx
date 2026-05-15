@@ -55,7 +55,7 @@ const MissionVisionSection = () => {
                 <h3 className="text-2xl md:text-2xl font-semibold text-[#FEFFF1] group-hover:text-[#CBA14D] transition-colors">
                   Our Mission
                 </h3>
-                <p className="font-inter text-[#928E87] text-sm md:text-md leading-relaxed">
+                <p className="font-inter text-white/80 text-sm md:text-md leading-relaxed">
                   To elevate everyday living through meticulously crafted
                   fittings tha combine innovative design, superior
                   functionality, and lasting durability. We strive to make
@@ -83,7 +83,7 @@ const MissionVisionSection = () => {
                 <h3 className="text-2xl md:text-2xl font-semibold text-[#FEFFF1] group-hover:text-[#CBA14D] transition-colors">
                   Our Vision
                 </h3>
-                <p className="font-inter text-[#928E87] text-sm md:text-md leading-relaxed">
+                <p className="font-inter text-white/80 text-sm md:text-md leading-relaxed">
                   To be the most trusted name in premium kitchen and bathroom
                   solutions across Asia, recognized for our commitment to
                   sustainability, innovation, and customer delight. We envision

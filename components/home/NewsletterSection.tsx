@@ -32,7 +32,7 @@ const   NewsletterSection = () => {
               Join the World of Style
             </h2>
             
-            <p className="font-inter text-[#928E87] text-sm md:text-md max-w-xl mx-auto leading-relaxed">
+            <p className="font-inter text-white/80 text-sm md:text-md max-w-xl mx-auto leading-relaxed">
               Be the first to discover new collections, exclusive offers, and design inspiration.
             </p>
           </div>

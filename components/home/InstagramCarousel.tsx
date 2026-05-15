@@ -40,7 +40,7 @@ export default function InstagramCarousel() {
             FOLLOW US ON <span className="text-[#CBA14D]">INSTAGRAM</span>
           </h2>
 
-          <p className="font-inter text-[#928E87] text-sm md:text-md max-w-2xl mx-auto leading-relaxed">
+          <p className="font-inter text-white/80 text-sm md:text-md max-w-2xl mx-auto leading-relaxed">
             Get inspired by our latest designs and see how our customers transform their spaces
           </p>
         </div>

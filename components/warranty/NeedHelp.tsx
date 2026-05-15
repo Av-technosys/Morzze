@@ -14,7 +14,7 @@ const NeedHelp = () => {
         </h2>
         
         {/* Availability Text */}
-        <p className="text-[#928E87] text-[13px] md:text-sm font-medium mb-10 opacity-80 max-w-lg mx-auto leading-relaxed">
+        <p className="text-white/80 text-[13px] md:text-sm font-medium mb-10 opacity-80 max-w-lg mx-auto leading-relaxed">
           Our warranty support team is available Monday–Saturday, 9 AM – 6 PM IST
         </p>
 

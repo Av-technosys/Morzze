@@ -50,7 +50,7 @@ const DescriptionTabs = ({ productAttributeRes }: any) => {
           <div className="max-w-5xl">
             {/* Kyunki aapka data HTML span tags ke saath aa raha hai */}
             <div
-              className="text-[#928E87] text-[15px] leading-[1.8] prose prose-invert"
+              className="text-white/80 text-[15px] leading-[1.8] prose prose-invert"
               dangerouslySetInnerHTML={{ __html: availableTabs[activeTab]?.content }}
             />
           </div>

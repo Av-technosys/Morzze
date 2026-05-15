@@ -15,7 +15,7 @@ export default function CareersStorySection() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <p className="text-[10px] uppercase tracking-[0.42em] text-[#7d7d7d] mb-7">
+          <p className="text-[10px] uppercase tracking-[0.42em] text-white/80 mb-7">
             Our Story
           </p>
 
@@ -25,7 +25,7 @@ export default function CareersStorySection() {
             <span className="text-[#b25d12]">together</span>
           </h2>
 
-          <div className="space-y-6 max-w-[540px] text-[14px] md:text-[15px] leading-8 text-[#7d7d7d]">
+          <div className="space-y-6 max-w-[540px] text-[14px] md:text-[15px] leading-8 text-white/70">
             <p>
               At Morzze, we don&apos;t just make furniture — we shape spaces
               where life happens. Since 2008, we&apos;ve been building

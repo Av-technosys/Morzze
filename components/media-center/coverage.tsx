@@ -71,13 +71,13 @@ export default function PressCoverageSection() {
               </div>
               <div>
                 <p className="text-[15px]">Architectural Digest India</p>
-                <p className="text-[12px] text-[#777777]">March 15, 2024</p>
+                <p className="text-[12px] text-white/60">March 15, 2024</p>
               </div>
             </div>
             <h3 className="text-[28px] md:text-[34px] font-semibold leading-[1.4] mb-5">
               Morzze Unveils Premium Rain Shower Collection for Luxury Bathroom
             </h3>
-            <p className="text-[14px] leading-8 text-[#7a7a7a] mb-5">
+            <p className="text-[14px] leading-8 text-white/60 mb-5">
               The new range features thermostatic controls, rainfall heads, and
               spa-inspired designs that transform everyday bathrooms into
               wellness retreats..
@@ -113,13 +113,13 @@ export default function PressCoverageSection() {
                 </div>
                 <div>
                   <p className="text-[13px]">{item.source}</p>
-                  <p className="text-[11px] text-[#777777]">{item.date}</p>
+                  <p className="text-[11px] text-white/50">{item.date}</p>
                 </div>
               </div>
               <h4 className="text-[16px] leading-7 font-medium mb-4">
                 {item.title}
               </h4>
-              <p className="text-[12px] leading-6 text-[#777777] mb-5">
+              <p className="text-[12px] leading-6 text-white/50 mb-5">
                 {item.desc}
               </p>
               <button className="text-[#d39b10] text-[12px]">Read more</button>

@@ -69,7 +69,7 @@ const WarrantyCoverageGrid = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            className="font-inter text-[#928E87] text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
+            className="font-inter text-white/80 text-sm md:text-base max-w-2xl mx-auto leading-relaxed"
           >
             We stand behind the quality of our craftsmanship. Here's what's included in your warranty protection for bathroom and kitchen products.
           </motion.p>
@@ -96,7 +96,7 @@ const WarrantyCoverageGrid = () => {
                 <h3 className="text-lg md:text-xl font-semibold text-white group-hover:text-[#FDB813] transition-colors duration-300 leading-tight">
                   {item.title}
                 </h3>
-                <p className="font-inter text-[#928E87] text-sm leading-relaxed">
+                <p className="font-inter text-white/80 text-sm leading-relaxed">
                   {item.desc}
                 </p>
               </div>

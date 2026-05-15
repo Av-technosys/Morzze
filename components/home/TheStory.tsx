@@ -51,7 +51,7 @@ const TheStory = () => {
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
           className="max-w-xl mx-auto"
         >
-          <p className="font-inter text-sm md:text-md text-[#928E8780] leading-relaxed md:leading-loose tracking-wide">
+          <p className="font-inter text-sm md:text-md text-white/80 leading-relaxed md:leading-loose tracking-wide">
             Born in New Delhi, Morzze brings together European design sensibility with 
             Indian craftsmanship. Every product in our collection — from precision-
             engineered steel sinks to innovative air taps — is crafted to transform your 

@@ -29,7 +29,7 @@ const NotFound = () => {
         <h2 className="text-[#FEFFF1] text-2xl md:text-3xl font-semibold mb-4 font-montserrat">
           Oops! We lost that page.
         </h2>
-        <p className="text-[#928E87] text-sm md:text-base font-light leading-relaxed font-inter">
+        <p className="text-white/80 text-sm md:text-base font-light leading-relaxed font-inter">
           The product or page you're looking for might have been moved, deleted, or never existed in the first place.
         </p>
       </div>

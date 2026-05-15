@@ -91,7 +91,7 @@ const WarrantyTermsSection = () => {
                     <h4 className="text-white font-semibold text-lg md:text-xl">
                       {term.title}
                     </h4>
-                    <p className="font-inter text-[#928E87] text-xs md:text-sm leading-relaxed max-w-md">
+                    <p className="font-inter text-white/80 text-xs md:text-sm leading-relaxed max-w-md">
                       {term.desc}
                     </p>
                   </div>

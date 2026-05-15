@@ -70,7 +70,7 @@ const HowWarrantyWorks = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            className="font-inter text-[#928E87] text-sm md:text-base opacity-80"
+            className="font-inter text-white/80 text-sm md:text-base opacity-80"
           >
             Simple steps to protect your bathroom and kitchen investment
           </motion.p>
@@ -100,7 +100,7 @@ const HowWarrantyWorks = () => {
                 <h3 className="text-xl font-semibold text-white tracking-wide">
                   {step.title}
                 </h3>
-                <p className="font-inter text-[#928E87] text-sm leading-relaxed max-w-[240px] mx-auto opacity-90">
+                <p className="font-inter text-white/80 text-sm leading-relaxed max-w-[240px] mx-auto opacity-90">
                   {step.desc}
                 </p>
               </div>

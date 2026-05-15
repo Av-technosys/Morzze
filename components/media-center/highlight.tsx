@@ -58,7 +58,7 @@ export default function ExhibitionHighlightsSection() {
               ARCHEX Dehradun 2026
             </h3>
 
-            <p className="text-[14px] leading-8 text-[#7a7a7a] mb-4">
+            <p className="text-[14px] leading-8 text-white/60 mb-4">
               Morzze proudly showcased its premium kitchen and bathroom
               solutions at ARCHEX Dehradun 2026. Designed for modern and elegant
               spaces, our collection reflects refined finishes, seamless
@@ -69,7 +69,7 @@ export default function ExhibitionHighlightsSection() {
               Read Full Article <MoveRight size={13} />
             </button>
 
-            <p className="text-[14px] leading-8 text-[#7a7a7a]">
+            <p className="text-[14px] leading-8 text-white/60">
               From refined finishes to seamless flow and superior craftsmanship,
               our products reflect a perfect balance of functionality and
               aesthetics. Experience the quality, detailing, and innovation that

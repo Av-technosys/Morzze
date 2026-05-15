@@ -136,7 +136,7 @@ const ProductClient = ({ product, slug }: any) => {
           <div className="flex flex-col space-y-6">
 
             <div>
-              <p className="text-[11px] tracking-[0.3em] text-[#928E87] uppercase font-bold mb-2">
+              <p className="text-[11px] tracking-[0.3em] text-white/80 uppercase font-bold mb-2">
                 {/* {product.brand} */}
               </p>
 
@@ -160,7 +160,7 @@ const ProductClient = ({ product, slug }: any) => {
                   />
                 ))}
               </div>
-              <span className="text-xs text-[#555]">({product.reviews} Reviews)</span>
+              <span className="text-xs text-white/70">({product.reviews} Reviews)</span>
             </div>
 
             {/* PRICE */}
@@ -175,13 +175,13 @@ const ProductClient = ({ product, slug }: any) => {
             </div>
 
             {/* DESC */}
-            <p className="text-[#928E87] text-sm">
+            <p className="text-white/80 text-sm">
               {product.description}
             </p>
 
             {/* FINISH */}
             <div>
-              <p className="text-xs text-[#928E87] mb-2">
+              <p className="text-xs text-white/80 mb-2">
                 FINISH: {selectedFinish}
               </p>
 
@@ -194,7 +194,7 @@ const ProductClient = ({ product, slug }: any) => {
                       "px-4 py-2 border text-xs",
                       selectedFinish === finish
                         ? "border-yellow-400 text-yellow-400  rounded-md"
-                        : "border-white/10 text-[#555]"
+                        : "border-white/10 text-white/70"
                     )}
                   >
                     {finish}
@@ -277,7 +277,7 @@ const ProductClient = ({ product, slug }: any) => {
               ].map((feature, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-2 text-[11px] text-[#555] uppercase tracking-widest"
+                  className="flex items-center gap-2 text-[11px] text-white/70 uppercase tracking-widest"
                 >
                   <span className="text-[#FFBF3F] text-lg leading-none">
                     {feature.icon}

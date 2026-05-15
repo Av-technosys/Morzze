@@ -11,7 +11,7 @@ const AteliersGrid = () => {
           <h2 className="text-3xl md:text-4xl font-medium text-[#E5E2E1] mb-4">
             The Ateliers
           </h2>
-          <p className="text-[#928E87] text-sm tracking-wide">
+          <p className="text-white/80 text-sm tracking-wide">
             Witness the V02-119LX in world-class architectural environments.
           </p>
         </div>

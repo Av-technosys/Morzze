@@ -281,24 +281,24 @@ const WarrantyServices = () => {
           <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">
             Warranty Services
           </h2>
-          <p className="font-inter text-[#928E87] text-sm opacity-80">
+          <p className="font-inter text-white/80 text-sm opacity-80">
             Register your product, file a claim, or check warranty status.
           </p>
         </div>
 
         <Tabs defaultValue="register" className="w-full flex flex-col gap-10">
           <TabsList variant="line" className="w-full overflow-x-auto whitespace-nowrap justify-center gap-4 md:gap-12 border-none bg-transparent">
-            <TabsTrigger value="register" className="group py-4 px-2 flex items-center gap-3 !text-[#928E87] data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
+            <TabsTrigger value="register" className="group py-4 px-2 flex items-center gap-3 !text-white/80 data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
               <IconClipboardCheck size={20} />
               <span className="text-[13px] font-medium tracking-wide">Register Product</span>
             </TabsTrigger>
 
-            <TabsTrigger value="claim" className="group py-4 px-2 flex items-center gap-3 !text-[#928E87] data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
+            <TabsTrigger value="claim" className="group py-4 px-2 flex items-center gap-3 !text-white/80 data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
               <IconFileText size={20} />
               <span className="text-[13px] font-medium tracking-wide">File a Claim</span>
             </TabsTrigger>
 
-            <TabsTrigger value="status" className="group py-4 px-2 flex items-center gap-3 !text-[#928E87] data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
+            <TabsTrigger value="status" className="group py-4 px-2 flex items-center gap-3 !text-white/80 data-active:!text-[#FDB813] after:!bg-[#FDB813] after:bottom-[-2px] transition-all">
               <IconSearch size={20} />
               <span className="text-[13px] font-medium tracking-wide">Check Status</span>
             </TabsTrigger>

@@ -429,3 +429,17 @@ export const catalogue = pgTable("catalogues", {
     index("catalogue_featured_idx").on(table.isFeatured),
   ]
 );
+
+
+// ================= CAREER ENQUIRIES=================
+
+export const careerEnquiries = pgTable("career_enquiries", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  subject: text("subject").notNull(),
+  description: text("description").notNull(),
+  mobileNumber: text("mobile_number").notNull(),
+  resumeUrl: text("resume_url").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});

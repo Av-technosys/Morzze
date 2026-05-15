@@ -32,7 +32,7 @@ const CheckoutPage = () => {
               Address Details
             </span>
           </div>
-          <ChevronRight className="text-[#928E87] w-4 h-4" />
+          <ChevronRight className="text-white/80 w-4 h-4" />
           <div className="flex items-center gap-2 ">
             <span
               className={`${step === 1 ? "border border-zinc-500 text-[#FEFFF1]" : "bg-[#FDB813] text-black"}  w-6 h-6 flex items-center justify-center text-[10px] font-bold rounded-sm`}

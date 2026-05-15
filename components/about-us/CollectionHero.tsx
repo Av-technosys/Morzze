@@ -78,7 +78,7 @@ const CollectionHero = () => {
           {/* Paragraph */}
           <motion.p
             variants={itemVariants}
-            className="text-[#928E87] font-inter text-sm md:text-md leading-relaxed max-w-2xl opacity-90"
+            className="text-white/80 font-inter text-sm md:text-md leading-relaxed max-w-2xl opacity-90"
           >
             Explore our complete range of bathroom and kitchen fittings — designed t transform your living spaces into expressions of luxury.
           </motion.p>

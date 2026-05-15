@@ -72,7 +72,7 @@ export default function PressKitRequestSection() {
           <h2 className="text-[42px] md:text-[54px] font-semibold tracking-[-0.03em] mb-5">
             Press Kit
           </h2>
-          <p className="max-w-2xl text-[14px] leading-8 text-[#777777] mb-10">
+          <p className="max-w-2xl text-[14px] leading-8 text-white/80 mb-10">
             Access our comprehensive media kit containing brand assets,
             high-resolution bathroom and kitchen product images, company
             information, and executive bios. All resources are free to use for

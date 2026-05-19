@@ -41,21 +41,20 @@ const ProductClient = ({ product, slug }: any) => {
 
 
   // FOR MEDIA AND PDF DOCUMENTATION
-const mediaImages = (product.productMediaRes || [])
-  .filter((item: any) => item.mediaType === "image")
-  .map((item: any) => item.mediaURL);
-
-const pdfDocuments = (product.productMediaRes || [])
-  .filter((item: any) => item.mediaType === "pdf");
-
-const images = [
-  product.bannerImage,
-  product.image,
-  ...mediaImages,
-].filter(Boolean);
   if (!product) return null;
 
-  const images = [product.image, ...(product.images || [])];
+  const mediaImages = (product.productMediaRes || [])
+    .filter((item: any) => item.mediaType === "image")
+    .map((item: any) => item.mediaURL);
+
+  const pdfDocuments = (product.productMediaRes || [])
+    .filter((item: any) => item.mediaType === "pdf");
+
+  const images = [
+    product.bannerImage,
+    product.image,
+    ...mediaImages,
+  ].filter(Boolean);
 
   const wishlisted = isInWishlist(slug)
 

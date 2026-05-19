@@ -416,7 +416,7 @@ export const catalogue = pgTable("catalogues", {
   slug: varchar("slug").notNull().unique(),
   shortDescription: text("short_description").notNull(),
   image: varchar("image").notNull(),
-   
+  pdfFile: varchar("pdf_file").notNull(),
   totalPages: integer("total_pages").notNull(),
   fileSize: varchar("file_size").notNull(),
   publishYear: varchar("publish_year").notNull(),

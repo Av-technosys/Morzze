@@ -85,17 +85,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`
-        ${geistSans.variable}
-        ${geistMono.variable}
-        ${inter.variable}
-        ${montserrat.variable}
-        antialiased
-      `}
-    >
-      <body className="min-h-dvh flex flex-col font-[var(--font-montserrat)]">
+   <html
+  lang="en"
+  className={`
+    ${geistSans.variable}
+    ${geistMono.variable}
+    ${inter.variable}
+    ${montserrat.variable}
+  `}
+>
+<body className="min-h-screen bg-green-400 font-[var(--font-montserrat)]">  
         <CartProvider>
           <WishlistProvider>         
             {children}

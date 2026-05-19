@@ -8,7 +8,9 @@ export default async function EditCataloguePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const row = await getCatalogueById(id);
+  const row = (await getCatalogueById(id)) as
+    | ({ pdfFile?: string } & Record<string, any>)
+    | null;
   if (!row) notFound();
 
   const initialData = {
@@ -17,7 +19,7 @@ export default async function EditCataloguePage({
     slug: row.slug,
     shortDescription: row.shortDescription,
     image: row.image,
-    pdfFile: row.pdfFile,
+    pdfFile: row.pdfFile ?? "",
     totalPages: row.totalPages,
     fileSize: row.fileSize,
     publishYear: row.publishYear,

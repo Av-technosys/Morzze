@@ -215,6 +215,9 @@ export const productFilter = pgTable("product_filter", {
 );
 
 
+
+
+
 // ================= PRODUCT MEDIA =================
 
 export const productMedia = pgTable("product_media", {

@@ -1165,3 +1165,27 @@ export async function getProductsBySlugList(slugs: string[]) {
     return [];
   }
 }
+
+export async function getProductFilterOptions() {
+  const rows = await db
+    .select({
+      type: productFilter.type,
+      filter: productFilter.filter,
+    })
+    .from(productFilter)
+    .groupBy(productFilter.type, productFilter.filter);
+
+  const makeOptions = (type: string) =>
+    rows
+      .filter((row) => row.type === type && row.filter)
+      .map((row) => ({
+        label: row.filter,
+        value: row.filter,
+      }));
+
+  return {
+    materialOptions: makeOptions("material"),
+    finishOptions: makeOptions("finish"),
+    sizeOptions: makeOptions("size"),
+  };
+}

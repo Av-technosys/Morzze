@@ -3,7 +3,10 @@ import FilterSidebar from "@/components/product/FilterSidebar";
 import ProductGrid from "@/components/product/ProductGrid";
 import React from "react";
 import Link from "next/link";
-import { getProducts } from "@/helper/product/action";
+import {
+  getProducts,
+  getProductFilterOptions,
+} from "@/helper/product/action";
 import { getCategories } from "@/helper";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +33,7 @@ const page = async ({ searchParams }: PageProps) => {
   const params = await searchParams;
 
   const allCategories = await getCategories();
+  const filterOptions = await getProductFilterOptions();
 
   const result = await getProducts({
     page: Number(params.page ?? "1"),
@@ -46,6 +50,8 @@ const page = async ({ searchParams }: PageProps) => {
     stock: params.stock,
   });
 
+  const products = result?.items || [];
+
   return (
     <div className="bg-black min-h-screen">
       <ProductBanner />
@@ -56,23 +62,26 @@ const page = async ({ searchParams }: PageProps) => {
             <Link href="/" className="hover:text-white transition-colors">
               Home
             </Link>
+
             <span>&gt;</span>
+
             <Link
               href="/products"
               className="hover:text-[#EDEBE9] transition-colors"
             >
               Products
             </Link>
-
-
           </nav>
-
-
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/4">
-            <FilterSidebar categories={allCategories} />
+            <FilterSidebar
+              categories={allCategories}
+              materialOptions={filterOptions.materialOptions}
+              finishOptions={filterOptions.finishOptions}
+              sizeOptions={filterOptions.sizeOptions}
+            />
           </div>
 
           <div className="lg:w-3/4 space-y-6">
@@ -80,7 +89,7 @@ const page = async ({ searchParams }: PageProps) => {
               <div className="text-sm text-zinc-400 font-inter">
                 Showing{" "}
                 <span className="text-white font-bold">
-                  {result?.items?.length || 0}
+                  {products.length}
                 </span>{" "}
                 products
               </div>
@@ -94,10 +103,13 @@ const page = async ({ searchParams }: PageProps) => {
             </div>
 
             <ProductGrid
-              products={result?.items || []}
+              products={products}
               categories={allCategories}
               total={result?.totalPages || 0}
               currentPage={result?.page || 1}
+              materialOptions={filterOptions.materialOptions}
+              finishOptions={filterOptions.finishOptions}
+              sizeOptions={filterOptions.sizeOptions}
             />
           </div>
         </div>

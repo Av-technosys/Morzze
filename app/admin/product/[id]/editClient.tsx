@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,11 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Plus, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
 import { MultiCategorySelect } from "@/components/multiCategorySelect";
 import GallerySection from "../GallerySection";
 import AttributeSection from "../AttributeSection";
-import { updateProduct } from "@/helper/product/action";
+import {
+  getProductFilterOptions,
+  updateProduct,
+} from "@/helper/product/action";
 import { validateImage } from "@/lib/validateImage";
 import { useFileUpload } from "@/helper";
 import {
@@ -28,10 +25,7 @@ import {
   productType,
   productVarientType,
 } from "@/types/productTypes";
-import ProductFilters from "../productFilter";
-import { PRODUCT_FILTER } from "@/const/filters";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ProductSpecificationSection from "../ProductSpecificationSection";
 import ProductFaqSection from "../ProductFaqSection";
 
@@ -40,102 +34,160 @@ type ImageItem = {
   preview: string;
 };
 
-type AttributeValue = {
-  id?: string;
-  value: string;
-};
-
 type ProductDetailsType = {
   prodcutVarientBoxRes: productVarientType[];
   categoryRes: any;
   productAttributeRes: productAttributeType[];
   productMediaRes: productMediaType[];
-   productFaqRes: any[];
+  productFaqRes: any[];
 } & productType;
+
+type DynamicSpecCardProps = {
+  title: string;
+  type: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  options: string[];
+  setOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  getSelectedValues: (key: string) => string[];
+  toggleSpecAttribute: (key: string, val: string) => void;
+  addDynamicOption: (
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+    options: string[],
+    setOptions: React.Dispatch<React.SetStateAction<string[]>>,
+    type: string
+  ) => void;
+};
+
+const DynamicSpecCard = ({
+  title,
+  type,
+  value,
+  setValue,
+  options,
+  setOptions,
+  getSelectedValues,
+  toggleSpecAttribute,
+  addDynamicOption,
+}: DynamicSpecCardProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm flex items-center justify-between gap-4">
+          <span>{title}</span>
+
+          <div className="flex items-center gap-2">
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={`Add ${title.toLowerCase()}`}
+              className="h-9 w-40"
+            />
+
+            <Button
+              type="button"
+              size="sm"
+              onClick={() =>
+                addDynamicOption(value, setValue, options, setOptions, type)
+              }
+            >
+              <Plus size={14} className="mr-1" />
+              Add
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <select
+          className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+          value=""
+          onChange={(e) => {
+            if (!e.target.value) return;
+            toggleSpecAttribute(type, e.target.value);
+          }}
+        >
+          <option value="" disabled>
+            Select {title.toLowerCase()}
+          </option>
+
+          {options.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+
+        <div className="flex flex-wrap gap-2">
+          {getSelectedValues(type).map((item: string) => (
+            <Button
+              key={item}
+              type="button"
+              variant="default"
+              className="rounded-full"
+              onClick={() => toggleSpecAttribute(type, item)}
+            >
+              {item}
+              <X size={12} className="ml-1" />
+            </Button>
+          ))}
+        </div>
+
+        {getSelectedValues(type).length === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No {title.toLowerCase()} selected yet.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 export default function EditProduct({ productDetails }: any) {
   const router = useRouter();
   const { upload } = useFileUpload();
+
   const bannerRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
   const fileRefs = useRef<any[]>([]);
 
-  const [productType, setProductType] = useState<any[]>([]);
-  const [size, setSize] = useState<any[]>([]);
-  const [flowType, setFlowType] = useState<any[]>([]);
-  const [material, setMaterial] = useState<any[]>([]);
-  const [cramps, setCramps] = useState<any[]>([]);
-  const [sensitive, setSensitive] = useState<any[]>([]);
+  const [finishOptions, setFinishOptions] = useState<string[]>([]);
+  const [sizeOptions, setSizeOptions] = useState<string[]>([]);
+  const [materialOptions, setMaterialOptions] = useState<string[]>([]);
+
+  const [newFinish, setNewFinish] = useState("");
+  const [newSize, setNewSize] = useState("");
+  const [newMaterial, setNewMaterial] = useState("");
 
   const [brand, setBrand] = useState<any>(productDetails.brand);
   const [varientBox, setVarientBox] = useState(productDetails.hasVarientBox);
-
-  const [faqs, setFaqs] = useState(
-  productDetails?.productFaqRes?.length
-    ? productDetails.productFaqRes.map((faq: any) => ({
-        id: faq.id,
-        question: faq.question,
-        answer: faq.answer,
-      }))
-    : [
-        {
-          question: "",
-          answer: "",
-        },
-      ]
-);
-
   const [variantBoxes, setVariantBoxes] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (productDetails?.prodcutVarientBoxRes?.length) {
-      setVariantBoxes(
-        productDetails.prodcutVarientBoxRes.map((v: any) => ({
-          id: v.id,
-          name: v.name || "",
-          description: v.description || "",
-          image: v.image || "",
-        })),
-      );
-    }
-  }, [productDetails]);
-
-  const extractSlugs = (filters: any[]) => filters.map((f) => f.filter);
-
-  const mapSlugsToObjects = (slugs: string[], source: any[]) =>
-    source.filter((item) => slugs.includes(item.slug));
-
-useEffect(() => {
-  if (!productDetails?.filters) return;
-
-  const filters = productDetails.filters;
-
-  const mapFilters = (type: string) =>
-    filters
-      .filter((f: any) => f.type === type)
-      .map((f: any) => ({
-        slug: f.filter,
-        name: f.filter.replace(/-/g, " "),
-      }));
-
-  setProductType(mapFilters("product_type"));
-  setSize(mapFilters("size"));
-  setFlowType(mapFilters("flow_type"));
-  setMaterial(mapFilters("material"));
-  setCramps(mapFilters("cramps"));
-  setSensitive(mapFilters("sensitive"));
-}, [productDetails]);
+  const [faqs, setFaqs] = useState(
+    productDetails?.productFaqRes?.length
+      ? productDetails.productFaqRes.map((faq: any) => ({
+          id: faq.id,
+          question: faq.question,
+          answer: faq.answer,
+        }))
+      : [
+          {
+            question: "",
+            answer: "",
+          },
+        ]
+  );
 
   const {
     categoryRes,
     productAttributeRes,
     productMediaRes,
-    productFaqRes,
     ...product
   }: ProductDetailsType = productDetails;
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    categoryRes.map((c: any) => c?.categories?.id),
+    categoryRes.map((c: any) => c?.categories?.id)
   );
 
   const [variants, setVariants] = useState<any>({
@@ -146,26 +198,14 @@ useEffect(() => {
     price: product.basePrice || 0,
     strikethroughPrice: product.strikethroughPrice || 0,
     description: product.description || "",
-     // for pdf edit
     documents: (productMediaRes || [])
-  .filter((m: any) => m.mediaType === "pdf")
-  .map((m: any) => ({
-    key: m.mediaURL,
-    url: m.mediaURL,
-    type: "pdf",
-    name: m.mediaURL.split("/").pop(),
-  })),
-pdfDocuments:
-  productAttributeRes
-    ?.find((a: any) => a.attribute === "Documentation")
-    ?.value
-    ? JSON.parse(
-        productAttributeRes.find(
-          (a: any) => a.attribute === "Documentation"
-        )?.value || "[]"
-      )
-    : [],
-
+      .filter((m: any) => m.mediaType === "pdf")
+      .map((m: any) => ({
+        key: m.mediaURL,
+        url: m.mediaURL,
+        type: "pdf",
+        name: m.mediaURL.split("/").pop(),
+      })),
     banner: product.bannerImage
       ? { key: product.bannerImage, preview: product.bannerImage }
       : null,
@@ -179,27 +219,150 @@ pdfDocuments:
       (productAttributeRes || []).map((a: any) => [
         a.attribute,
         { id: a.id, value: a.value },
-      ]),
+      ])
     ),
     isInStock: product.isInStock ?? true,
     highlights: product.highlights || [],
   });
 
-  const updateVariantBox = (index: number, key: string, value: any) => {
-    const updated = [...variantBoxes];
-    updated[index] = { ...updated[index], [key]: value };
-    setVariantBoxes(updated);
+  useEffect(() => {
+    if (productDetails?.prodcutVarientBoxRes?.length) {
+      setVariantBoxes(
+        productDetails.prodcutVarientBoxRes.map((v: any) => ({
+          id: v.id,
+          name: v.name || "",
+          description: v.description || "",
+          image: v.image || "",
+        }))
+      );
+    }
+  }, [productDetails]);
+
+  useEffect(() => {
+    const loadDynamicFilterOptions = async () => {
+      try {
+        const options = await getProductFilterOptions();
+
+        setFinishOptions(options.finishOptions.map((item: any) => item.label));
+        setSizeOptions(options.sizeOptions.map((item: any) => item.label));
+        setMaterialOptions(
+          options.materialOptions.map((item: any) => item.label)
+        );
+      } catch (err) {
+        console.error("Failed to load filter options:", err);
+      }
+    };
+
+    loadDynamicFilterOptions();
+  }, []);
+
+  useEffect(() => {
+    if (!productDetails?.filters) return;
+
+    const filters = productDetails.filters;
+
+    const getValues = (type: string) =>
+      filters
+        .filter((f: any) => f.type === type)
+        .map((f: any) => f.filter)
+        .filter(Boolean)
+        .join(",");
+
+    setVariants((prev: any) => ({
+      ...prev,
+      attributes: {
+        ...prev.attributes,
+        finish: {
+          ...prev.attributes.finish,
+          value: getValues("finish"),
+        },
+        size: {
+          ...prev.attributes.size,
+          value: getValues("size"),
+        },
+        material: {
+          ...prev.attributes.material,
+          value: getValues("material"),
+        },
+      },
+    }));
+  }, [productDetails]);
+
+  const toggleSpecAttribute = (key: string, val: string) => {
+    const currentAttrValue = variants.attributes[key]?.value || "";
+    let selectedArray = currentAttrValue
+      ? currentAttrValue.split(",").filter(Boolean)
+      : [];
+
+    if (selectedArray.includes(val)) {
+      selectedArray = selectedArray.filter((item: string) => item !== val);
+    } else {
+      selectedArray.push(val);
+    }
+
+    setVariants((prev: any) => ({
+      ...prev,
+      attributes: {
+        ...prev.attributes,
+        [key]: {
+          ...prev.attributes[key],
+          value: selectedArray.join(","),
+        },
+      },
+    }));
   };
 
-  const addVariantBox = () => {
-    setVariantBoxes([
-      ...variantBoxes,
-      { name: "", description: "", image: "" },
-    ]);
+  const getSelectedValues = (key: string) => {
+    return variants.attributes[key]?.value
+      ? variants.attributes[key].value.split(",").filter(Boolean)
+      : [];
   };
 
-  const removeVariantBox = (index: number) => {
-    setVariantBoxes(variantBoxes.filter((_, i) => i !== index));
+  const addDynamicOption = (
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+    options: string[],
+    setOptions: React.Dispatch<React.SetStateAction<string[]>>,
+    type: string
+  ) => {
+    const cleaned = value.trim();
+
+    if (!cleaned) return toast.error("Enter a value first");
+
+    if (!options.some((item) => item.toLowerCase() === cleaned.toLowerCase())) {
+      setOptions([...options, cleaned]);
+    }
+
+    const currentAttrValue = variants.attributes[type]?.value || "";
+    const selectedArray = currentAttrValue
+      ? currentAttrValue.split(",").filter(Boolean)
+      : [];
+
+    if (!selectedArray.includes(cleaned)) {
+      selectedArray.push(cleaned);
+    }
+
+    setVariants((prev: any) => ({
+      ...prev,
+      attributes: {
+        ...prev.attributes,
+        [type]: {
+          ...prev.attributes[type],
+          value: selectedArray.join(","),
+        },
+      },
+    }));
+
+    setValue("");
+  };
+
+  const buildFilterItems = (values: string[], type: string) => {
+    return values.map((item) => ({
+      name: item,
+      value: item,
+      filter: item,
+      type,
+    }));
   };
 
   const handleBanner = async (file?: File) => {
@@ -213,12 +376,12 @@ pdfDocuments:
         ratio: 1,
       });
 
-      const { fileKey, fileUrl } = await upload(file, "product");
+      const { fileUrl } = await upload(file, "product");
 
       setVariants((prev: any) => ({
         ...prev,
         banner: {
-          key: fileKey,
+          key: fileUrl,
           preview: fileUrl as any,
         },
       }));
@@ -227,30 +390,6 @@ pdfDocuments:
     } catch (err: any) {
       toast.error(err.message);
     }
-  };
-
-  const toggleSpecAttribute = (key: string, val: string) => {
-    const currentAttrValue = variants.attributes[key]?.value || "";
-    let selectedArray = currentAttrValue ? currentAttrValue.split(",") : [];
-
-    if (selectedArray.includes(val)) {
-      selectedArray = selectedArray.filter((item: string) => item !== val);
-    } else {
-      selectedArray.push(val);
-    }
-
-    const newValue = selectedArray.join(",");
-
-    setVariants((prev: any) => ({
-      ...prev,
-      attributes: {
-        ...prev.attributes,
-        [key]: {
-          ...prev.attributes[key],
-          value: newValue,
-        },
-      },
-    }));
   };
 
   const handleGallery = async (files: FileList | null) => {
@@ -281,7 +420,7 @@ pdfDocuments:
 
   const handleVariantImage = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
+    index: number
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -305,6 +444,23 @@ pdfDocuments:
     setVariants((prev: any) => ({ ...prev, gallery: nextGallery }));
   };
 
+  const updateVariantBox = (index: number, key: string, value: any) => {
+    const updated = [...variantBoxes];
+    updated[index] = { ...updated[index], [key]: value };
+    setVariantBoxes(updated);
+  };
+
+  const addVariantBox = () => {
+    setVariantBoxes([
+      ...variantBoxes,
+      { name: "", description: "", image: "" },
+    ]);
+  };
+
+  const removeVariantBox = (index: number) => {
+    setVariantBoxes(variantBoxes.filter((_, i) => i !== index));
+  };
+
   const handleUpdateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -313,7 +469,6 @@ pdfDocuments:
     }
 
     if (!variants?.id) {
-      console.log("MISSING PRODUCT ID:", variants);
       return toast.error("Product id missing");
     }
 
@@ -322,70 +477,42 @@ pdfDocuments:
     formData.set("id", String(variants.id));
 
     selectedCategories.forEach((catId) =>
-      formData.append("category[]", catId),
+      formData.append("category[]", catId)
     );
 
     const payload = {
       ...variants,
-      id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
-      brand: brand,
+      id: variants.isExisting ? variants.id : undefined,
+      brand,
       bannerImage: variants.banner?.preview,
-     media: [
-  ...variants.gallery.map((g: any) => ({
-    mediaType: "image",
-    mediaURL: g.preview,
-  })),
-
-  ...variants.documents.map((d: any) => ({
-    mediaType: "pdf",
-    mediaURL: d.url,
-  })),
-],
+      media: [
+        ...variants.gallery.map((g: any) => ({
+          mediaType: "image",
+          mediaURL: g.preview,
+        })),
+        ...variants.documents.map((d: any) => ({
+          mediaType: "pdf",
+          mediaURL: d.url,
+        })),
+      ],
       highlights: variants.highlights.filter(
-        (h: string) => h.trim().length > 0,
+        (h: string) => h.trim().length > 0
       ),
       faqs: faqs.filter(
-  (faq: any) =>
-    faq.question.trim().length > 0 &&
-    faq.answer.trim().length > 0
-),
+        (faq: any) =>
+          faq.question.trim().length > 0 && faq.answer.trim().length > 0
+      ),
       attributes: Object.entries(variants.attributes)
         .map(([attr, val]: [string, any]) => ({
           attribute: attr,
           value: val.value,
         }))
         .filter((a: any) => a.value?.trim()?.length > 0),
- filters: [
-  ...(productType || []).map((item: any) => ({
-    filter: item.slug,
-    type: "product_type",
-  })),
-
-  ...(size || []).map((item: any) => ({
-    filter: item.slug,
-    type: "size",
-  })),
-
-  ...(flowType || []).map((item: any) => ({
-    filter: item.slug,
-    type: "flow_type",
-  })),
-
-  ...(material || []).map((item: any) => ({
-    filter: item.slug,
-    type: "material",
-  })),
-
-  ...(cramps || []).map((item: any) => ({
-    filter: item.slug,
-    type: "cramps",
-  })),
-
-  ...(sensitive || []).map((item: any) => ({
-    filter: item.slug,
-    type: "sensitive",
-  })),
-],
+      filters: [
+        ...buildFilterItems(getSelectedValues("finish"), "finish"),
+        ...buildFilterItems(getSelectedValues("size"), "size"),
+        ...buildFilterItems(getSelectedValues("material"), "material"),
+      ],
       VarientBoxes: varientBox ? variantBoxes : [],
       hasVarientBox: varientBox,
     };
@@ -402,43 +529,37 @@ pdfDocuments:
     }
   };
 
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-  const handlePdfUpload = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = e.target.files?.[0];
+    if (!file) return;
 
-  if (!file) return;
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files allowed");
+      return;
+    }
 
-  if (file.type !== "application/pdf") {
-    toast.error("Only PDF files allowed");
-    return;
-  }
+    try {
+      const { fileKey, fileUrl } = await upload(file, "product-documents");
 
-  try {
-    const { fileKey, fileUrl } = await upload(
-      file,
-      "product-documents"
-    );
+      setVariants((prev: any) => ({
+        ...prev,
+        documents: [
+          ...prev.documents,
+          {
+            key: fileKey,
+            url: fileUrl,
+            type: "pdf",
+            name: file.name,
+          },
+        ],
+      }));
 
-    setVariants((prev: any) => ({
-      ...prev,
-      documents: [
-        ...prev.documents,
-        {
-          key: fileKey,
-          url: fileUrl,
-          type: "pdf",
-          name: file.name,
-        },
-      ],
-    }));
-
-    toast.success("PDF uploaded");
-  } catch (err: any) {
-    toast.error(err.message);
-  }
-};
+      toast.success("PDF uploaded");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4 space-y-6">
@@ -446,8 +567,9 @@ pdfDocuments:
         <div className="flex justify-between items-center sticky top-0 z-10 py-4 bg-white border-b">
           <div>
             <h1 className="text-2xl font-bold">Edit Product</h1>
-            <p className="text-sm text-gray-500"> {product.slug}</p>
+            <p className="text-sm text-gray-500">{product.slug}</p>
           </div>
+
           <div className="flex gap-4">
             <Button
               type="button"
@@ -456,6 +578,7 @@ pdfDocuments:
             >
               Cancel
             </Button>
+
             <Button type="submit">Save Changes</Button>
           </div>
         </div>
@@ -466,6 +589,7 @@ pdfDocuments:
               <CardHeader>
                 <CardTitle className="text-sm">Categories</CardTitle>
               </CardHeader>
+
               <CardContent>
                 <MultiCategorySelect
                   selectedCategories={selectedCategories}
@@ -480,6 +604,7 @@ pdfDocuments:
               <CardHeader>
                 <CardTitle>Product Details</CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -492,6 +617,7 @@ pdfDocuments:
                       }
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label>SKU</Label>
                     <Input
@@ -518,6 +644,7 @@ pdfDocuments:
                       }
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label>Strike Price</Label>
                     <Input
@@ -531,6 +658,7 @@ pdfDocuments:
                       }
                     />
                   </div>
+
                   <div className="flex items-center space-x-2 pt-8">
                     <Switch
                       checked={variants.isInStock}
@@ -563,6 +691,7 @@ pdfDocuments:
                           onChange={(e) => {
                             const newHighlights = [...variants.highlights];
                             newHighlights[i] = e.target.value;
+
                             setVariants({
                               ...variants,
                               highlights: newHighlights,
@@ -576,8 +705,9 @@ pdfDocuments:
                           variant="destructive"
                           onClick={() => {
                             const newHighlights = variants.highlights.filter(
-                              (_: string, idx: number) => idx !== i,
+                              (_: string, idx: number) => idx !== i
                             );
+
                             setVariants({
                               ...variants,
                               highlights: newHighlights,
@@ -606,6 +736,7 @@ pdfDocuments:
 
                 <div className="space-y-3">
                   <Label>Banner Image</Label>
+
                   <div
                     onClick={() => bannerRef.current?.click()}
                     className="border-2 border-dashed rounded-xl h-48 flex items-center justify-center cursor-pointer relative overflow-hidden"
@@ -616,6 +747,7 @@ pdfDocuments:
                       <img
                         src={variants.banner.preview}
                         className="w-full h-full object-contain"
+                        alt="Banner Preview"
                       />
                     )}
                   </div>
@@ -639,108 +771,43 @@ pdfDocuments:
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">
-                  Product Specifications
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  <Label>Select Size (Multi-select)</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Small (240mm)",
-                      "Medium (280mm)",
-                      "Large (320mm)",
-                      "Extra Large (360mm)",
-                    ].map((s) => {
-                      const isSelected = variants.attributes["size"]?.value
-                        .split(",")
-                        .includes(s);
-
-                      return (
-                        <Button
-                          key={s}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => toggleSpecAttribute("size", s)}
-                        >
-                          {s} {isSelected && <X size={12} className="ml-1" />}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Flow Type (Multi-select)</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Light Flow",
-                      "Regular Flow",
-                      "Heavy Flow",
-                      "Overnight",
-                    ].map((f) => {
-                      const isSelected = variants.attributes["flow"]?.value
-                        .split(",")
-                        .includes(f);
-
-                      return (
-                        <Button
-                          key={f}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => toggleSpecAttribute("flow", f)}
-                        >
-                          {f} {isSelected && <X size={12} className="ml-1" />}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* <Card>
-              <CardHeader>Brand Name</CardHeader>
-              <CardContent>
-                <RadioGroup
-                  value={brand}
-                  onValueChange={(value) => {
-                    setBrand(value);
-                  }}
-                  className="w-fit"
-                >
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="ovy" id="r1" />
-                    <Label htmlFor="r1">Ovy</Label>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="loway" id="r2" />
-                    <Label htmlFor="r2">Loway</Label>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card> */}
-
-            <ProductFilters
-              productType={productType}
-              setProductType={setProductType}
-              size={size}
-              setSize={setSize}
-              flowType={flowType}
-              setFlowType={setFlowType}
-              material={material}
-              setMaterial={setMaterial}
-              cramps={cramps}
-              setCramps={setCramps}
-              sensitive={sensitive}
-              setSensitive={setSensitive}
+            <DynamicSpecCard
+              title="Finish"
+              type="finish"
+              value={newFinish}
+              setValue={setNewFinish}
+              options={finishOptions}
+              setOptions={setFinishOptions}
+              getSelectedValues={getSelectedValues}
+              toggleSpecAttribute={toggleSpecAttribute}
+              addDynamicOption={addDynamicOption}
             />
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <DynamicSpecCard
+                title="Size"
+                type="size"
+                value={newSize}
+                setValue={setNewSize}
+                options={sizeOptions}
+                setOptions={setSizeOptions}
+                getSelectedValues={getSelectedValues}
+                toggleSpecAttribute={toggleSpecAttribute}
+                addDynamicOption={addDynamicOption}
+              />
+
+              <DynamicSpecCard
+                title="Material"
+                type="material"
+                value={newMaterial}
+                setValue={setNewMaterial}
+                options={materialOptions}
+                setOptions={setMaterialOptions}
+                getSelectedValues={getSelectedValues}
+                toggleSpecAttribute={toggleSpecAttribute}
+                addDynamicOption={addDynamicOption}
+              />
+            </div>
 
             <Card>
               <CardHeader>
@@ -770,6 +837,7 @@ pdfDocuments:
                             <img
                               src={item.image}
                               className="h-full w-full object-cover"
+                              alt="Variant"
                             />
                           ) : (
                             <span className="text-xs text-gray-400">
@@ -807,7 +875,7 @@ pdfDocuments:
                             updateVariantBox(
                               index,
                               "description",
-                              e.target.value,
+                              e.target.value
                             )
                           }
                         />
@@ -845,60 +913,51 @@ pdfDocuments:
               setGallery={setGalleryForActive}
             />
 
-            <>
-              <AttributeSection
-                productAttributes={variants.attributes}
-                 documents={variants.documents}
-  handlePdfUpload={handlePdfUpload}
-  setPdfDocuments={(docs: any) => {
-  setVariants((prev: any) => ({
-    ...prev,
-    documents: docs,
-  }));
-}}
-                handleValueChange={(k, v) => {
-                  const current = variants.attributes;
+            <AttributeSection
+              productAttributes={variants.attributes}
+              documents={variants.documents}
+              handlePdfUpload={handlePdfUpload}
+              setPdfDocuments={(docs: any) => {
+                setVariants((prev: any) => ({
+                  ...prev,
+                  documents: docs,
+                }));
+              }}
+              handleValueChange={(k, v) => {
+                const current = variants.attributes;
 
-                  setVariants({
-                    ...variants,
-                    attributes: {
-                      ...current,
-                      [k]: {
-                        ...current[k],
-                        value: v,
-                      },
+                setVariants({
+                  ...variants,
+                  attributes: {
+                    ...current,
+                    [k]: {
+                      ...current[k],
+                      value: v,
                     },
-                  });
-                }}
-              />
+                  },
+                });
+              }}
+            />
 
-              <ProductSpecificationSection
-                productSpecifications={variants.attributes}
-                handleSpecificationChange={(k, v) => {
-                  const current = variants.attributes;
+            <ProductSpecificationSection
+              productSpecifications={variants.attributes}
+              handleSpecificationChange={(k, v) => {
+                const current = variants.attributes;
 
-      setVariants({
-        ...variants,
-        attributes: {
-          ...current,
-          [k]: {
-            ...current[k],
-            value: v,
-          },
-        },
-      });
-    }}
-  />
+                setVariants({
+                  ...variants,
+                  attributes: {
+                    ...current,
+                    [k]: {
+                      ...current[k],
+                      value: v,
+                    },
+                  },
+                });
+              }}
+            />
 
-  <ProductFaqSection
-  faqs={faqs}
-  setFaqs={setFaqs}
-/>
-
-
-</>
- 
-
+            <ProductFaqSection faqs={faqs} setFaqs={setFaqs} />
           </div>
         </div>
       </form>

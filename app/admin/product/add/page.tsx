@@ -2,33 +2,27 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { MultiCategorySelect } from "@/components/multiCategorySelect";
-import ImageUpload from "@/components/ImageUpload";
-import { createProduct } from "@/helper/product/action";
+import {
+  createProduct,
+  getProductFilterOptions,
+} from "@/helper/product/action";
 import GallerySection from "../GallerySection";
 import AttributeSection from "../AttributeSection";
 import { validateImage } from "@/lib/validateImage";
 import { useFileUpload } from "@/helper";
 import { apiFetch } from "@/lib/apiFetch";
 import ProductFilters from "../productFilter";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import ProductSpecificationSection from "../ProductSpecificationSection";
 import ProductFaqSection from "../ProductFaqSection";
 
@@ -37,85 +31,142 @@ type ImageItem = {
   preview: string;
 };
 
-type AttributeValue = {
-  id?: string;
+type DynamicSpecCardProps = {
+  title: string;
+  type: string;
   value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  options: string[];
+  setOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  getSelectedValues: (key: string) => string[];
+  toggleSpecAttribute: (key: string, val: string) => void;
+  addDynamicOption: (
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+    options: string[],
+    setOptions: React.Dispatch<React.SetStateAction<string[]>>
+  ) => void;
 };
 
-type Variant = {
-  id: string;
-  name: string;
-  sku: string;
-  price: number;
-  strikethroughPrice: number;
-  description: string;
-  banner: ImageItem | null;
-  gallery: ImageItem[];
-  attributes: Record<string, AttributeValue>;
-  subscriptionPlans: number[];
-  isInStock: boolean;
-  isReturnable: boolean;
-  isCancelable: boolean;
-  isReplacement: boolean;
-  returnDays: number;
-  highlights: string[];
-  replacementDays: number;
+const DynamicSpecCard = ({
+  title,
+  type,
+  value,
+  setValue,
+  options,
+  setOptions,
+  getSelectedValues,
+  toggleSpecAttribute,
+  addDynamicOption,
+}: DynamicSpecCardProps) => {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm flex items-center justify-between gap-4">
+          <span>{title}</span>
+
+          <div className="flex items-center gap-2">
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder={`Add ${title.toLowerCase()}`}
+              className="h-9 w-40"
+            />
+
+            <Button
+              type="button"
+              size="sm"
+              onClick={() =>
+                addDynamicOption(value, setValue, options, setOptions)
+              }
+            >
+              <Plus size={14} className="mr-1" />
+              Add
+            </Button>
+          </div>
+        </CardTitle>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <select
+          className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+          value=""
+          onChange={(e) => {
+            if (!e.target.value) return;
+            toggleSpecAttribute(type, e.target.value);
+          }}
+        >
+          <option value="" disabled>
+            Select {title.toLowerCase()}
+          </option>
+
+          {options.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+
+        <div className="flex flex-wrap gap-2">
+          {getSelectedValues(type).map((item: string) => (
+            <Button
+              key={item}
+              type="button"
+              variant="default"
+              className="rounded-full"
+              onClick={() => toggleSpecAttribute(type, item)}
+            >
+              {item}
+              <X size={12} className="ml-1" />
+            </Button>
+          ))}
+        </div>
+
+        {getSelectedValues(type).length === 0 && (
+          <p className="text-sm text-muted-foreground">
+            No {title.toLowerCase()} selected yet.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
 };
 
 export default function AddProductForm() {
   const router = useRouter();
-  const { upload, uploading } = useFileUpload();
+  const { upload } = useFileUpload();
   const bannerRef = useRef<HTMLInputElement>(null);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   const [productType, setProductType] = useState<any[]>([]);
-  const [size, setSize] = useState<any[]>([]);
   const [flowType, setFlowType] = useState<any[]>([]);
-  const [material, setMaterial] = useState<any[]>([]);
   const [cramps, setCramps] = useState<any[]>([]);
   const [sensitive, setSensitive] = useState<any[]>([]);
 
+  const [finishOptions, setFinishOptions] = useState<string[]>([]);
+  const [sizeOptions, setSizeOptions] = useState<string[]>([]);
+  const [materialOptions, setMaterialOptions] = useState<string[]>([]);
+
+  const [newFinish, setNewFinish] = useState("");
+  const [newSize, setNewSize] = useState("");
+  const [newMaterial, setNewMaterial] = useState("");
+
   const [varientBox, setVarientBox] = useState(false);
-
   const [variantBoxes, setVariantBoxes] = useState<any[]>([]);
-
   const [brand, setBrand] = useState<any>();
-
   const fileRefs = useRef<any>([]);
 
   const [availablePlans, setAvailablePlans] = useState<any[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   const [faqs, setFaqs] = useState<any[]>([
-  {
-    question: "",
-    answer: "",
-  },
-]);
-
-  // const [variants, setVariants] = useState<Variant[]>([
-  //   {
-  //     id: crypto.randomUUID(),
-  //     name: "",
-  //     sku: "",
-  //     price: 0,
-  //     strikethroughPrice: 0,
-  //     description: "",
-  //     banner: null,
-  //     gallery: [],
-  //     attributes: {},
-  //     subscriptionPlans: [],
-  //     highlights: [],
-  //     isInStock: true,
-  //     isReturnable: false,
-  //     isCancelable: false,
-  //     isReplacement: false,
-  //     returnDays: 0,
-  //     replacementDays: 0,
-  //   },
-  // ]);
+    {
+      question: "",
+      answer: "",
+    },
+  ]);
 
   const [variants, setVariants] = useState<any>({
-    // id: "",
     isExisting: true,
     name: "",
     sku: "",
@@ -148,24 +199,23 @@ export default function AddProductForm() {
     loadPlans();
   }, []);
 
-  const galleryRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const loadDynamicFilterOptions = async () => {
+      try {
+        const options = await getProductFilterOptions();
 
-  const updateVariantBox = (index: number, key: string, value: any) => {
-    const updated = [...variantBoxes];
-    updated[index] = { ...updated[index], [key]: value };
-    setVariantBoxes(updated);
-  };
+        setFinishOptions(options.finishOptions.map((item: any) => item.label));
+        setSizeOptions(options.sizeOptions.map((item: any) => item.label));
+        setMaterialOptions(
+          options.materialOptions.map((item: any) => item.label)
+        );
+      } catch (err) {
+        console.error("Failed to load filter options:", err);
+      }
+    };
 
-  const addVariantBox = () => {
-    setVariantBoxes([
-      ...variantBoxes,
-      { name: "", description: "", image: "" },
-    ]);
-  };
-
-  const removeVariantBox = (index: number) => {
-    setVariantBoxes(variantBoxes.filter((_, i) => i !== index));
-  };
+    loadDynamicFilterOptions();
+  }, []);
 
   const toggleSpecAttribute = (key: string, val: string) => {
     const currentAttrValue = variants.attributes[key]?.value || "";
@@ -177,9 +227,8 @@ export default function AddProductForm() {
       selectedArray.push(val);
     }
 
-    // add for new component
-
     const newValue = selectedArray.join(",");
+
     setVariants((prev: any) => ({
       ...prev,
       attributes: {
@@ -189,6 +238,41 @@ export default function AddProductForm() {
           value: newValue,
         },
       },
+    }));
+  };
+
+  const getSelectedValues = (key: string) => {
+    return variants.attributes[key]?.value
+      ? variants.attributes[key].value.split(",").filter(Boolean)
+      : [];
+  };
+
+  const addDynamicOption = (
+    value: string,
+    setValue: React.Dispatch<React.SetStateAction<string>>,
+    options: string[],
+    setOptions: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    const cleaned = value.trim();
+
+    if (!cleaned) return toast.error("Enter a value first");
+
+    if (
+      options.some((item) => item.toLowerCase() === cleaned.toLowerCase())
+    ) {
+      return toast.error("Value already added");
+    }
+
+    setOptions([...options, cleaned]);
+    setValue("");
+  };
+
+  const buildFilterItems = (values: string[], type: string) => {
+    return values.map((item) => ({
+      name: item,
+      value: item,
+      filter: item,
+      type,
     }));
   };
 
@@ -204,11 +288,13 @@ export default function AddProductForm() {
           ratio: 2000 / 2000,
         });
 
-        const { preview, fileKey, fileUrl } = await upload(file, "product");
+        const { fileKey, fileUrl } = await upload(file, "product");
+
         setVariants((prev: any) => ({
           ...prev,
           gallery: [...prev.gallery, { key: fileKey, preview: fileUrl as any }],
         }));
+
         toast.success("Image uploaded");
       } catch (err: any) {
         toast.info(err.message);
@@ -216,35 +302,13 @@ export default function AddProductForm() {
     }
   };
 
-  const handleVariantImage = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const { fileKey, fileUrl } = await upload(file, "product"); // tera existing upload fn
-
-      const updated = [...variantBoxes];
-      updated[index].image = fileUrl;
-      setVariantBoxes(updated);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const setGalleryForActive = (action: React.SetStateAction<ImageItem[]>) => {
     const currentGallery = variants.gallery;
     const nextGallery =
       typeof action === "function" ? (action as any)(currentGallery) : action;
+
     setVariants((prev: any) => ({ ...prev, gallery: nextGallery }));
   };
-
-  // const handleBannerSuccess = (url: string) => {
-  //   updateVariant(activeIndex, { banner: { key: url, preview: url } });
-  //   toast.success("Banner uploaded");
-  // };
 
   const handleBanner = async (file?: File) => {
     if (!file) return;
@@ -275,31 +339,32 @@ export default function AddProductForm() {
 
   const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (selectedCategories.length === 0)
+
+    if (selectedCategories.length === 0) {
       return toast.error("Select a category");
+    }
 
     const formData = new FormData();
+
     formData.append("id", variants.id);
     selectedCategories.forEach((catId) => formData.append("category[]", catId));
 
     const payload = {
       ...variants,
-      // id: variants.isExisting ? variants.id : undefined, // Old variants keep ID, new ones don't
-      brand: brand,
+      brand,
       bannerImage: variants.banner?.preview,
       media: [
-  ...variants.gallery.map((g: any) => ({
-    mediaType: "image",
-    mediaURL: g.preview,
-  })),
-
-  ...variants.documents.map((d: any) => ({
-    mediaType: "pdf",
-    mediaURL: d.url,
-  })),
-],
+        ...variants.gallery.map((g: any) => ({
+          mediaType: "image",
+          mediaURL: g.preview,
+        })),
+        ...variants.documents.map((d: any) => ({
+          mediaType: "pdf",
+          mediaURL: d.url,
+        })),
+      ],
       highlights: variants.highlights.filter(
-        (h: string) => h.trim().length > 0,
+        (h: string) => h.trim().length > 0
       ),
       attributes: Object.entries(variants.attributes)
         .map(([attr, val]: [string, any]) => ({
@@ -307,20 +372,30 @@ export default function AddProductForm() {
           value: val.value,
         }))
         .filter((a: any) => a.value.trim().length > 0),
-        faqs: faqs.filter(
-  (f) =>
-    f.question.trim().length > 0 &&
-    f.answer.trim().length > 0
-),
+      faqs: faqs.filter(
+        (f) => f.question.trim().length > 0 && f.answer.trim().length > 0
+      ),
       filters: [
-        ...(productType || []).map((item: any) => ({ ...item, type: "product_type" })),
-        ...(size || []).map((item: any) => ({ ...item, type: "size" })),
-        ...(flowType || []).map((item: any) => ({ ...item, type: "flow_or_usage_type" })),
-        ...(material || []).map((item: any) => ({ ...item, type: "material" })),
-        ...(cramps || []).map((item: any) => ({ ...item, type: "cramps_or_discomfort" })),
-        ...(sensitive || []).map((item: any) => ({ ...item, type: "allergies_or_sensitivities" })),
+        ...(productType || []).map((item: any) => ({
+          ...item,
+          type: "product_type",
+        })),
+        ...buildFilterItems(getSelectedValues("finish"), "finish"),
+        ...buildFilterItems(getSelectedValues("size"), "size"),
+        ...buildFilterItems(getSelectedValues("material"), "material"),
+        ...(flowType || []).map((item: any) => ({
+          ...item,
+          type: "flow_or_usage_type",
+        })),
+        ...(cramps || []).map((item: any) => ({
+          ...item,
+          type: "cramps_or_discomfort",
+        })),
+        ...(sensitive || []).map((item: any) => ({
+          ...item,
+          type: "allergies_or_sensitivities",
+        })),
       ],
-      
       VarientBoxes: varientBox ? variantBoxes : [],
       hasVarientBox: varientBox,
     };
@@ -329,7 +404,7 @@ export default function AddProductForm() {
 
     try {
       console.log("PAYLOAD =>", JSON.stringify(payload, null, 2));
-      
+
       await createProduct(formData);
       toast.success("Product created!");
       router.push("/admin/product");
@@ -338,47 +413,44 @@ export default function AddProductForm() {
     }
   };
 
-  const handlePdfUpload = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = e.target.files?.[0];
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-  if (!file) return;
+    if (!file) return;
 
-  if (file.type !== "application/pdf") {
-    toast.error("Only PDF files allowed");
-    return;
-  }
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files allowed");
+      return;
+    }
 
-  try {
-    const { fileKey, fileUrl } = await upload(file, "product-documents");
-     console.log("pdf getting ", fileKey, fileUrl);
+    try {
+      const { fileKey, fileUrl } = await upload(file, "product-documents");
 
-    setVariants((prev: any) => ({
-      ...prev,
-      documents: [
-        ...prev.documents,
-        {
-          key: fileKey,
-          url: fileUrl,
-          type: "pdf",
-          name: file.name,
-        },
-      ],
-    }));
+      setVariants((prev: any) => ({
+        ...prev,
+        documents: [
+          ...prev.documents,
+          {
+            key: fileKey,
+            url: fileUrl,
+            type: "pdf",
+            name: file.name,
+          },
+        ],
+      }));
 
-    toast.success("PDF uploaded");
-  } catch (err: any) {
-    toast.error(err.message);
-  }
-};
+      toast.success("PDF uploaded");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  };
 
   return (
-  
-    <div className="max-w-7xl  mx-auto p-4 pb-10">
+    <div className="max-w-7xl mx-auto p-4 pb-10">
       <form onSubmit={handleCreateProduct} className="space-y-6">
-       <div className="flex justify-between items-center  z-10 py-4 border-b mb-6">
+        <div className="flex justify-between items-center z-10 py-4 border-b mb-6">
           <h1 className="text-2xl font-bold">Add New Product</h1>
+
           <div className="flex gap-4">
             <Button
               type="button"
@@ -387,16 +459,18 @@ export default function AddProductForm() {
             >
               Cancel
             </Button>
+
             <Button type="submit">Create Product</Button>
           </div>
         </div>
 
-       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">Categories</CardTitle>
               </CardHeader>
+
               <CardContent>
                 <MultiCategorySelect
                   selectedCategories={selectedCategories}
@@ -411,6 +485,7 @@ export default function AddProductForm() {
               <CardHeader>
                 <CardTitle>Variant Details</CardTitle>
               </CardHeader>
+
               <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -423,6 +498,7 @@ export default function AddProductForm() {
                       }
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label>SKU</Label>
                     <Input
@@ -434,6 +510,7 @@ export default function AddProductForm() {
                     />
                   </div>
                 </div>
+
                 <div className="grid md:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label>Price</Label>
@@ -448,6 +525,7 @@ export default function AddProductForm() {
                       }
                     />
                   </div>
+
                   <div className="space-y-2">
                     <Label>Strike Price</Label>
                     <Input
@@ -461,6 +539,7 @@ export default function AddProductForm() {
                       }
                     />
                   </div>
+
                   <div className="flex items-center space-x-2 pt-8">
                     <Switch
                       checked={variants.isInStock}
@@ -471,6 +550,7 @@ export default function AddProductForm() {
                     <Label>In Stock</Label>
                   </div>
                 </div>
+
                 <div className="space-y-2">
                   <Label>Description</Label>
                   <Textarea
@@ -492,6 +572,7 @@ export default function AddProductForm() {
                           onChange={(e) => {
                             const newHighlights = [...variants.highlights];
                             newHighlights[i] = e.target.value;
+
                             setVariants({
                               ...variants,
                               highlights: newHighlights,
@@ -505,8 +586,9 @@ export default function AddProductForm() {
                           variant="destructive"
                           onClick={() => {
                             const newHighlights = variants.highlights.filter(
-                              (_: string, idx: number) => idx !== i,
+                              (_: string, idx: number) => idx !== i
                             );
+
                             setVariants({
                               ...variants,
                               highlights: newHighlights,
@@ -532,9 +614,10 @@ export default function AddProductForm() {
                     </Button>
                   </div>
                 </div>
+
                 <div className="space-y-3">
                   <Label>Banner Image</Label>
-                  {/* <ImageUpload onUploadSuccess={handleBannerSuccess} /> */}
+
                   <div
                     onClick={() => bannerRef.current?.click()}
                     className="border-2 border-dashed rounded-xl h-48 flex items-center justify-center cursor-pointer relative overflow-hidden"
@@ -545,6 +628,7 @@ export default function AddProductForm() {
                       <img
                         src={variants.banner.preview}
                         className="w-full h-full object-contain"
+                        alt="Banner Preview"
                       />
                     )}
                   </div>
@@ -556,6 +640,7 @@ export default function AddProductForm() {
                     accept="image/*"
                     onChange={(e) => handleBanner(e.target.files?.[0])}
                   />
+
                   {variants.banner && (
                     <img
                       src={variants.banner.preview}
@@ -567,252 +652,54 @@ export default function AddProductForm() {
               </CardContent>
             </Card>
 
-            {/* --- SPECIFICATIONS SECTION (MULTI-SELECT) --- */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">
-                  Finish (Multi-select)
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  {/* <Label>Select Finish (Multi-select)</Label> */}
-                  <div className="flex flex-wrap gap-2">
-                    {["chrome", "Brushed Gold", "Matte Black", "Rose Gold"].map(
-                      (s) => {
-                        const isSelected = variants.attributes["size"]?.value
-                          .split(",")
-                          .includes(s);
-                        return (
-                          <Button
-                            key={s}
-                            type="button"
-                            variant={isSelected ? "default" : "outline"}
-                            className="rounded-full"
-                            onClick={() => toggleSpecAttribute("size", s)}
-                          >
-                            {s} {isSelected && <X size={12} className="ml-1" />}
-                          </Button>
-                        );
-                      },
-                    )}
-                  </div>
-                </div>
-                {/* <div className="space-y-3">
-                  <Label>Flow Type (Multi-select)</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Light Flow",
-                      "Regular Flow",
-                      "Heavy Flow",
-                      "Overnight",
-                    ].map((f) => {
-                      const isSelected = variants.attributes["flow"]?.value
-                        .split(",")
-                        .includes(f);
-                      return (
-                        <Button
-                          key={f}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => toggleSpecAttribute("flow", f)}
-                        >
-                          {f} {isSelected && <X size={12} className="ml-1" />}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div> */}
-              </CardContent>
-            </Card>
+            <DynamicSpecCard
+              title="Finish"
+              type="finish"
+              value={newFinish}
+              setValue={setNewFinish}
+              options={finishOptions}
+              setOptions={setFinishOptions}
+              getSelectedValues={getSelectedValues}
+              toggleSpecAttribute={toggleSpecAttribute}
+              addDynamicOption={addDynamicOption}
+            />
 
-          {/*  <Card>
-              <CardHeader>Brand Name</CardHeader>
-              <CardContent>
-                <RadioGroup
-                  value={brand}
-                  onValueChange={(value) => {
-                    setBrand(value);
-                  }}
-                  className="w-fit"
-                >
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="ovy" id="r1" />
-                    <Label htmlFor="r1">Ovy</Label>
-                  </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              <DynamicSpecCard
+                title="Size"
+                type="size"
+                value={newSize}
+                setValue={setNewSize}
+                options={sizeOptions}
+                setOptions={setSizeOptions}
+                getSelectedValues={getSelectedValues}
+                toggleSpecAttribute={toggleSpecAttribute}
+                addDynamicOption={addDynamicOption}
+              />
 
-                  <div className="flex items-center gap-3">
-                    <RadioGroupItem value="loway" id="r2" />
-                    <Label htmlFor="r2">Loway</Label>
-                  </div>
-                </RadioGroup>
-              </CardContent>
-            </Card>*/}
+              <DynamicSpecCard
+                title="Material"
+                type="material"
+                value={newMaterial}
+                setValue={setNewMaterial}
+                options={materialOptions}
+                setOptions={setMaterialOptions}
+                getSelectedValues={getSelectedValues}
+                toggleSpecAttribute={toggleSpecAttribute}
+                addDynamicOption={addDynamicOption}
+              />
+            </div>
 
-            {/* filter section */}
-            <ProductFilters
+            {/* <ProductFilters
               productType={productType}
               setProductType={setProductType}
-              size={size}
-              setSize={setSize}
               flowType={flowType}
               setFlowType={setFlowType}
-              material={material}
-              setMaterial={setMaterial}
               cramps={cramps}
               setCramps={setCramps}
               sensitive={sensitive}
               setSensitive={setSensitive}
-            />
-
-            {/* Varient size boxes */}
-
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">Variant Sizes</span>
-
-                  <Checkbox
-                    checked={varientBox}
-                    onCheckedChange={(val) => setVarientBox(!!val)}
-                  />
-                </CardTitle>
-              </CardHeader>
-
-              {varientBox && (
-                <CardContent className="space-y-4">
-                
-                  {variantBoxes.map((item, index) => (
-                    <div
-                      key={index}
-                      className="border rounded-xl p-4 grid md:grid-cols-6 gap-4 items-center"
-                    >
-                      <div className="col-span-1">
-                        <div
-                          onClick={() => fileRefs.current[index]?.click()}
-                          className="h-20 w-20 border rounded-md overflow-hidden flex items-center justify-center bg-gray-100 cursor-pointer hover:opacity-80"
-                        >
-                          {item.image ? (
-                            <img
-                              src={item.image}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-xs text-gray-400">
-                              Upload
-                            </span>
-                          )}
-                        </div>
-
-                       
-                        <input
-                          type="file"
-                          accept="image/*"
-                          hidden
-                          ref={(el: any) => (fileRefs.current[index] = el)}
-                          onChange={(e) => handleVariantImage(e, index)}
-                        />
-                      </div>
-
-                    
-                      <div className="col-span-2">
-                        <Input
-                          placeholder="Size Name (e.g. Small)"
-                          value={item.name}
-                          onChange={(e) =>
-                            updateVariantBox(index, "name", e.target.value)
-                          }
-                        />
-                      </div>
-
-                    
-                      <div className="col-span-2">
-                        <Input
-                          placeholder="Description"
-                          value={item.description}
-                          onChange={(e) =>
-                            updateVariantBox(
-                              index,
-                              "description",
-                              e.target.value,
-                            )
-                          }
-                        />
-                      </div>
-
-                    
-                      <div className="col-span-1 flex justify-end">
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          size="icon"
-                          onClick={() => removeVariantBox(index)}
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-
-                
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={addVariantBox}
-                  >
-                    <Plus size={16} className="mr-2" />
-                    Add Variant
-                  </Button>
-                </CardContent>
-              )}
-            </Card> */}
-
-            {/* --- SUBSCRIPTION PLANS --- */}
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">
-                  Available Subscription Plans
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <Label>Select Plans (Multi-select)</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {availablePlans.map((plan: any) => {
-                      const isSelected =
-                        activeVariant.subscriptionPlans.includes(plan.id);
-                      return (
-                        <Button
-                          key={plan.id}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          className="rounded-full"
-                          onClick={() => {
-                            const currentPlans =
-                              activeVariant.subscriptionPlans;
-                            const newPlans = isSelected
-                              ? currentPlans.filter((id) => id !== plan.id)
-                              : [...currentPlans, plan.id];
-                            updateVariant(activeIndex, {
-                              subscriptionPlans: newPlans,
-                            });
-                          }}
-                        >
-                          {plan.name} (₹{plan.price}){" "}
-                          {isSelected && <X size={12} className="ml-1" />}
-                        </Button>
-                      );
-                    })}
-                    {availablePlans.length === 0 && (
-                      <span className="text-sm text-gray-500">
-                        No subscription plans found in database.
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card> */}
+            /> */}
 
             <GallerySection
               gallery={variants.gallery}
@@ -825,9 +712,13 @@ export default function AddProductForm() {
               productAttributes={variants.attributes}
               handleValueChange={(k, v) => {
                 const current = variants.attributes;
+
                 setVariants({
                   ...variants,
-                  attributes: { ...current, [k]: { ...current[k], value: v } },
+                  attributes: {
+                    ...current,
+                    [k]: { ...current[k], value: v },
+                  },
                 });
               }}
               documents={variants.documents}
@@ -858,12 +749,7 @@ export default function AddProductForm() {
               }}
             />
 
-
-            <ProductFaqSection   faqs={faqs}
-  setFaqs={setFaqs}/>
-
-
-
+            <ProductFaqSection faqs={faqs} setFaqs={setFaqs} />
           </div>
         </div>
       </form>

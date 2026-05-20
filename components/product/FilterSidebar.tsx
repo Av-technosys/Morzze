@@ -10,8 +10,16 @@ type Category = {
   slug: string;
 };
 
+type FilterOption = {
+  label: string;
+  value: string;
+};
+
 type FilterSidebarProps = {
   categories: Category[];
+  materialOptions?: FilterOption[];
+  finishOptions?: FilterOption[];
+  sizeOptions?: FilterOption[];
 };
 
 const getPriceParams = (item: string) => {
@@ -23,7 +31,12 @@ const getPriceParams = (item: string) => {
   return { min: "", max: "" };
 };
 
-const FilterSidebar = ({ categories }: FilterSidebarProps) => {
+const FilterSidebar = ({
+  categories,
+  materialOptions = [],
+  finishOptions = [],
+  sizeOptions = [],
+}: FilterSidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -41,35 +54,17 @@ const FilterSidebar = ({ categories }: FilterSidebarProps) => {
     {
       id: "material",
       title: "MATERIAL",
-      items: [
-        { label: "304 Stainless Steel", value: "304-stainless-steel" },
-        { label: "Granite Composite", value: "granite-composite" },
-        { label: "Brass", value: "brass" },
-        { label: "Zinc Alloy", value: "zinc-alloy" },
-        { label: "ABS Polymer", value: "abs-polymer" },
-      ],
+      items: materialOptions,
     },
     {
       id: "finish",
       title: "FINISH",
-      items: [
-        { label: "Chrome", value: "chrome" },
-        { label: "Brushed Gold", value: "brushed-gold" },
-        { label: "Matte Black", value: "matte-black" },
-        { label: "Rose Gold", value: "rose-gold" },
-      ],
+      items: finishOptions,
     },
     {
       id: "size",
       title: "SIZE",
-      items: [
-        { label: "Brushed Nickel", value: "brushed-nickel" },
-        { label: "12-18 Inch", value: "12-18-inch" },
-        { label: "Antique Brass", value: "antique-brass" },
-        { label: "18-24 Inch", value: "18-24-inch" },
-        { label: "24-30 Inch", value: "24-30-inch" },
-        { label: "30+ Inch", value: "30plus-inch" },
-      ],
+      items: sizeOptions,
     },
     {
       id: "price",
@@ -81,7 +76,7 @@ const FilterSidebar = ({ categories }: FilterSidebarProps) => {
         { label: "Above ₹20,000", value: "Above ₹20,000" },
       ],
     },
-  ];
+  ].filter((section) => section.items.length > 0);
 
   const updateFilter = (sectionId: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -155,7 +150,7 @@ const FilterSidebar = ({ categories }: FilterSidebarProps) => {
           </h3>
 
           <div className="space-y-3">
-            {section.items.map((item: any) => (
+            {section.items.map((item) => (
               <div
                 key={item.value}
                 onClick={() => updateFilter(section.id, item.value)}

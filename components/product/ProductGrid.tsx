@@ -24,16 +24,27 @@ import { useWishlist } from "@/context/WishlistContext";
 import Pagination from "../commom/Pagination";
 import FilterSidebar from "@/components/product/FilterSidebar";
 
+type FilterOption = {
+  label: string;
+  value: string;
+};
+
 const ProductGrid = ({
   products,
   categories,
   total,
   currentPage,
+  materialOptions = [],
+  finishOptions = [],
+  sizeOptions = [],
 }: {
   products: any[];
   categories: any[];
   total: number;
   currentPage: number;
+  materialOptions?: FilterOption[];
+  finishOptions?: FilterOption[];
+  sizeOptions?: FilterOption[];
 }) => {
   const { addToCart, getItemQuantity } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -60,7 +71,12 @@ const ProductGrid = ({
             </SheetHeader>
 
             <div className="px-6 pb-10">
-              <FilterSidebar categories={categories} />
+              <FilterSidebar
+                categories={categories}
+                materialOptions={materialOptions}
+                finishOptions={finishOptions}
+                sizeOptions={sizeOptions}
+              />
             </div>
           </SheetContent>
         </Sheet>

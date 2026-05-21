@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { motion, Variants } from "framer-motion";
-import { IconTrophy, IconCertificate, IconLeaf, IconUsers, IconWorld } from "@tabler/icons-react";
+import { IconShieldCheck, IconCertificate, IconLeaf, IconUsers, IconWorld } from "@tabler/icons-react";
     
 const containerVariants: Variants = {
   initial: { opacity: 0 },
@@ -20,37 +20,28 @@ const cardAnimation: Variants = {
   }
 };
 
-const awards = [
+const certifications = [
   {
-    year: "2023",
-    title: "Best Luxury Fittings Brand",
-    org: "India Design Awards",
-    icon: <IconTrophy size={32} stroke={1.2} />
+    year: "2015",
+    title: "ISO 9001:2015",
+    org: "Quality Management System",
+    href: "/certificates/iso-9001.pdf",
+    icon: <IconCertificate size={32} stroke={1.2} />,
   },
   {
-    year: "2022",
-    title: "Excellence in Innovation",
-    org: "CII Design Excellence",
-    icon: <IconCertificate size={32} stroke={1.2} />
+    year: "2015",
+    title: "ISO 14001:2015",
+    org: "Environmental Management System",
+    href: "/certificates/iso-14001.pdf",
+    icon: <IconLeaf size={32} stroke={1.2} />,
   },
   {
-    year: "2021",
-    title: "Sustainable Manufacturing",
-    org: "Green Business Certification",
-    icon: <IconLeaf size={32} stroke={1.2} />
+    year: "2018",
+    title: "ISO 45001:2018",
+    org: "Occupational Health & Safety Management System",
+    href: "/certificates/iso-45001.pdf",
+    icon: <IconShieldCheck size={32} stroke={1.2} />,
   },
-  {
-    year: "2020",
-    title: "Customer Choice Award",
-    org: "Home & Decor India",
-    icon: <IconUsers size={32} stroke={1.2} />
-  },
-  {
-    year: "2019",
-    title: "Best Export Performance",
-    org: "EEPC India",
-    icon: <IconWorld size={32} stroke={1.2} />
-  }
 ];
 
 const RecognitionSection = () => {
@@ -74,7 +65,7 @@ const RecognitionSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-3xl md:text-5xl font-medium text-[#FEFFF1] tracking-tight"
           >
-            Awards & Certifications
+            Certifications
           </motion.h2>
           
           <motion.p
@@ -94,24 +85,31 @@ const RecognitionSection = () => {
           viewport={{ once: false, amount: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-5 lg:gap-6"
         >
-          {awards.map((item, index) => (
+        {certifications.map((item, index) => (
+          <a
+            key={index}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`
+              ${index < 3 ? "lg:col-span-2" : "lg:col-span-3 lg:max-w-112.5"} 
+              ${index === 3 ? "lg:justify-self-end" : ""} 
+              ${index === 4 ? "lg:justify-self-start" : ""}
+            `}
+          >
             <motion.div
-              key={index}
               variants={cardAnimation}
-              className={`
-                group relative flex items-center p-4 bg-[#141414] rounded-md border border-white/5 space-x-6
+              className="
+                group relative flex items-center p-4 bg-[#141414]
+                rounded-md border border-white/5 space-x-6
                 transition-all duration-500 hover:border-[#CBA14D]/30
-                ${index < 3 ? "lg:col-span-2" : "lg:col-span-3 lg:max-w-112.5"} 
-                ${index === 3 ? "lg:justify-self-end" : ""} 
-                ${index === 4 ? "lg:justify-self-start" : ""}
-              `}
+                hover:-translate-y-1 cursor-pointer h-full
+              "
             >
-              {/* Luxury Icon Box */}
               <div className="shrink-0 w-16 h-16 rounded-2xl bg-[#FFF7D9] flex items-center justify-center text-[#FDB813] shadow-[0_0_20px_rgba(203,161,77,0.1)] transition-transform duration-500 group-hover:scale-110">
                 {item.icon}
               </div>
 
-              {/* Award Content --- */}
               <div className="flex flex-col space-y-1">
                 <span className="text-[10px] font-bold text-[#FDB813] uppercase tracking-widest">
                   {item.year}
@@ -119,15 +117,16 @@ const RecognitionSection = () => {
                 <h4 className="text-lg md:text-sm font-medium text-[#FEFFF1] leading-tight">
                   {item.title}
                 </h4>
-                <p className="text-xs md:text-sm font-inter text-[white]/70">
+                <p className="text-xs md:text-sm font-inter text-white/70">
                   {item.org}
                 </p>
               </div>
 
-              {/* Subtle Top Border Glow */}
               <div className="absolute top-0 left-10 w-1/3 h-px bg-linear-to-r from-transparent via-[#CBA14D]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             </motion.div>
-          ))}
+          </a>
+        ))}
+
         </motion.div>
 
       </div>

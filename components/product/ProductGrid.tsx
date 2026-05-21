@@ -98,17 +98,17 @@ const ProductGrid = ({
                 )}
               </div>
 
-              <div className="absolute top-2 right-3 z-20">
+              {/* <div className="absolute top-2 right-3 z-20">
                 <Badge className="bg-[#EF4444] text-white hover:bg-[#EF4444] rounded-none px-2 py-0.5 text-[9px] font-semibold">
                   {product.discount}
                 </Badge>
-              </div>
+              </div> */}
 
               <Link href={`/products/${product.slug}`}>
                 <motion.img
                   src={product.bannerImage}
                   alt={product.name}
-                  className="w-full h-full object-cover cursor-pointer"
+                  className="w-full h-full object-fit cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.6 }}
                 />

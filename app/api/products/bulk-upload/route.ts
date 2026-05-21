@@ -49,11 +49,17 @@ export async function POST(req: Request) {
                         name: row.name,
                         description: row.description,
 
-                        basePrice: Number(row.basePrice),
+                        basePrice: row.basePrice
+                        ? Number(row.basePrice)
+                        : null,
 
-                        strikethroughPrice: Number(
-                            row.strikethroughPrice
-                        ),
+                        strikethroughPrice: row.strikethroughPrice
+                        ? Number(row.strikethroughPrice)
+                        : null,
+
+                        minBoxQuintity: row.minBoxQuintity
+                        ? Number(row.minBoxQuintity)
+                        : null,
 
                         bannerImage: row.bannerImage,
 
@@ -66,9 +72,7 @@ export async function POST(req: Request) {
                         hasVarientBox:
                             row.hasVarientBox === "true",
 
-                        minBoxQuintity: Number(
-                            row.minBoxQuintity
-                        ),
+                        
 
                         custimizeBoxInfo:
                             row.custimizeBoxInfo,
@@ -145,8 +149,8 @@ export async function POST(req: Request) {
                         row.attributes.split("|");
 
                     for (const item of attributes) {
-                        const [attribute, value] =
-                            item.split(":");
+                        const [attribute, ...rest] = item.split(":");
+                        const value = rest.join(":").trim();
 
                         await db
                             .insert(productAttribute)
@@ -206,12 +210,15 @@ export async function POST(req: Request) {
                 }
 
                 successCount++;
-            } catch (error) {
-                console.log(error);
+            } catch (error: any) {
+                console.error("FULL ERROR:", error);
 
                 failedRows.push({
                     sku: row.sku,
-                    error: "Failed to upload",
+                    error:
+                        error?.cause?.message ||
+                        error?.message ||
+                        JSON.stringify(error),
                 });
             }
         }

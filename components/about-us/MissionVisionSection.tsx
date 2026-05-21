@@ -56,11 +56,7 @@ const MissionVisionSection = () => {
                   Our Mission
                 </h3>
                 <p className="font-inter text-white/80 text-sm md:text-md leading-relaxed">
-                  To elevate everyday living through meticulously crafted
-                  fittings tha combine innovative design, superior
-                  functionality, and lasting durability. We strive to make
-                  luxury accessible while maintaining uncompromising quality
-                  standards.
+                  Our mission is to redefine kitchen and bathroom spaces by offering premium solutions that blend exceptional quality, innovative design, and sustainability. We strive to elevate everyday living with products that are both functional and luxurious.
                 </p>
               </div>
             </div>
@@ -84,10 +80,7 @@ const MissionVisionSection = () => {
                   Our Vision
                 </h3>
                 <p className="font-inter text-white/80 text-sm md:text-md leading-relaxed">
-                  To be the most trusted name in premium kitchen and bathroom
-                  solutions across Asia, recognized for our commitment to
-                  sustainability, innovation, and customer delight. We envision
-                  homes where every fitting tells a story of craftsmanship.
+                  Morzze envisions becoming the leading provider of opulent, innovative, and environmentally responsible kitchen and bathroom solutions, setting new industry standards and crafting spaces that reflect sophistication and individuality.
                 </p>
               </div>
             </div>

@@ -183,11 +183,11 @@ const handleFaqRedirect = () => {
           <p className="text-gray-300 text-sm leading-6">
             Morzze India Pvt. Ltd.
             <br />
-            12th Floor, Tower B,
+            A-42, Phase-1,
             <br />
-            DLF Cyber City, Phase III,
+            Naraina Industrial Area,
             <br />
-            Gurugram, Haryana 122001
+            New Delhi – 110012
             <br />
             India
           </p>
@@ -200,13 +200,13 @@ const handleFaqRedirect = () => {
           <h3 className="text-white font-semibold mb-2">Call Us</h3>
           <p className="text-gray-300 text-sm leading-6">
             Toll Free: <br />
-            <span className="text-yellow-400">1800-123-4567</span>
+            <span className="text-yellow-400">1800 110 123</span>
             <br />
             Sales: <br />
-            <span className="text-yellow-400">+91-98765-43210</span>
+            <span className="text-yellow-400">+91-87503-13000</span>
             <br />
             Support: <br />
-            <span className="text-yellow-400">+91-98765-43211</span>
+            <span className="text-yellow-400">+91-87503-13000</span>
           </p>
         </div>
 
@@ -376,12 +376,15 @@ const handleFaqRedirect = () => {
             {/* Right Section - Map, Business Hours, WhatsApp */}
             <div className="space-y-6">
               <div className="rounded-lg overflow-hidden h-64 lg:h-72">
-                <Image
-                  src="/map.png"
-                  alt="office location map"
-                  width={400}
-                  height={300}
-                  className="w-full h-full object-cover"
+                <iframe
+                  src="https://www.google.com/maps?q=A-42,+Phase-1,+Naraina+Industrial+Area,+New+Delhi+-+110012&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-full"
                 />
               </div>
 
@@ -413,7 +416,13 @@ const handleFaqRedirect = () => {
                 </div>
               </div> */}
 
-              <div className="bg-[#F0FDF4] border rounded-xs p-6 flex items-center gap-4 cursor-pointer">
+            <a
+              href="https://wa.me/918750313000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block"
+            >
+              <div className="bg-[#F0FDF4] border rounded-xs p-6 flex items-center gap-4 cursor-pointer hover:bg-[#E8FBEF] transition-colors">
                 <div className="w-12 h-12 rounded-full bg-[#22C55E] flex items-center justify-center">
                   <IconBrandWhatsapp className="text-white w-8 h-8" />
                 </div>
@@ -426,6 +435,7 @@ const handleFaqRedirect = () => {
                   </p>
                 </div>
               </div>
+            </a>
 
               <div className="flex gap-4 justify-center lg:justify-start pt-4">
                 <a

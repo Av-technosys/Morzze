@@ -47,7 +47,7 @@ const BannerAbout = () => {
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
             className="font-inter text-3xl md:text-2xl lg:text-5xl font-bold text-white leading-[1.1] mb-8 tracking-tight"
           >
-            Crafting Excellence <br className="hidden md:block" /> Since 2008
+            Crafting Excellence <br className="hidden md:block" /> For Every Space
           </motion.h1>
           <motion.p
             variants={{
@@ -55,11 +55,9 @@ const BannerAbout = () => {
               animate: { opacity: 1, y: 0 },
             }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="font-inter text-white text-sm md:text-md max-w-2xl  md:mx-0 leading-relaxed"
+            className="font-inter text-white text-sm md:text-md max-w-2xl  md:mr-70 leading-relaxed"
           >
-            Where precision engineering meets timeless design. We create{" "}
-            <br className="hidden md:block" /> fittings that transform spaces
-            into experiences.
+            At Morzze, we blend innovation with craftsmanship to create high-quality kitchen and bathroom fittings. Our focus is on elevating your interiors with durable, stylish solutions designed for everyday use.
           </motion.p>
         </motion.div>
       </div>

@@ -4,34 +4,34 @@ import { motion, useScroll, useTransform } from "framer-motion";
 
 const milestones = [
   {
-    year: "2008",
+    year: "1990",
     title: "Foundation",
-    desc: "Morzze was founded in New Delhi with a vision to revolutionize kitchen and bathroom fittings in India.",
+    desc: "Anupam founded at Naraina, New Delhi, India.",
   },
   {
-    year: "2012",
-    title: "First Manufacturing Unit",
-    desc: "Established our state-of-the-art manufacturing facility with German precision machinery.",
+    year: "1997",
+    title: "Expansion",
+    desc: "Anupam shifted its unit to new premises of 16000 sq.ft at Ghevera, New Delhi.",
   },
   {
-    year: "2015",
-    title: "Pan-India Presence",
-    desc: "Expanded distribution network to cover all major cities across India with 500+ dealers.",
+    year: "2000",
+    title: "New Manufacturing Facility",
+    desc: "Anupam shifted its unit to new premises of 32000 sq.ft located in Industrial Estate of Kundli, Haryana, India.",
   },
   {
-    year: "2018",
-    title: "International Expansion",
-    desc: "Entered Middle East and Southeast Asian markets with premium export collections.",
+    year: "2008",
+    title: "Display Centre Launch",
+    desc: "Opened its first Display Centre 'ANUPAM WORLD'. By end of 2008, six display centres were operating across India.",
   },
   {
-    year: "2021",
-    title: "Digital Transformation",
-    desc: "Launched e-commerce platform and digital-first customer experience.",
+    year: "2009",
+    title: "Business Expansion",
+    desc: "Expanded business by establishing another unit in Kundli, Haryana measuring 35000 sq.ft.",
   },
   {
     year: "2024",
-    title: "Sustainability Initiative",
-    desc: "Committed to carbon-neutral manufacturing and eco-friendly product lines.",
+    title: "Launch of Morzze",
+    desc: "Anupam launched new luxury brand 'Morzze'.",
   },
 ];
 

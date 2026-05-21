@@ -4,8 +4,8 @@ import { IconBrandWhatsapp } from "@tabler/icons-react";
 import { motion } from "framer-motion";
 
 export default function FloatingWhatsappButton() {
-  const phoneNumber = "919999999999";
-  const message = "Hello Morzze, I need some help.";
+  const phoneNumber = "918750313000";
+  const message = "Hi Morzze, please send me the catalogue";
 
   return (
     <motion.a

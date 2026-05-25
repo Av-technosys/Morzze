@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { Mail, X } from "lucide-react";
 import { toast } from "sonner";
 import { IconBrandFacebook, IconBrandLinkedin } from "@tabler/icons-react";
+import { getImageUrl } from "@/helper/getimageUrl";
+import Image from "next/image";
 
 export default function BlogDetailPage({
   blog,
@@ -88,13 +90,15 @@ export default function BlogDetailPage({
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="relative w-full h-[230px] md:h-[420px] rounded-[8px] overflow-hidden mb-8 bg-[#141414]"
+              className="relative w-full h-auto rounded-[8px] overflow-hidden mb-8 bg-[#141414]"
             >
               {blog.image && (
-                <img
-                  src={`https://av-morzze.s3.ap-south-1.amazonaws.com/${blog.image}`}
+                <Image
+                  src={getImageUrl(blog.image)}
                   alt={blog.title}
-                  className="w-full h-full object-cover"
+                  height={700}
+                  width={700}
+                  className="w-full h-full object-contain"
                 />
               )}
             </motion.div>
@@ -116,56 +120,55 @@ export default function BlogDetailPage({
                 ))}
               </div>
 
-             <div className="flex items-center gap-3">
-              <span className="text-[13px] text-[#7a7a7a] mr-2">
-                Share this article:
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-[13px] text-[#7a7a7a] mr-2">
+                  Share this article:
+                </span>
 
-              {[
-                {
-                  icon: IconBrandFacebook,
-                  link: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                    typeof window !== "undefined" ? window.location.href : ""
-                  )}`,
-                },
-                {
-                  icon: X,
-                  link: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                    typeof window !== "undefined" ? window.location.href : ""
-                  )}&text=${encodeURIComponent(blog.title)}`,
-                },
-                {
-                  icon: IconBrandLinkedin,
-                  link: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                    typeof window !== "undefined" ? window.location.href : ""
-                  )}`,
-                },
-                {
-                  icon: Mail,
-                  link: `mailto:?subject=${encodeURIComponent(
-                    blog.title
-                  )}&body=${encodeURIComponent(
-                    `Check out this article: ${
+                {[
+                  {
+                    icon: IconBrandFacebook,
+                    link: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                       typeof window !== "undefined" ? window.location.href : ""
-                    }`
-                  )}`,
-                },
-              ].map((item, i) => {
-                const Icon = item.icon;
+                    )}`,
+                  },
+                  {
+                    icon: X,
+                    link: `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                      typeof window !== "undefined" ? window.location.href : ""
+                    )}&text=${encodeURIComponent(blog.title)}`,
+                  },
+                  {
+                    icon: IconBrandLinkedin,
+                    link: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                      typeof window !== "undefined" ? window.location.href : ""
+                    )}`,
+                  },
+                  {
+                    icon: Mail,
+                    link: `mailto:?subject=${encodeURIComponent(
+                      blog.title
+                    )}&body=${encodeURIComponent(
+                      `Check out this article: ${typeof window !== "undefined" ? window.location.href : ""
+                      }`
+                    )}`,
+                  },
+                ].map((item, i) => {
+                  const Icon = item.icon;
 
-                return (
-                  <a
-                    key={i}
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center hover:bg-[#2a2a2a] transition"
-                  >
-                    <Icon size={14} />
-                  </a>
-                );
-              })}
-</div>
+                  return (
+                    <a
+                      key={i}
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-8 h-8 rounded-full bg-[#1a1a1a] flex items-center justify-center hover:bg-[#2a2a2a] transition"
+                    >
+                      <Icon size={14} />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -207,13 +210,15 @@ export default function BlogDetailPage({
                       key={item.id}
                       className="flex gap-3 group"
                     >
-                      <div className="relative w-[72px] h-[52px] rounded overflow-hidden bg-[#222222] shrink-0">
+                      <div className="relative w-[72px] h-fit rounded overflow-hidden bg-[#222222] shrink-0">
                         {item.image && (
-                          <img
-                            src={`https://av-morzze.s3.ap-south-1.amazonaws.com/${blog.image}`}
-                 
+                          <Image
+                            height={200}
+                            width={200}
+                            src={getImageUrl(item.image)}
+
                             alt={item.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                            className="w-full h-full object-contain group-hover:scale-105 transition duration-500"
                           />
                         )}
                       </div>

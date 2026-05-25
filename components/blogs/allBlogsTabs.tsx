@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search } from "lucide-react";
 import { getBlogs } from "@/helper/blog/action";
+import { getImageUrl } from "@/helper/getimageUrl";
 
 // const tabs = [
 //   "All",
@@ -48,7 +49,7 @@ export default function BlogGridTabs() {
       <div className="max-w-7xl mx-auto">
         {/* Top Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 mb-10">
-          
+
 
           <div className="relative w-full mx-auto lg:max-w-xl lg:mb-4  ">
             <Search
@@ -85,7 +86,7 @@ export default function BlogGridTabs() {
                   <div className="relative w-full h-[210px] md:h-[230px] overflow-hidden rounded-[6px] mb-5 bg-[#141414]">
                     {blog.image && (
                       <img
-                        src={`https://av-morzze.s3.ap-south-1.amazonaws.com/${blog.image}`}
+                        src={getImageUrl(blog.image)}
                         alt={blog.title || "Blog image"}
                         className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                       />

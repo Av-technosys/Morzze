@@ -21,7 +21,20 @@ export async function getBlogs(search = "") {
 
   try {
     return await db
-      .select()
+      .select({
+        id: blog.id,
+        title: blog.title,
+        metaDescription: blog.metaDescription,
+        blogCategory: blog.blogCategory,
+        image: blog.image,
+        userImage: blog.userImage,
+        userName: blog.userName,
+        textArea: blog.textArea,
+        date: blog.date,
+        slug: blog.slug,
+        tags: blog.tags,
+        isVisible: blog.isVisible,
+      })
       .from(blog)
       .where(whereClause)
       .orderBy(desc(blog.date));

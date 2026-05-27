@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 const VertexShowcase = () => {
   return (
-    <section className="relative w-full md:py-20 py-8  flex items-center bg-black overflow-hidden">
+    <section className="relative w-full md:py-20 py-8 px-2 flex items-center bg-black overflow-hidden">
       
       {/* -- BACKGROUND IMAGE -- */}
       {/* Iska container 'absolute inset-0' hai taaki ye poore section mein fail jaye */}

@@ -9,9 +9,9 @@ const CartItemList = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="w-full">
+      <div className="w-full text-white">
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <ShoppingBag size={48} className="text-zinc-700 mb-4" />
+          <ShoppingBag size={48} className=" mb-4" />
           <p className="text-zinc-500 text-sm mb-6 font-inter">Your cart is empty</p>
           <Link
             href="/products"
@@ -25,7 +25,7 @@ const CartItemList = () => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full text-white">
       {/* --- DESKTOP VIEW --- */}
       <div className="hidden md:block">
         <div className="grid grid-cols-12 pb-4 border-b font-montserrat border-zinc-800 text-[11px] font-bold tracking-[0.2em] text-[#FFFFFF] uppercase">
@@ -68,7 +68,7 @@ const CartItemList = () => {
                     </h3>
                   </Link>
                   {item.sku && (
-                    <p className="text-zinc-500 text-xs font-light">SKU: {item.sku}</p>
+                    <p className="text-xs font-light">SKU: {item.sku}</p>
                   )}
                 </div>
               </div>

@@ -17,21 +17,22 @@ import {
   BriefcaseBusiness,
   ShoppingCart,
   IndianRupee,
-  BookOpen
+  BookOpen,
+  MapPin,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", href: "/admin", icon: LayoutGrid },
-  { label: "Blog", href: "/admin/blog", icon: File },
+    { label: "Products", href: "/admin/product", icon: Box },
+      { label: "Orders", href: "/admin/order", icon: FileText },
+       { label: "Users", href: "/admin/users", icon: User },
+        { label: "Reviews", href: "/admin/reviews", icon: MessageSquare },
+          { label: "Payments", href: "/admin/payment", icon: IndianRupee },
+  { label: "Categories", href: "/admin/category", icon: List },
+  { label: "Blogs", href: "/admin/blog", icon: File },
   { label: "Catalogue", href: "/admin/catalogue", icon: BookOpen },
+  { label: "Stores", href: "/admin/stores", icon: MapPin },
   { label: "Videos", href: "/admin/videos", icon: Video },
-
-  { label: "Product", href: "/admin/product", icon: Box },
-  { label: "Category", href: "/admin/category", icon: List },
-  { label: "Order", href: "/admin/order", icon: FileText },
-  { label: "User", href: "/admin/users", icon: User },
-  { label: "Review", href: "/admin/reviews", icon: MessageSquare },
-  { label: "Payment", href: "/admin/payment", icon: IndianRupee },
   { label: "Applications", href: "/admin/applications", icon: BriefcaseBusiness },
 
   // {

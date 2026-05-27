@@ -243,7 +243,7 @@ const AddressPage = () => {
                       variant="outline"
                       onClick={() => handleSetDefault(item.id)}
                       disabled={settingDefaultId === item.id}
-                      className="flex-1 border-[#FDB813] text-[#FDB813] hover:bg-[#FDB813]/5 bg-transparent h-11 text-[11px] font-bold uppercase tracking-widest disabled:opacity-50"
+                      className="flex-1 border-[#FDB813] text-[#FDB813] hover:text-[#FDB813] hover:bg-[#FDB813]/5 bg-transparent h-11 text-[11px] font-bold uppercase tracking-widest disabled:opacity-50"
                     >
                       {settingDefaultId === item.id ? "Setting..." : "Set Default"}
                     </Button>

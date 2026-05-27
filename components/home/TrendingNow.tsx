@@ -148,7 +148,7 @@ const TrendingNow = ({ products }: { products: TrendingProduct[] }) => {
           ))}
         </div>
       </div>
-      <div className="md:hidden flex justify-center mt-4">
+      <div className="md:hidden flex justify-center lg:mt-4">
         <Link
           href="/products"
           className="font-montserrat text-[10px] font-bold text-[#CBA14D] uppercase tracking-widest"

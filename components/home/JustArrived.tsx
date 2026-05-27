@@ -29,12 +29,10 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
       <div className="max-w-screen-2xl mx-auto px-6 md:px-10">
         <div className="relative mb-12 flex items-center justify-center min-h-25">
           <div className="text-center">
-            <span className="block font-montserrat text-[10px] md:text-xs font-bold text-[#CBA14D] uppercase tracking-[0.4em] mb-4">
+            <span className="block font-montserrat text-[10px] md:text-xs font-bold text-[#CBA14D] uppercase tracking-[0.4em] ">
               Just arrived
             </span>
-            <h2 className="font-montserrat text-3xl md:text-5xl font-medium tracking-tight text-white">
-              New Arrival
-            </h2>
+            
           </div>
           <div className="hidden md:block absolute right-0 bottom-7">
             <Link
@@ -57,6 +55,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{
+                
                 duration: 0.8,
                 delay: index * 0.1,
                 ease: [0.16, 1, 0.3, 1],
@@ -144,7 +143,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
                   </h3>
                 </Link>
 
-                <div className="flex items-center gap-3 mt-2">
+                <div className="flex items-center gap-3 lg:mt-2">
                   <span className="font-bold text-white font-inter text-sm md:text-base">
                     ₹{product.basePrice?.toLocaleString("en-IN")}
                   </span>

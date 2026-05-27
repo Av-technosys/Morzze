@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 type AddressData = {
   id?: number;
@@ -46,13 +47,19 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
   };
 
   const handleSubmit = () => {
-    if (!form.fullName.trim()) return;
-    if (!form.phone.trim()) return;
-    if (!form.street.trim()) return;
-    if (!form.city.trim()) return;
-    if (!form.state.trim()) return;
-    if (!form.pincode.trim()) return;
-    onSave({ ...form, country: "India" });
+    if (
+      !form.fullName.trim() ||
+      !form.phone.trim() ||
+      !form.street.trim() ||
+      !form.city.trim() ||
+      !form.state.trim() ||
+      !form.pincode.trim()
+    ) {
+      toast.error("Please fill your details");
+      return;
+    }
+
+    onSave(form);
   };
 
   return (
@@ -72,7 +79,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
               value={form.fullName}
               onChange={(e) => handleChange("fullName", e.target.value)}
               placeholder="Enter full name"
-              className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+              className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
             />
           </div>
 
@@ -83,7 +90,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
               value={form.phone}
               onChange={(e) => handleChange("phone", e.target.value)}
               placeholder="Enter phone number"
-              className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+              className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
             />
           </div>
 
@@ -94,7 +101,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
               value={form.street}
               onChange={(e) => handleChange("street", e.target.value)}
               placeholder="Enter street address"
-              className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+              className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
             />
           </div>
 
@@ -105,7 +112,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
               value={form.locality}
               onChange={(e) => handleChange("locality", e.target.value)}
               placeholder="Enter locality"
-              className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+              className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
             />
           </div>
 
@@ -117,7 +124,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
                 value={form.city}
                 onChange={(e) => handleChange("city", e.target.value)}
                 placeholder="Enter city"
-                className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+                className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
               />
             </div>
             <div className="space-y-2">
@@ -126,7 +133,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
                 value={form.state}
                 onChange={(e) => handleChange("state", e.target.value)}
                 placeholder="Enter state"
-                className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+                className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
               />
             </div>
             <div className="space-y-2">
@@ -135,7 +142,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
                 value={form.pincode}
                 onChange={(e) => handleChange("pincode", e.target.value)}
                 placeholder="Enter pincode"
-                className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+                className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
               />
             </div>
           </div>
@@ -144,10 +151,10 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
           <div className="md:col-span-2 space-y-2">
             <label className="text-[11px] text-zinc-500 uppercase font-medium">Country</label>
             <Input
-              value={"India"}
-              onChange={(e) => handleChange("country", "India")}
-              disabled
-              className="bg-[#454545] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
+              value={form.country}
+              onChange={(e) => handleChange("country", e.target.value)}
+              placeholder="Enter country"
+              className="bg-[#232323] border-zinc-800 focus:border-zinc-700 h-11 text-sm rounded-sm"
             />
           </div>
         </div>
@@ -181,7 +188,7 @@ const EditAddressPage = ({ address, onSave, onCancel, saving }: EditAddressPageP
             variant="outline"
             onClick={onCancel}
             disabled={saving}
-            className="flex-1 border-[#FFBF3F] text-[#FFBF3F] hover:bg-[#FFBF3F]/10 font-bold py-4 rounded-sm text-sm transition-all active:scale-95 bg-[#454545]"
+            className="flex-1 border-[#FFBF3F] text-[#FFBF3F] hover:bg-[#FFBF3F]/10 font-bold py-4 rounded-sm text-sm transition-all active:scale-95 bg-[#232323]"
           >
             Cancel
           </Button>

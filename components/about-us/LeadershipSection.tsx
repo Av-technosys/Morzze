@@ -43,7 +43,7 @@ const LeadershipSection = () => {
 
                 <div>
                   <h2 className="text-4xl md:text-5xl font-medium leading-tight  tracking-tight text-[#FEFFF1]">
-                    Rajender Garg
+                    Mr. Rajender Garg
                   </h2>
                   <p className="text-[#FEFFF1] font-inter italic text-lg md:text-xl mt-1 opacity-90">
                     Founder & Managing Director
@@ -63,8 +63,8 @@ const LeadershipSection = () => {
                   Under his leadership, Morzze has grown from a single-product startup to one of India's most respected names in premium fittings.
                 </p>
               </div>
-              <div className="flex gap-4">
-                <a href="https://in.linkedin.com/in/rajendergarg?original_referer=https%3A%2F%2Fwww.linkedin.com%2F" className="w-12 h-12 flex items-center justify-center rounded-full border border-white/10 text-white/80 hover:border-[#CBA14D] hover:text-[#CBA14D] transition-colors duration-300">
+              <div className="flex gap-4 lg:pt-4 -mt-6 lg:-mt-0 border-t border-white/5">
+                <a href="https://in.linkedin.com/in/rajendergarg?original_referer=https%3A%2F%2Fwww.linkedin.com%2F"  className="w-12 h-12 flex items-center justify-center rounded-full border border-white/10 text-white/80 hover:border-[#CBA14D] hover:text-[#CBA14D] transition-colors duration-300">
                   <IconBrandLinkedin size={24} stroke={1.5} />
                 </a>
               </div>

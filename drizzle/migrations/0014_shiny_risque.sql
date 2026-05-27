@@ -1,0 +1,23 @@
+CREATE TABLE "stores" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"store_name" varchar(255) NOT NULL,
+	"slug" varchar(255) NOT NULL,
+	"store_type" varchar(100) NOT NULL,
+	"state" varchar(150) NOT NULL,
+	"city" varchar(150) NOT NULL,
+	"latitude" numeric(10, 7) NOT NULL,
+	"longitude" numeric(10, 7) NOT NULL,
+	"address" text NOT NULL,
+	"contact_number" varchar(20) NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"working_hours" varchar(255) NOT NULL,
+	"features" json,
+	"badge_bg_color" varchar(50),
+	"badge_text_color" varchar(50),
+	"map_embed_url" text,
+	"is_featured" boolean DEFAULT false,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "stores_slug_unique" UNIQUE("slug")
+);

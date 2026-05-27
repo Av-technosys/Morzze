@@ -33,7 +33,7 @@ export default function FloatingWhatsappButton() {
         rotate: 6,
       }}
       whileTap={{ scale: 0.95 }}
-      className="fixed bottom-8 right-8 z-[9999] flex h-13 w-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_0_22px_rgba(37,211,102,0.5)] transition-all duration-300"
+      className="fixed bottom-14 right-5 z-[9999] flex h-13 w-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_0_22px_rgba(37,211,102,0.5)] transition-all duration-300"
     >
       <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-25" />
 

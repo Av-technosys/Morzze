@@ -8,7 +8,7 @@ const ProductBanner = () => {
     <section className="relative w-full h-[50vh] md:h-[65vh] overflow-hidden font-montserrat">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/product-banner.png"
+          src="/over.jpg"
           alt="Premium Kitchen and Bathroom Fittings"
           fill
           className="object-cover"

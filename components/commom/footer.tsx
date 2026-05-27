@@ -38,7 +38,7 @@ const Footer = ({ categories: _categories }: FooterProps) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative w-full text-white overflow-hidden font-inter">
+    <footer className="relative  w-full text-white overflow-hidden font-inter">
       {/* Background Section */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -56,7 +56,7 @@ const Footer = ({ categories: _categories }: FooterProps) => {
         {/* Main Grid: Mobile par vertical stack, Web par grid */}
         <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
           {/* Logo & Description Section */}
-          <div className="space-y-6 text-left">
+          <div className="text-left">
             <div
               onClick={() => {
                 if (window.location.pathname === "/") {
@@ -85,7 +85,7 @@ const Footer = ({ categories: _categories }: FooterProps) => {
             </p>
 
             {/* Social Icons Stacked like Mobile Screenshot */}
-            <div className="flex items-center space-x-5 pt-2">
+            <div className=" mt-4 flex items-center space-x-5 pt-2">
               <a
                 href="http://instagram.com/morzzeindia/"
                 target="_blank"
@@ -221,7 +221,7 @@ const Footer = ({ categories: _categories }: FooterProps) => {
                 { name: "Become a Dealer", link: "/dealer" },
                 { name: "Find a Store", link: "/stores" },
                 // { name: "Returns & Exchange", link: "/return-exchange" },
-                { name: "FAQ", link: "/support" },
+                { name: "FAQ's", link: "/support" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link

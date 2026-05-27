@@ -28,13 +28,14 @@ const itemVariants: Variants = {
 
 const CollectionHero = () => {
   return (
-    <section className="relative w-full py-8 md:py-24 overflow-hidden  font-montserrat">
+    <section className="relative w-full py-8 md:py-24  overflow-hidden  font-montserrat">
       
       {/* --- BACKGROUND IMAGE: Slow Zoom Logic --- */}
       <motion.div
         initial={{ scale: 1.1, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
         transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+
         viewport={{ once: false }}
         className="absolute inset-0 z-0"
       >
@@ -57,7 +58,7 @@ const CollectionHero = () => {
           initial="initial"
           whileInView="whileInView"
           viewport={{ once: false, amount: 0.3 }}
-          className="text-center space-y-8 md:space-y-12 max-w-3xl flex flex-col items-center"
+          className="text-center space-y-8 md:space-y-12  max-w-3xl flex flex-col items-center"
         >
           {/* Top Label */}
           <motion.span 
@@ -84,11 +85,11 @@ const CollectionHero = () => {
           </motion.p>
           
           {/* --- BUTTON GROUP (Exact Sizing and Color) --- */}
-          <motion.div variants={itemVariants} className="flex gap-4 md:gap-6 items-center pt-2">
+          <motion.div variants={itemVariants} className="flex gap-4 md:gap-6 items-center pt-2 ">
             {/* CTA 1: Filled */}
             <Link href={"/products"}>
             <Button 
-              className="px-10 py-2 md:py-6 bg-[#FDB813] text-[#1C2023] font-bold text-xs md:text-sm  tracking-wider rounded-md border-2 border-[#FFBF3F] hover:bg-transparent hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_30px_rgba(255,191,63,0.3)]"
+              className="lg:px-10 px-6  py-2 md:py-6 bg-[#FDB813] text-[#1C2023] font-bold text-xs md:text-sm  tracking-wider rounded-md border-2 border-[#FFBF3F] hover:bg-transparent hover:text-white transition-all duration-300 shadow-lg hover:shadow-[0_0_30px_rgba(255,191,63,0.3)]"
             >
               Explore Products
             </Button>

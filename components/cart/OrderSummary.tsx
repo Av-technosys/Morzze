@@ -223,7 +223,7 @@ const OrderSummary = () => {
 
       <div className="mb-8">
         <label className="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase mb-3 block">
-          Promo Code
+          Have coupon 
         </label>
         <div className="flex gap-2">
           <input

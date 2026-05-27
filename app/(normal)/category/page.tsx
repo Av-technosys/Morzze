@@ -28,7 +28,7 @@ const page = async () => {
     <div>
       <CategoryBanner />
       <Suspense fallback={<div>Loading...</div>}>
-        <CategorySection categories={filteredCategories} />
+        <CategorySection categories={categories} />
       </Suspense>
       <SimpleCategoryBanner />
       <ScrollingRibbon />

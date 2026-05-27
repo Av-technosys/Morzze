@@ -27,69 +27,12 @@ type StoreType = {
   email: string;
   hours: string;
   type: string;
-  badge: string;
+  badgeBgColor: string;
+  badgeTextColor: string;
   features: string[];
+  mapEmbedUrl?: string | null;
   distance?: number;
 };
-
-const stores: StoreType[] = [
-  {
-    name: "Morzze Flagship Store",
-    city: "Jaipur",
-    state: "Rajasthan",
-    latitude: 26.9124,
-    longitude: 75.7873,
-    address: "MI Road, Jaipur, Rajasthan",
-    contact: "+91 9876543210",
-    email: "info@morzze.com",
-    hours: "10:00 AM - 9:00 PM",
-    type: "Flagship",
-    badge: "bg-[#f4e8c7] text-[#9b5d00]",
-    features: ["Parking", "Premium Collection", "Custom Orders"],
-  },
-  {
-    name: "Morzze Delhi Store",
-    city: "New Delhi",
-    state: "Delhi",
-    latitude: 28.6139,
-    longitude: 77.209,
-    address: "Connaught Place, New Delhi",
-    contact: "+91 9988776655",
-    email: "info@morzze.com",
-    hours: "10:00 AM - 9:00 PM",
-    type: "Studio",
-    badge: "bg-[#eadcff] text-[#6b3eb1]",
-    features: ["Parking", "Design Support"],
-  },
-  {
-    name: "Morzze Mumbai Store",
-    city: "Mumbai",
-    state: "Maharashtra",
-    latitude: 19.076,
-    longitude: 72.8777,
-    address: "Bandra West, Mumbai",
-    contact: "+91 8877665544",
-    email: "info@morzze.com",
-    hours: "11:00 AM - 8:00 PM",
-    type: "Dealer",
-    badge: "bg-[#dfe8ff] text-[#3a5ca8]",
-    features: ["Accessories", "Parking"],
-  },
-  {
-    name: "Morzze Bangalore Store",
-    city: "Bangalore",
-    state: "Karnataka",
-    latitude: 12.9716,
-    longitude: 77.5946,
-    address: "Indiranagar, Bangalore",
-    contact: "+91 7766554433",
-    email: "info@morzze.com",
-    hours: "10:30 AM - 9:00 PM",
-    type: "Flagship",
-    badge: "bg-[#f4e8c7] text-[#9b5d00]",
-    features: ["Experience Zone", "Parking"],
-  },
-];
 
 function calculateDistance(
   lat1: number,
@@ -112,7 +55,11 @@ function calculateDistance(
   return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
-export default function StoreLocatorSection() {
+type Props = {
+  stores: StoreType[];
+};
+
+export default function StoreLocatorSection({ stores }: Props) {
   const [selectedState, setSelectedState] = useState<any>(null);
   const [selectedCity, setSelectedCity] = useState<any>(null);
 
@@ -159,6 +106,11 @@ export default function StoreLocatorSection() {
 
   const mapUrl = useMemo(() => {
     if (!activeStore) return "";
+
+    // Use custom map embed URL if available, otherwise default to coordinates
+    if (activeStore.mapEmbedUrl) {
+      return activeStore.mapEmbedUrl;
+    }
 
     return `https://www.google.com/maps?q=${activeStore.latitude},${activeStore.longitude}&z=15&output=embed`;
   }, [activeStore]);
@@ -273,6 +225,15 @@ export default function StoreLocatorSection() {
           </button>
         </div>
 
+        {/* No stores message */}
+        {stores.length === 0 && (
+          <div className="text-center py-16 text-white/60">
+            <MapPin className="w-12 h-12 mx-auto mb-4 opacity-40" />
+            <p className="text-lg">No stores available at the moment.</p>
+            <p className="text-sm mt-2">Please check back later.</p>
+          </div>
+        )}
+
         {/* HIDE UNTIL SEARCH */}
         {filteredStores.length > 0 && activeStore && (
           <div className="grid lg:grid-cols-[350px_1fr] gap-7">
@@ -294,7 +255,11 @@ export default function StoreLocatorSection() {
                     </h3>
 
                     <span
-                      className={`px-2 py-[3px] rounded-full text-[10px] ${store.badge}`}
+                      className="px-2 py-[3px] rounded-full text-[10px]"
+                      style={{
+                        backgroundColor: store.badgeBgColor,
+                        color: store.badgeTextColor,
+                      }}
                     >
                       {store.type}
                     </span>
@@ -348,7 +313,11 @@ export default function StoreLocatorSection() {
                   </h2>
 
                   <span
-                    className={`inline-block px-3 py-[4px] rounded-full text-[11px] mb-6 ${activeStore.badge}`}
+                    className="inline-block px-3 py-[4px] rounded-full text-[11px] mb-6"
+                    style={{
+                      backgroundColor: activeStore.badgeBgColor,
+                      color: activeStore.badgeTextColor,
+                    }}
                   >
                     {activeStore.type}
                   </span>

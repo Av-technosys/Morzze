@@ -214,6 +214,15 @@ const page = () => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleBack = () => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  };
+
   return (
     <section>
       <div className="w-full flex min-h-screen bg-black text-white ">
@@ -224,6 +233,17 @@ const page = () => {
         <div className=" space-y-4  max-w-2xl mx-auto  justify-center text-left items-center my-auto">
           <div className="absolute  -top-20 right-0 w-40 h-40 blur-[110px] bg-[#FFDD00]"></div>
           <div className="absolute bottom-0 middle-0 w-40 h-40 blur-[110px] bg-[#FFDD00]"></div>
+          <div className="lg:hidden flex items-center gap-2 text-sm text-white mb-3">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-2 text-white transition hover:bg-white/10"
+              aria-label="Go back"
+            >
+              <span className="text-base">←</span>
+              Back
+            </button>
+          </div>
           <h1 className="text-4xl font-bold p-0">Welcome Back</h1>
           <p className="text-sm -mt-5  ">Sign In To Your Account</p>
           <div className="w-full text-center z-10">

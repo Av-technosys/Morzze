@@ -66,7 +66,7 @@ const CheckoutSummary = () => {
   const total = Math.max(discountedSubtotal + gst, 0)
 
   return (
-    <div className="bg-[#0A0A0A] border border-zinc-900 rounded-lg p-8">
+    <div className="bg-[#0A0A0A] border border-zinc-900 rounded-lg p-8 text-white">
       <h2 className="text-white text-lg font-medium mb-8">Summary</h2>
       
       <div className="space-y-6">
@@ -84,7 +84,7 @@ const CheckoutSummary = () => {
                     />
                   </div>
                 )}
-                <span className="text-zinc-500 text-sm font-light leading-snug truncate">
+                <span className="text-sm font-light leading-snug truncate">
                   {item.name ?? item.slug} {item.quantity > 1 && `×${item.quantity}`}
                 </span>
               </div>
@@ -97,13 +97,13 @@ const CheckoutSummary = () => {
 
         <div className="space-y-3 pt-6 border-t border-zinc-900">
           <div className="flex justify-between text-sm">
-            <span className="text-zinc-500 font-light">Subtotal</span>
-            <span className="text-zinc-300">₹{subtotal.toLocaleString("en-IN")}</span>
+            <span className=" font-light">Subtotal</span>
+            <span className="text-white">₹{subtotal.toLocaleString("en-IN")}</span>
           </div>
 
           {appliedCoupon && discountAmount > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-zinc-500 font-light">
+              <span className=" font-light">
                 Discount&nbsp;
                 <span className="text-emerald-400 font-semibold">
                   ({Number.isFinite(discountPercent) && discountPercent > 0
@@ -123,12 +123,12 @@ const CheckoutSummary = () => {
           )}
 
           <div className="flex justify-between text-sm">
-            <span className="text-zinc-500 font-light">Shipping</span>
+            <span className=" font-light">Shipping</span>
             <span className="text-green-500 uppercase text-xs font-bold tracking-widest">Free</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-zinc-500 font-light">GST (18%)</span>
-            <span className="text-zinc-300">₹{gst.toLocaleString("en-IN")}</span>
+            <span className=" font-light">GST (18%)</span>
+            <span className="text-white">₹{gst.toLocaleString("en-IN")}</span>
           </div>
         </div>
 

@@ -88,7 +88,7 @@ export default function BlogGridTabs() {
                       <img
                         src={getImageUrl(blog.image)}
                         alt={blog.title || "Blog image"}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                        className="w-full h-full object-contain  group-hover:scale-105 transition duration-700"
                       />
                     )}
 

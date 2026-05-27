@@ -76,6 +76,12 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
   }, [])
 
   const handleChange = (field: string, value: string) => {
+    if (field === "pincode") {
+      const onlyDigits = value.replace(/\D/g, "")
+      setForm((prev) => ({ ...prev, [field]: onlyDigits.slice(0, 6) }))
+      return
+    }
+
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -88,6 +94,7 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
       if (!form.city.trim()) { toast.error("City is required"); return }
       if (!form.state.trim()) { toast.error("State is required"); return }
       if (!form.pincode.trim()) { toast.error("Pincode is required"); return }
+      if (!/^\d{6}$/.test(form.pincode)) { toast.error("Pincode must be exactly 6 digits"); return }
 
       onNext({
         fullName: form.fullName,
@@ -121,7 +128,7 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
   const inputClass = "w-full bg-[#0F0F0F] border border-zinc-800 rounded-md px-4 py-3 text-sm text-white focus:outline-none focus:border-[#FDB813]/50 transition-colors placeholder:text-zinc-600"
 
   return (
-    <div className="w-full">
+    <div className="w-full text-white">
       <h2 className="text-white text-2xl font-medium mb-8 font-montserrat">Shipping Details</h2>
 
       {/* Saved Addresses (only for logged-in users) */}
@@ -160,8 +167,8 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
                     </span>
                   )}
                 </div>
-                <p className="text-zinc-500 text-xs mt-1">{addr.phone}</p>
-                <p className="text-zinc-500 text-xs mt-0.5 truncate">{formatAddr(addr)}</p>
+                <p className=" text-white text-xs mt-1">{addr.phone}</p>
+                <p className="text-white text-xs mt-0.5 truncate">{formatAddr(addr)}</p>
               </div>
             </label>
           ))}
@@ -181,7 +188,7 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
               onChange={() => setUseNewAddress(true)}
               className="accent-[#FDB813]"
             />
-            <span className="text-zinc-300 text-sm">Use a different address</span>
+            <span className="text-sm">Use a different address</span>
           </label>
         </div>
       ))}
@@ -190,7 +197,7 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
       {(!loadingAddresses && (useNewAddress || loggedIn === false || savedAddresses.length === 0)) && (
         <div className="space-y-4 font-montserrat">
           {loggedIn && savedAddresses.length > 0 && (
-            <p className="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase mb-2 font-inter">
+            <p className="text-[10px] text-white font-bold tracking-[0.2em] uppercase mb-2 font-inter">
               New Address
             </p>
           )}

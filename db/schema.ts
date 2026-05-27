@@ -12,7 +12,9 @@ import {
   index,
   primaryKey,
   jsonb,
-  pgEnum
+  pgEnum,
+  json,
+  decimal
 } from "drizzle-orm/pg-core";
 
 
@@ -481,4 +483,62 @@ export const productFaq = pgTable("product_faq", {
   question: varchar("question", { length: 500 }).notNull(),
   answer: text("answer").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const stores = pgTable("stores", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  storeName: varchar("store_name", { length: 255 }).notNull(),
+
+  slug: varchar("slug", { length: 255 }).unique().notNull(),
+
+  storeType: varchar("store_type", { length: 100 }).notNull(),
+
+  state: varchar("state", { length: 150 }).notNull(),
+
+  city: varchar("city", { length: 150 }).notNull(),
+
+  latitude: decimal("latitude", {
+    precision: 10,
+    scale: 7,
+  }).notNull(),
+
+  longitude: decimal("longitude", {
+    precision: 10,
+    scale: 7,
+  }).notNull(),
+
+  address: text("address").notNull(),
+
+  contactNumber: varchar("contact_number", {
+    length: 20,
+  }).notNull(),
+
+  email: varchar("email", {
+    length: 255,
+  }).notNull(),
+
+  workingHours: varchar("working_hours", {
+    length: 255,
+  }).notNull(),
+
+  features: json("features").$type<string[]>(),
+
+  badgeBgColor: varchar("badge_bg_color", {
+    length: 50,
+  }),
+
+  badgeTextColor: varchar("badge_text_color", {
+    length: 50,
+  }),
+
+  mapEmbedUrl: text("map_embed_url"),
+
+  isFeatured: boolean("is_featured").default(false),
+
+  isActive: boolean("is_active").default(true),
+
+  createdAt: timestamp("created_at").defaultNow(),
+
+  updatedAt: timestamp("updated_at").defaultNow(),
 });

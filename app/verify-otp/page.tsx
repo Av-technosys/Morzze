@@ -312,18 +312,13 @@ const VerifyOtpContent = () => {
                   <button
                     onClick={handleResend}
                     disabled={!canResend}
-                    className={`font-medium ${canResend ? "text-blue-600" : "text-gray-400 cursor-not-allowed"
+                    className={`font-medium ${canResend ? "text-yellow-500" : "text-gray-400 cursor-not-allowed"
                       }`}
                   >
                     Resend
                   </button>
                 </div>
-                <p className="">
-                  Don't have account?{" "}
-                  <a href="/register" className="text-[#FDB813] underline">
-                    Create Account
-                  </a>
-                </p>
+             
               </TabsContent>
             </Tabs>
           </div>

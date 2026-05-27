@@ -63,8 +63,8 @@ const OrderTable = ({ page, orders, pageSize }: OrderTableProps) => {
             <TableHead>Order ID</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Total Amount Paid</TableHead>
-            <TableHead>AddressLine1</TableHead>
-            <TableHead>AddressLine2</TableHead>
+            <TableHead>Address Line 1</TableHead>
+            <TableHead>Address Line 2</TableHead>
             <TableHead className="text-end">Action</TableHead>
           </TableRow>
         </TableHeader>

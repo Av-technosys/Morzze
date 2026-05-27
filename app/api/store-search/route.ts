@@ -1,19 +1,7 @@
 import { NextResponse } from "next/server";
-
-const stores = [
-    {
-        store_name: "Jaipur Store",
-        city: "Jaipur",
-        latitude: 26.9124,
-        longitude: 75.7873,
-    },
-    {
-        store_name: "Delhi Store",
-        city: "Delhi",
-        latitude: 28.7041,
-        longitude: 77.1025,
-    },
-];
+import { db } from "@/db";
+import { stores } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 function calculateDistance(lat1: any, lon1: any, lat2: any, lon2: any) {
     const R = 6371;
@@ -36,6 +24,10 @@ export async function GET(req: any) {
 
     const location = searchParams.get("location");
 
+    if (!location) {
+        return NextResponse.json({ stores: [] }, { status: 400 });
+    }
+
     // Get coordinates from Google Geocoding API
     const geoRes = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
@@ -43,18 +35,31 @@ export async function GET(req: any) {
 
     const geoData = await geoRes.json();
 
+    if (!geoData.results || geoData.results.length === 0) {
+        return NextResponse.json({ stores: [] }, { status: 404 });
+    }
+
     const userLat = geoData.results[0].geometry.location.lat;
     const userLng = geoData.results[0].geometry.location.lng;
 
+    // Fetch active stores from database
+    const dbStores = await db
+        .select()
+        .from(stores)
+        .where(eq(stores.isActive, true));
+
     // Calculate distances
-    const nearestStores = stores
+    const nearestStores = dbStores
         .map((store) => ({
-            ...store,
+            store_name: store.storeName,
+            city: store.city,
+            latitude: Number(store.latitude),
+            longitude: Number(store.longitude),
             distance: calculateDistance(
                 userLat,
                 userLng,
-                store.latitude,
-                store.longitude
+                Number(store.latitude),
+                Number(store.longitude)
             ).toFixed(2),
         }))
         .sort((a, b) => Number(a.distance) - Number(b.distance));

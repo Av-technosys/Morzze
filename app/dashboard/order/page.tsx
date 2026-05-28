@@ -115,7 +115,13 @@ export default async function MyOrdersPage() {
 
                     </div>
 
-                    <div className="flex justify-end mt-auto">
+                    <div className="flex justify-end items-center  mt-auto">
+                    <Link
+                                href={`/orders/${order.id}/tracking`}
+                                className="text-[#FFB800] text-[11px] md:text-sm font-bold font-inter  uppercase tracking-widest mr-4 p-2 border-2  border-[#ffb800] rounded-lg  "
+                              >
+                                Track Order
+                              </Link>
                       <Link
                         href={`/dashboard/order/${order.id}`}
                         className="text-[#FFB800] text-[11px] md:text-sm font-bold font-inter hover:underline uppercase tracking-widest"

@@ -71,31 +71,9 @@ const CheckoutSummary = () => {
       
       <div className="space-y-6">
         {/* Product Line Items */}
-        <div className="space-y-4">
-          {cartItems.map((item, i) => (
-            <div key={i} className="flex justify-between items-start gap-4">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                {item.image && (
-                  <div className="w-10 h-10 bg-zinc-900 rounded overflow-hidden shrink-0">
-                    <img
-                      src={item.image}
-                      alt={item.name ?? "Product"}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <span className="text-sm font-light leading-snug truncate">
-                  {item.name ?? item.slug} {item.quantity > 1 && `×${item.quantity}`}
-                </span>
-              </div>
-              <span className="text-zinc-300 text-sm font-medium text-nowrap">
-                ₹{((item.price ?? 0) * item.quantity).toLocaleString("en-IN")}
-              </span>
-            </div>
-          ))}
-        </div>
+        
 
-        <div className="space-y-3 pt-6 border-t border-zinc-900">
+        <div className="space-y-3 border-t border-zinc-900">
           <div className="flex justify-between text-sm">
             <span className=" font-light">Subtotal</span>
             <span className="text-white">₹{subtotal.toLocaleString("en-IN")}</span>

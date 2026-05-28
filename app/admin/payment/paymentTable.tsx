@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import { Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ContactLink } from "@/components/ContactLink";
 
 interface PaymentTableProps {
   page: number;
@@ -72,7 +73,7 @@ const PaymentTable = ({ page, rows, pageSize }: PaymentTableProps) => {
                   </TableCell>
                   <TableCell>{u?.name ?? "—"}</TableCell>
                   <TableCell className="max-w-[200px] truncate" title={u?.email}>
-                    {u?.email ?? "—"}
+                    <ContactLink type="email" value={u?.email} />
                   </TableCell>
                   <TableCell className="font-mono text-xs max-w-[120px] truncate" title={o?.id}>
                     {o?.id ?? "—"}

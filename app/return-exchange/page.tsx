@@ -1,4 +1,5 @@
 import React from "react";
+import { ContactLink } from "@/components/ContactLink";
 
 const page = () => {
   return (
@@ -74,9 +75,11 @@ const page = () => {
             these steps:
           </p>
           <p>
-            Contact our customer support team at info@morzze.com or call us at
-            1800 11 0123. Provide details of your purchase, including the order
-            number and the reason for your return or exchange request.
+            Contact our customer support team at{" "}
+            <ContactLink type="email" value="info@morzze.com" /> or call us at{" "}
+            <ContactLink type="phone" value="1800 11 0123" />. Provide details
+            of your purchase, including the order number and the reason for your
+            return or exchange request.
           </p>
 
           <p className="font-semibold text-white mt-4">
@@ -151,8 +154,12 @@ const page = () => {
             return and exchange policy, please do not hesitate to contact us at:
           </p>
           <p className="mt-2">Anupam Retail Limited</p>
-          <p>Email: info@morzze.com</p>
-          <p>Helpline: 1800 11 0123</p>
+          <p>
+            Email: <ContactLink type="email" value="info@morzze.com" />
+          </p>
+          <p>
+            Helpline: <ContactLink type="phone" value="1800 11 0123" />
+          </p>
         </div>
 
         {/* Footer Note */}

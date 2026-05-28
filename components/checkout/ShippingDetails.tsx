@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getAddresses } from '@/helper/user/action'
 import { isUserLoggedIn } from '@/helper/auth/action'
 import { toast } from 'sonner'
+import { ContactLink } from '@/components/ContactLink'
 
 type AddressData = {
   id: number;
@@ -167,7 +168,11 @@ const ShippingDetails = ({ onNext }: { onNext: (data: any) => void }) => {
                     </span>
                   )}
                 </div>
-                <p className=" text-white text-xs mt-1">{addr.phone}</p>
+                <ContactLink
+                  type="phone"
+                  value={addr.phone}
+                  className="block text-white text-xs mt-1"
+                />
                 <p className="text-white text-xs mt-0.5 truncate">{formatAddr(addr)}</p>
               </div>
             </label>

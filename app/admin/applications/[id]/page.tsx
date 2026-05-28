@@ -10,6 +10,7 @@ import {
   User,
   CalendarDays,
 } from "lucide-react";
+import { ContactLink } from "@/components/ContactLink";
 
 export default async function ApplicationDetailsPage({
   params,
@@ -62,7 +63,7 @@ export default async function ApplicationDetailsPage({
               <p className="text-sm font-medium">Email Address</p>
             </div>
             <p className="text-lg font-semibold break-all">
-              {application.email}
+              <ContactLink type="email" value={application.email} />
             </p>
           </div>
 
@@ -72,7 +73,7 @@ export default async function ApplicationDetailsPage({
               <p className="text-sm font-medium">Mobile Number</p>
             </div>
             <p className="text-lg font-semibold">
-              {application.mobileNumber}
+              <ContactLink type="phone" value={application.mobileNumber} />
             </p>
           </div>
 

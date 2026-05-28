@@ -13,6 +13,7 @@ import {
   setDefaultAddress,
 } from "@/helper"
 import { toast } from "sonner"
+import { ContactLink } from "@/components/ContactLink"
 
 type AddressItem = {
   id: number;
@@ -229,7 +230,11 @@ const AddressPage = () => {
                     <h3 className="text-xl font-bold font-montserrat text-white tracking-wide truncate">
                       {item.fullName || "—"}
                     </h3>
-                    <p className="text-sm text-zinc-400 font-inter font-medium">{item.phone || "—"}</p>
+                    <ContactLink
+                      type="phone"
+                      value={item.phone}
+                      className="block text-sm text-zinc-400 font-inter font-medium"
+                    />
                     <p className="text-sm text-zinc-500 font-inter leading-relaxed max-w-sm">
                       {formatAddress(item) || "—"}
                     </p>

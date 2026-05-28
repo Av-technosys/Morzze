@@ -20,6 +20,7 @@ import {
   IconBrandTwitter,
   IconBrandYoutube,
 } from "@tabler/icons-react";
+import { ContactLink } from "@/components/ContactLink";
 
 const resources = [
   {
@@ -171,7 +172,11 @@ export default function PressKitRequestSection() {
               <div className="flex gap-3">
                 <Mail size={15} className="text-[#d39b10] mt-1" />
                 <div>
-                  <p className="text-[14px]">info@morzze.com</p>
+                  <ContactLink
+                    type="email"
+                    value="info@morzze.com"
+                    className="block text-[14px]"
+                  />
                   <p className="text-[12px] text-[#777777]">
                     For press inquiries
                   </p>
@@ -180,7 +185,11 @@ export default function PressKitRequestSection() {
               <div className="flex gap-3">
                 <Phone size={15} className="text-[#d39b10] mt-1" />
                 <div>
-                  <p className="text-[14px]">+91-98765-43212</p>
+                  <ContactLink
+                    type="phone"
+                    value="+91-98765-43212"
+                    className="block text-[14px]"
+                  />
                   <p className="text-[12px] text-[#777777]">
                     Direct media line
                   </p>

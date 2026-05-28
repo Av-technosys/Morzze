@@ -3,6 +3,7 @@ import { order, users } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ContactLink } from "@/components/ContactLink";
 
 export default async function UserOrdersPage({
   params,
@@ -46,10 +47,12 @@ export default async function UserOrdersPage({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
         <div>
-          <span className="font-medium text-foreground">Email:</span> {userData.email}
+          <span className="font-medium text-foreground">Email:</span>{" "}
+          <ContactLink type="email" value={userData.email} />
         </div>
         <div>
-          <span className="font-medium text-foreground">Phone:</span> {userData.phone}
+          <span className="font-medium text-foreground">Phone:</span>{" "}
+          <ContactLink type="phone" value={userData.phone} />
         </div>
       </div>
 

@@ -115,8 +115,8 @@ export async function GET(
 
   <h2 style="font-size:16px;margin-top:24px;">Bill to</h2>
   <p style="margin:4px 0;"><strong>${escapeHtml(profile.fullName)}</strong></p>
-  <p class="muted" style="margin:4px 0;">${escapeHtml(profile.email)}</p>
-  <p class="muted" style="margin:4px 0;">${escapeHtml(profile.phone || "")}</p>
+  <p class="muted" style="margin:4px 0;"><a href="mailto:${escapeHtml(profile.email)}">${escapeHtml(profile.email)}</a></p>
+  <p class="muted" style="margin:4px 0;"><a href="tel:${escapeHtml((profile.phone || "").replace(/\D/g, ""))}">${escapeHtml(profile.phone || "")}</a></p>
   <p style="margin-top:8px;">${escapeHtml(addr)}</p>
 
   <h2 style="font-size:16px;margin-top:24px;">Payment</h2>

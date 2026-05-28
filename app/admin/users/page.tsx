@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { users } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import Link from "next/link";
+import { ContactLink } from "@/components/ContactLink";
 
 export default async function Page() {
   const allUsers = await db
@@ -50,8 +51,12 @@ export default async function Page() {
                       {u.name}
                     </Link>
                   </td>
-                  <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3">{u.phone}</td>
+                  <td className="px-4 py-3">
+                    <ContactLink type="email" value={u.email} />
+                  </td>
+                  <td className="px-4 py-3">
+                    <ContactLink type="phone" value={u.phone} />
+                  </td>
                   <td className="px-4 py-3">{u.emailVerified ? "Yes" : "No"}</td>
                   <td className="px-4 py-3">
                     {u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}
@@ -65,4 +70,3 @@ export default async function Page() {
     </div>
   );
 }
-

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
+import { ContactLink } from "@/components/ContactLink";
 
 
 
@@ -200,13 +201,25 @@ const handleFaqRedirect = () => {
           <h3 className="text-white font-semibold mb-2">Call Us</h3>
           <p className="text-gray-300 text-sm leading-6">
             Toll Free: <br />
-            <span className="text-yellow-400">1800 110 123</span>
+            <ContactLink
+              type="phone"
+              value="1800 110 123"
+              className="text-yellow-400"
+            />
             <br />
             Sales: <br />
-            <span className="text-yellow-400">+91-87503-13000</span>
+            <ContactLink
+              type="phone"
+              value="+91-87503-13000"
+              className="text-yellow-400"
+            />
             <br />
             Support: <br />
-            <span className="text-yellow-400">+91-87503-13000</span>
+            <ContactLink
+              type="phone"
+              value="+91-87503-13000"
+              className="text-yellow-400"
+            />
           </p>
         </div>
 
@@ -217,13 +230,25 @@ const handleFaqRedirect = () => {
           <h3 className="text-white font-semibold mb-2">Email Us</h3>
           <p className="text-gray-300 text-sm leading-6">
             General: <br />
-            <span className="text-yellow-400">info@morzze.com</span>
+            <ContactLink
+              type="email"
+              value="info@morzze.com"
+              className="text-yellow-400"
+            />
             <br />
             Sales: <br />
-            <span className="text-yellow-400">sales@morzze.com</span>
+            <ContactLink
+              type="email"
+              value="sales@morzze.com"
+              className="text-yellow-400"
+            />
             <br />
             Support: <br />
-            <span className="text-yellow-400">info@morzze.com</span>
+            <ContactLink
+              type="email"
+              value="info@morzze.com"
+              className="text-yellow-400"
+            />
           </p>
         </div>
       </div>

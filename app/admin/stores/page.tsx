@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MapPin, Pencil, PlusCircle } from "lucide-react";
 import { getStores } from "@/helper/stores/action";
 import { StoreDeleteButton } from "@/components/admin/StoreDeleteButton";
+import { ContactLink } from "@/components/ContactLink";
 
 export default async function AdminStoresPage() {
   const allStores = await getStores();
@@ -56,7 +57,8 @@ export default async function AdminStoresPage() {
                 </p>
 
                 <p className="text-sm text-gray-400">
-                  {store.isActive ? "✅ Active" : "❌ Inactive"} · {store.contactNumber}
+                  {store.isActive ? "✅ Active" : "❌ Inactive"} ·{" "}
+                  <ContactLink type="phone" value={store.contactNumber} />
                 </p>
               </div>
 

@@ -3,6 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Ruler, Palette, Tag, Award, Check, Phone } from "lucide-react";
+import { ContactLink } from "@/components/ContactLink";
 
 const features = [
   {
@@ -115,7 +116,8 @@ export default function CatalogueInfoRequestSection() {
           >
             <p className="text-[12px] text-white mb-2">Need help choosing?</p>
             <p className="flex items-center gap-2 text-[15px] text-[#f5f2ea] mb-3">
-              <Phone size={14} className="text-[#d39b10]" /> +91 98765 43210
+              <Phone size={14} className="text-[#d39b10]" />
+              <ContactLink type="phone" value="+91 98765 43210" />
             </p>
             <p className="text-[12px] leading-6 text-[#777777]">
               Our product specialists can guide you through the right bathroom

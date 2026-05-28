@@ -3,6 +3,7 @@ import { getApplications } from "@/helper/applications/action";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BriefcaseBusiness, Eye } from "lucide-react";
+import { ContactLink } from "@/components/ContactLink";
 
 async function Page() {
   const applications = await getApplications();
@@ -31,7 +32,11 @@ async function Page() {
                 <h3 className="font-semibold text-lg">{application.name}</h3>
 
                 <p className="text-sm text-gray-500">
-                  {application.email} | {application.mobileNumber}
+                  <ContactLink type="email" value={application.email} /> |{" "}
+                  <ContactLink
+                    type="phone"
+                    value={application.mobileNumber}
+                  />
                 </p>
 
                 <p className="text-sm text-gray-400">

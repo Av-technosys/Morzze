@@ -23,6 +23,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { ContactLink } from "@/components/ContactLink"
 
 const navItems = [
   { title: "Dashboard", icon: IconLayoutDashboard, href: "/dashboard" },
@@ -93,9 +94,11 @@ export default function AppSidebar() {
               {user.fullName || "User"}
             </h3>
 
-            <p className="text-zinc-500 text-[11px] mt-0.5">
-              {user.email}
-            </p>
+            <ContactLink
+              type="email"
+              value={user.email}
+              className="block text-zinc-500 text-[11px] mt-0.5"
+            />
           </>
         ) : (
           <>

@@ -1,4 +1,5 @@
 import React from "react";
+import { ContactLink } from "@/components/ContactLink";
 
 const page = () => {
   return (
@@ -151,7 +152,8 @@ const page = () => {
           <h2 className="text-lg font-semibold text-white mb-2">Contact Us</h2>
           <p>
             If you have any questions or concerns about this Privacy Policy,
-            please contact us at: info@morzze.com
+            please contact us at:{" "}
+            <ContactLink type="email" value="info@morzze.com" />
           </p>
         </div>
 

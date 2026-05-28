@@ -4,7 +4,9 @@ import { useCart } from '@/context/CartContext'
 import { useRouter } from 'next/navigation'
 import { initiateRazorpayPayment } from '@/lib/razorpay'
 import { toast } from 'sonner'
-import { ShoppingBag } from 'lucide-react'
+import {  ShoppingBag } from 'lucide-react'
+import { ContactLink } from '@/components/ContactLink'
+import Link from 'next/link'
 
 /**
  * Parse a rupee string like "₹1,000" or "₹15000" into a number.
@@ -127,10 +129,14 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
         <div className="bg-[#0F0F0F] border border-zinc-900 p-6 rounded-md font-inter">
           <p className="text-[10px] text-zinc-500 font-bold tracking-[0.2em] uppercase mb-2 font-inter">Contact</p>
           <p className="text-white text-sm font-light">
-            {shippingData
-              ? `${shippingData.fullName} — ${shippingData.phone}`
-              : "—"
-            }
+            {shippingData ? (
+              <>
+                {shippingData.fullName} —{" "}
+                <ContactLink type="phone" value={shippingData.phone} />
+              </>
+            ) : (
+              "—"
+            )}
           </p>
         </div>
 
@@ -172,7 +178,9 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
                 )}
               </div>
               <div className="flex-1">
-                <h4 className="text-white text-sm font-medium">{item.name ?? item.slug}</h4>
+                <Link href={`/product/${item.slug}`}>
+                  <h4 className="text-white text-sm font-medium">{item.name ?? item.slug}</h4>
+                </Link>
                 <p className="text-white text-xs font-light mt-1">
                   {item.sku ? `SKU: ${item.sku}` : ""} × {item.quantity}
                 </p>

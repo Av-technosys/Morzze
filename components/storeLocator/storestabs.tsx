@@ -15,6 +15,7 @@ import {
 import Select from "react-select";
 import statesAndCities from "country-state-city/lib/city";
 import { State, City } from "country-state-city";
+import { ContactLink } from "@/components/ContactLink";
 
 type StoreType = {
   name: string;
@@ -357,9 +358,15 @@ export default function StoreLocatorSection({ stores }: Props) {
                       </p>
 
                       <p className="text-[white]/80 leading-6">
-                        {activeStore.contact}
+                        <ContactLink
+                          type="phone"
+                          value={activeStore.contact}
+                        />
                         <br />
-                        {activeStore.email}
+                        <ContactLink
+                          type="email"
+                          value={activeStore.email}
+                        />
                       </p>
 
                       <a

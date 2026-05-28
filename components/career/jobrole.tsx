@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MoveRight, Upload, X } from "lucide-react";
 import GeneralApplicationPopup from "./GeneralApplicationPopup";
+import { ContactLink } from "@/components/ContactLink";
 
 const jobs = [
   {
@@ -244,13 +245,11 @@ export default function CareersPositionsModal() {
           resume and we&apos;ll be in touch.
         </p>
 
-        <button
-          type="button"
-          onClick={() => setApplicationOpen(true)}
-          className="px-10 h-11 bg-[#e6aa12] text-black text-[13px] font-medium"
-        >
-          info@morzze.com
-        </button>
+        <ContactLink
+          type="email"
+          value="info@morzze.com"
+          className="inline-flex items-center px-10 h-11 bg-[#e6aa12] text-black text-[13px] font-medium"
+        />
       </div>
 
       <AnimatePresence>

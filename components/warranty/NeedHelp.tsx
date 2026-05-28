@@ -2,6 +2,7 @@
 import React from "react";
 import { IconPhone, IconMail } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { getContactHref } from "@/components/ContactLink";
 
 const NeedHelp = () => {
   return (
@@ -22,20 +23,26 @@ const NeedHelp = () => {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           
           {/* Phone Button - Solid Yellow */}
-          <Button 
+          <Button
+            asChild
             className="w-full sm:w-auto bg-[#FDB813] hover:bg-[#FFD700] text-black font-bold py-7 px-10 rounded-sm flex items-center gap-3 transition-all active:scale-95"
           >
-            <IconPhone size={20} stroke={2.5} />
-            <span className="text-sm tracking-wide">+91-87503-13000</span>
+            <a href={getContactHref("phone", "+91-87503-13000")}>
+              <IconPhone size={20} stroke={2.5} />
+              <span className="text-sm tracking-wide">+91-87503-13000</span>
+            </a>
           </Button>
 
           {/* Email Button - Outlined */}
-          <Button 
+          <Button
+            asChild
             variant="outline"
             className="w-full sm:w-auto bg-transparent border-2 border-[#FDB813]/40 hover:border-[#FDB813] hover:bg-[#FDB813]/5 text-[#FDB813] font-bold py-7 px-10 rounded-sm flex items-center gap-3 transition-all active:scale-95"
           >
-            <IconMail size={20} stroke={2} />
-            <span className="text-sm tracking-wide">info@morzze.com</span>
+            <a href={getContactHref("email", "info@morzze.com")}>
+              <IconMail size={20} stroke={2} />
+              <span className="text-sm tracking-wide">info@morzze.com</span>
+            </a>
           </Button>
 
         </div>

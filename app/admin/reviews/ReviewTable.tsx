@@ -8,6 +8,7 @@ import { useTransition, useState } from "react";
 
 
 import { pageSize } from "@/const/globalconst";
+import { ContactLink } from "@/components/ContactLink";
 
 import {
   Mail,
@@ -158,7 +159,11 @@ async function handleDelete() {
                 <TableCell className="py-5">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Mail size={14} />
-                    <span className="text-sm">{review.email}</span>
+                    <ContactLink
+                      type="email"
+                      value={review.email}
+                      className="text-sm"
+                    />
                   </div>
                 </TableCell>
 

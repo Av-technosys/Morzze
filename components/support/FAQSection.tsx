@@ -6,6 +6,7 @@ import {
   AccordionItem, 
   AccordionTrigger 
 } from "@/components/ui/accordion";
+import { LinkifiedContactText } from "@/components/ContactLink";
 
 // 1. Data ko bahar nikal lo handle karne ke liye
 const FAQ_CONTENT = {
@@ -125,7 +126,7 @@ const FAQSection = () => {
                   {item.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-white/80 pb-5">
-                  {item.a}
+                  <LinkifiedContactText text={item.a} />
                 </AccordionContent>
               </AccordionItem>
             ))}

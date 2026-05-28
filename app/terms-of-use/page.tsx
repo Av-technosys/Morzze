@@ -1,4 +1,5 @@
 import React from "react";
+import { ContactLink } from "@/components/ContactLink";
 
 const page = () => {
   return (
@@ -116,7 +117,7 @@ const page = () => {
               6. Disclaimer of Warranties
             </h2>
             <p>
-              6.1 The Website is provided "as is" and "as available" without
+              The Website is provided "as is" and "as available" without
               warranties of any kind, either express or implied, including but
               not limited to implied warranties of merchantability or fitness
               for a particular purpose.
@@ -129,7 +130,7 @@ const page = () => {
               7. Limitation of Liability
             </h2>
             <p>
-              7.1 To the fullest extent permitted by law, Anupam Retail Limited
+              To the fullest extent permitted by law, Anupam Retail Limited
               shall not be liable for any direct, indirect, incidental, special,
               consequential, or punitive damages arising out of or in connection
               with your use of the Website.
@@ -142,8 +143,9 @@ const page = () => {
               8. Contact Information
             </h2>
             <p>
-              8.1 If you have any questions or concerns about these Terms,
-              please contact us at: info@morzze.com
+              If you have any questions or concerns about these Terms,
+              please contact us at:{" "}
+              <ContactLink type="email" value="info@morzze.com" />
             </p>
           </div>
 
@@ -153,7 +155,7 @@ const page = () => {
               9. Termination
             </h2>
             <p>
-              9.1 We reserve the right to suspend or terminate your access to
+              We reserve the right to suspend or terminate your access to
               the Website at our sole discretion, without notice, for any
               reason.
             </p>
@@ -165,7 +167,7 @@ const page = () => {
               10. Third-Party Links
             </h2>
             <p>
-              10.1 The Website may contain links to third-party websites or
+              The Website may contain links to third-party websites or
               resources. We are not responsible for the availability, accuracy,
               or content of these external sites.
             </p>
@@ -177,7 +179,7 @@ const page = () => {
               11. Changes to the Agreement
             </h2>
             <p>
-              11.1 We reserve the right to modify or update these Terms at any
+              We reserve the right to modify or update these Terms at any
               time, and such modifications will be effective immediately upon
               posting on the Website.
             </p>
@@ -189,7 +191,7 @@ const page = () => {
               12. Indemnification
             </h2>
             <p>
-              12.1 You agree to indemnify, defend, and hold harmless Anupam
+              You agree to indemnify, defend, and hold harmless Anupam
               Retail Limited from any claims, damages, losses, or expenses
               arising out of your use of the Website.
             </p>
@@ -201,7 +203,7 @@ const page = () => {
               13. Notice
             </h2>
             <p>
-              13.1 Any notices or communications will be provided via email or
+              Any notices or communications will be provided via email or
               through the Website.
             </p>
           </div>
@@ -212,7 +214,7 @@ const page = () => {
               14. Governing Law and Jurisdiction
             </h2>
             <p>
-              14.1 These Terms are governed by the laws of Delhi, India, and any
+              These Terms are governed by the laws of Delhi, India, and any
               disputes shall be subject to the exclusive jurisdiction of the
               courts in Delhi.
             </p>
@@ -224,7 +226,7 @@ const page = () => {
               15. Effective Date
             </h2>
             <p>
-              15.1 These Terms are effective as of the date of your first use of
+              These Terms are effective as of the date of your first use of
               the Website.
             </p>
           </div>

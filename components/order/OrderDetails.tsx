@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { toast } from "sonner"
 import ReturnRequestModal from "./ReturnRequestModal"
 import Link from "next/link"
+import { ContactLink } from "@/components/ContactLink"
 
 export type OrderDetailLineItem = {
   id: string
@@ -135,10 +136,18 @@ export default function OrderDetails({ order }: { order: OrderDetailViewModel })
           <div className="space-y-1 max-w-[280px]">
             <p className="font-bold text-white">{order.customerName}</p>
             {order.customerPhone ? (
-              <p className="text-xs text-zinc-400">{order.customerPhone}</p>
+              <ContactLink
+                type="phone"
+                value={order.customerPhone}
+                className="block text-xs text-zinc-400"
+              />
             ) : null}
             {order.customerEmail ? (
-              <p className="text-xs text-zinc-500 break-all">{order.customerEmail}</p>
+              <ContactLink
+                type="email"
+                value={order.customerEmail}
+                className="block text-xs text-zinc-500 break-all"
+              />
             ) : null}
             <p className="text-xs text-zinc-500 leading-relaxed">{order.shippingAddress}</p>
           </div>

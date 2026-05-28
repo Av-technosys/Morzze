@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { ContactLink } from "@/components/ContactLink";
 export default function Details({ id }: { id: string }) {
   const [orderInfo, setOrderInfo] = useState<any>(null);
   const [isPending, startTransition] = useTransition();
@@ -124,11 +125,12 @@ export default function Details({ id }: { id: string }) {
                 {/* <p className="text-md text-slate-400">12 previous orders</p> */}
                 <div className="flex flex-col gap-1 pt-1">
                   <span className="flex items-center gap-2 text-md text-slate-600">
-                    <Phone className="w-4 h-4 text-slate-400" />{orderInfo?.users?.phone}
+                    <Phone className="w-4 h-4 text-slate-400" />
+                    <ContactLink type="phone" value={orderInfo?.users?.phone} />
                   </span>
                   <span className="flex items-center gap-2 text-md break-all text-slate-600">
                     <Mail className="w-4 h-4 text-slate-400" />{" "}
-                    {orderInfo?.users?.email}
+                    <ContactLink type="email" value={orderInfo?.users?.email} />
                   </span>
                 </div>
               </div>

@@ -12,6 +12,7 @@ import { generateUniqueSlug } from "../slug/generateUniqueSlug";
 import { and, asc, ilike, sql } from "drizzle-orm";
 import { paginate } from "@/lib/pagination";
 import { category, productCategory, product } from "@/db/schema";
+import { unstable_cache } from "next/cache";
 
 
 interface GetCategoriesOptions {
@@ -183,14 +184,20 @@ export async function deleteCategory(id: string) {
   }
 }
 export async function getCategories() {
-  try {
-    return await db
-      .select()
-      .from(category)
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return unstable_cache(
+    async () => {
+      try {
+        return await db
+          .select()
+          .from(category)
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
+    ['get-categories'],
+    { revalidate: 3600, tags: ['categories'] }
+  )();
 }
 
 export async function getAllProductsByCategorySlug(slug: string) {
@@ -244,38 +251,44 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 export async function getCategoriesWithProducts(limit = 4) {
-  try {
-    const categories = await db.select().from(category);
+  return unstable_cache(
+    async () => {
+      try {
+        const categories = await db.select().from(category);
 
-    const result = await Promise.all(
-      categories.map(async (cat) => {
-        const products = await db
-          .select({
-            id: product.id,
-            name: product.name,
-            slug: product.slug,
-            bannerImage: product.bannerImage,
-            basePrice: product.basePrice,
-            strikethroughPrice: product.strikethroughPrice,
+        const result = await Promise.all(
+          categories.map(async (cat) => {
+            const products = await db
+              .select({
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                bannerImage: product.bannerImage,
+                basePrice: product.basePrice,
+                strikethroughPrice: product.strikethroughPrice,
+              })
+              .from(product)
+              .innerJoin(productCategory, eq(product.id, productCategory.productId))
+              .where(eq(productCategory.categoryId, cat.id))
+              .limit(limit);
+
+            return {
+              ...cat,
+              products,
+            };
           })
-          .from(product)
-          .innerJoin(productCategory, eq(product.id, productCategory.productId))
-          .where(eq(productCategory.categoryId, cat.id))
-          .limit(limit);
+        );
 
-        return {
-          ...cat,
-          products,
-        };
-      })
-    );
-
-    // Only return categories that have at least 1 product
-    return result.filter((cat) => cat.products.length > 0);
-  } catch (error) {
-    console.error("getCategoriesWithProducts failed:", error);
-    return [];
-  }
+        // Only return categories that have at least 1 product
+        return result.filter((cat) => cat.products.length > 0);
+      } catch (error) {
+        console.error("getCategoriesWithProducts failed:", error);
+        return [];
+      }
+    },
+    [`categories-with-products-${limit}`],
+    { revalidate: 3600, tags: ['categories', 'products'] }
+  )();
 }
 
 export async function getAllCategoriesMeta() {

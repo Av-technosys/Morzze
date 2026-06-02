@@ -124,7 +124,7 @@ function SearchResults({
                 {products.map((p) => (
                   <Link
                     key={p.id}
-                    href={`/products/${p.slug}`}
+                    href={`/product/${p.slug}`}
                     onClick={onNavigate}
                     className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-zinc-800/60 transition-colors group"
                   >
@@ -568,7 +568,7 @@ const Header = () => {
                               {searchProducts.map((p) => (
                                 <Link
                                   key={p.id}
-                                  href={`/products/${p.slug}`}
+                                  href={`/product/${p.slug}`}
                                   onClick={handleResultNavigate}
                                   className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-zinc-800/60 transition-colors group"
                                 >

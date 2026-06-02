@@ -104,7 +104,7 @@ const ProductGrid = ({
                 </Badge>
               </div> */}
 
-              <Link href={`/products/${product.slug}`}>
+              <Link href={`/product/${product.slug}`}>
                 <motion.img
                   src={product.bannerImage}
                   alt={product.name}
@@ -172,7 +172,7 @@ const ProductGrid = ({
                 {product.category}
               </p>
 
-              <Link href={`/products/${product.slug}`}>
+              <Link href={`/product/${product.slug}`}>
                 <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
                   {product.name}
                 </h3>

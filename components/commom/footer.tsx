@@ -1,6 +1,3 @@
-"use client";
-
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -9,23 +6,9 @@ import {
   IconBrandYoutube,
   IconBrandLinkedin,
   IconBrandPinterest,
-  IconBrandTwitter,
   IconBrandX,
 } from "@tabler/icons-react";
-
-type Category = {
-  id: string;
-  name: string;
-  slug: string;
-  bannerImage?: string | null;
-  description?: string | null;
-  updatedAt?: Date | null;
-};
-
-type FooterProps = {
-  categories?: Category[];
-};
-
+import { getCategories } from "@/helper";
 const companyLinks = [
   { name: "About Us", href: "/about" },
   { name: "Coupons", href: "/Promo-offer" },
@@ -37,7 +20,9 @@ const companyLinks = [
   { name: "Blogs", href: "/blogs" },
 ];
 
-const Footer = ({ categories: _categories }: FooterProps) => {
+const Footer = async () => {
+  const categories = await getCategories();
+
   const currentYear = new Date().getFullYear();
 
   return (
@@ -60,14 +45,8 @@ const Footer = ({ categories: _categories }: FooterProps) => {
         <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
           {/* Logo & Description Section */}
           <div className="text-left">
-            <div
-              onClick={() => {
-                if (window.location.pathname === "/") {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                } else {
-                  window.location.href = "/";
-                }
-              }}
+            <Link
+              href="/"
               className="inline-block cursor-pointer"
             >
               <div className="relative w-40 h-16 md:w-48 md:h-20">
@@ -80,7 +59,7 @@ const Footer = ({ categories: _categories }: FooterProps) => {
                   priority
                 />
               </div>
-            </div>
+            </Link>
 
             <p className="text-sm md:text-[13px] text-white/90 font-inter leading-relaxed max-w-sm">
               Premium kitchen & bathroom fittings crafted with European design

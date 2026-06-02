@@ -9,13 +9,13 @@ import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
 
 interface NewArrivalProduct {
-  id: string ;
+  id: string;
   name: string | null;
   slug: string | null;
   bannerImage: string | null;
   basePrice: number | null;
   strikethroughPrice: number | null;
-  categoryName: string 
+  categoryName: string
 }
 
 const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
@@ -32,7 +32,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
             <span className="block font-montserrat text-[10px] md:text-xs font-bold text-[#CBA14D] uppercase tracking-[0.4em] ">
               Just arrived
             </span>
-            
+
           </div>
           <div className="hidden md:block absolute right-0 bottom-7">
             <Link
@@ -55,7 +55,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false }}
               transition={{
-                
+
                 duration: 0.8,
                 delay: index * 0.1,
                 ease: [0.16, 1, 0.3, 1],
@@ -71,7 +71,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
                   </div>
                 </div>
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <Image
                     src={product.bannerImage || "/placeholder.png"}
                     alt={product.name || "Product"}
@@ -115,11 +115,10 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
                         e.preventDefault();
                         toggleWishlist(product.slug || "", product.id);
                       }}
-                      className={`shrink-0 rounded-sm h-10 md:h-12 w-10 md:w-10 flex items-center justify-center transition-all ${
-                        isInWishlist(product.slug || "")
+                      className={`shrink-0 rounded-sm h-10 md:h-12 w-10 md:w-10 flex items-center justify-center transition-all ${isInWishlist(product.slug || "")
                           ? "bg-[#FFBF3F] hover:bg-white"
                           : "bg-[#FFBF3F] cursor-pointer"
-                      }`}
+                        }`}
                     >
                       {isInWishlist(product.slug || "") ? (
                         <IconHeartFilled size={20} className="text-red-500" />
@@ -137,7 +136,7 @@ const JustArrived = ({ products }: { products: NewArrivalProduct[] }) => {
                   {product.categoryName}
                 </p>
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
                     {product.name}
                   </h3>

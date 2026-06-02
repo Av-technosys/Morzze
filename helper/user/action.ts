@@ -106,7 +106,6 @@ export async function getCurrentUser() {
   } catch (error) {
     console.error(error)
   }
-
 }
 
 export async function getProfile() {

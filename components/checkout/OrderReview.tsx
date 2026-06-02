@@ -4,7 +4,7 @@ import { useCart } from '@/context/CartContext'
 import { useRouter } from 'next/navigation'
 import { initiateRazorpayPayment } from '@/lib/razorpay'
 import { toast } from 'sonner'
-import {  ShoppingBag } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { ContactLink } from '@/components/ContactLink'
 import Link from 'next/link'
 
@@ -106,7 +106,13 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
           discountAmount,
           subtotal,
         } : undefined,
-      })
+        callback: (response: any) => {
+          setPaying(false)
+          console.log(response);
+        }
+      });
+
+      setPaying(false);
 
       // Payment successful — clear cart and redirect
       clearCart()
@@ -243,4 +249,4 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
   )
 }
 
-export default OrderReview
+export default OrderReview;

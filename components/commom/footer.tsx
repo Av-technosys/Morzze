@@ -11,13 +11,13 @@ import {
 import { getCategories } from "@/helper";
 const companyLinks = [
   { name: "About Us", href: "/about" },
-  { name: "Coupons", href: "/Promo-offer" },
+  { name: "Coupons", href: "/Promo-code" },
   // { name: "Find a Store", href: "/stores" },
   { name: "Videos", href: "/videos" },
   { name: "Catalogue", href: "/catalogue" },
-  { name: "Media", href: "/mediacenter" },
+  { name: "Media", href: "/media" },
   { name: "Careers", href: "/career" },
-  { name: "Blogs", href: "/blogs" },
+  { name: "Blogs", href: "/blog" },
 ];
 
 const Footer = async () => {
@@ -51,7 +51,7 @@ const Footer = async () => {
             >
               <div className="relative w-40 h-16 md:w-48 md:h-20">
                 <Image
-                  src="/footer-logo.png"
+                  src="/logo.png"
                   alt="Morzze Logo"
                   fill
                   sizes="(max-width: 768px) 160px, 192px"

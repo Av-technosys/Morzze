@@ -4,10 +4,10 @@ import { motion } from 'framer-motion'
 
 // Stats Data - Direct key-value match from photo
 const statsData = [
-  { value: "700+", title: "DEALERS" },
-  { value: "30+", title: "YEARS OF EXCELLENCE" },
-  { value: "100+", title: "COLLABORATIONS WITH BUILDERS" },
-  { value: "200+", title: "COLLABORATORS WITH ARCHITECTS" },
+  { value: "700+", title: "DEALER NETWORK" },
+  { value: "35+", title: "YEARS OF EXCELLENCE" },
+  { value: "50k+", title: "HAPPY CUSTOMERS" },
+  { value: "200+", title: "PRODUCT VARIENTS" },
 ];
 
 const PerformanceShowcase = () => {

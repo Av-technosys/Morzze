@@ -51,12 +51,10 @@ const LeadershipSection = () => {
                 </div>
               </div>
               <div className="space-y-6 font-inter text-white/80 text-sm md:text-md leading-relaxed">
-                <p>
-                  With over 25 years of experience in the building materials industry, Rajesh Sharma envisioned Morzze as a brand that would bridge the gap between international quality standards and Indian craftsmanship.
-                </p>
+               
 
                 <p>
-                  With over 25 years of experience in the building materials industry, Rajesh Sharma envisioned Morzze as a brand that would bridge the gap between international quality standards and Indian craftsmanship.
+                  With over 25 years of experience in the building materials industry, Mr. Rajender Garg envisioned Morzze as a brand that would bridge the gap between international quality standards and Indian craftsmanship.
                 </p>
 
                 <p>

@@ -76,7 +76,7 @@ export default function BlogGridTabs() {
             className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10"
           >
             {filtered.map((blog, i) => (
-              <Link href={`/blogs/${blog.slug}`} key={blog.id || i}>
+              <Link href={`/article/${blog.slug}`} key={blog.id || i}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

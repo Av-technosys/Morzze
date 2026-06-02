@@ -2,8 +2,40 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 
-const DescriptionTabs = ({ productAttributeRes, pdfDocuments }: any) => {
+type ProductAttribute = {
+  attribute: string;
+  value?: string | null;
+};
+
+type PdfDocument = {
+  mediaURL: string;
+};
+
+type HtmlTab = {
+  type: "html";
+  label: string;
+  content: string | null | undefined;
+};
+
+type PdfTab = {
+  type: "pdf";
+  label: string;
+  documents: PdfDocument[];
+};
+
+type ProductTab = HtmlTab | PdfTab;
+
+type DescriptionTabsProps = {
+  productAttributeRes?: ProductAttribute[];
+  pdfDocuments?: PdfDocument[];
+};
+
+const DescriptionTabs = ({
+  productAttributeRes,
+  pdfDocuments,
+}: DescriptionTabsProps) => {
   // HTML CONTENT TABS
   const tabKeys = [
     { key: "DESCRIPTION", label: "DESCRIPTION" },
@@ -13,45 +45,42 @@ const DescriptionTabs = ({ productAttributeRes, pdfDocuments }: any) => {
   ];
 
   // AVAILABLE TABS
-  const availableTabs = [
-    ...tabKeys
-      .map((tab) => {
-        const found = productAttributeRes?.find(
-          (a: any) => a.attribute === tab.key,
-        );
+  const htmlTabs: ProductTab[] = tabKeys.flatMap((tab) => {
+    const found = productAttributeRes?.find((a) => a.attribute === tab.key);
 
-        return found
-          ? {
-              type: "html",
-              label: tab.label,
-              content: found.value,
-            }
-          : null;
-      })
-      .filter(Boolean),
-
-    ...(pdfDocuments?.length
+    return found
       ? [
           {
-            type: "pdf",
-            label: "DOCUMENTATION",
-            documents: pdfDocuments,
+            type: "html",
+            label: tab.label,
+            content: found.value,
           },
         ]
-      : []),
-  ];
+      : [];
+  });
+
+  const availableTabs: ProductTab[] = pdfDocuments?.length
+    ? [
+        ...htmlTabs,
+        {
+          type: "pdf",
+          label: "DOCUMENTATION",
+          documents: pdfDocuments,
+        },
+      ]
+    : htmlTabs;
 
   const [activeTab, setActiveTab] = useState(0);
 
   // HIDE COMPONENT IF NO DATA
   if (!availableTabs.length) return null;
-const currentTab: any = availableTabs[activeTab];
+  const currentTab = availableTabs[activeTab];
   return (
     <div className="w-full bg-black py-10 p-4 md:p-10 font-inter border-t border-zinc-900">
       <div className="max-w-7xl mx-auto">
         {/* TAB HEADERS */}
         <div className="flex items-center gap-10 border-b border-zinc-900 overflow-x-auto no-scrollbar">
-          {availableTabs.map((tab: any, index: number) => (
+          {availableTabs.map((tab, index) => (
             <button
               key={index}
               onClick={() => setActiveTab(index)}
@@ -76,8 +105,8 @@ const currentTab: any = availableTabs[activeTab];
             {/* PDF SECTION */}
             {availableTabs[activeTab]?.type === "pdf" ? (
               <div className="space-y-4">
-                {currentTab?.documents?.map(
-                  (doc: any, index: number) => (
+                {currentTab.type === "pdf" && currentTab.documents.map(
+                  (doc, index) => (
                     <a
                       key={index}
                       href={doc.mediaURL}
@@ -108,7 +137,9 @@ const currentTab: any = availableTabs[activeTab];
               <div
                 className="text-white/80 text-[15px] leading-[1.8] prose prose-invert"
                 dangerouslySetInnerHTML={{
-                  __html: (availableTabs[activeTab] as any)?.content || "",
+                  __html: sanitizeRichText(
+                    currentTab.type === "html" ? currentTab.content : "",
+                  ),
                 }}
               />
             )}

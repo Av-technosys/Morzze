@@ -1,8 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
+import { sanitizeRichText } from "@/lib/sanitizeRichText";
 
-const SpecificationsTabs = ({ productAttributeRes }: any) => {
+type ProductAttribute = {
+  attribute: string;
+  value?: string | null;
+};
+
+type SpecificationsTabsProps = {
+  productAttributeRes?: ProductAttribute[];
+};
+
+const SpecificationsTabs = ({ productAttributeRes }: SpecificationsTabsProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   // =================================================
@@ -12,7 +22,7 @@ const SpecificationsTabs = ({ productAttributeRes }: any) => {
   const getAttributeValue = (key: string) => {
     return (
       productAttributeRes?.find(
-        (a: any) => a.attribute === key
+        (a) => a.attribute === key
       )?.value || ""
     );
   };
@@ -137,7 +147,7 @@ const SpecificationsTabs = ({ productAttributeRes }: any) => {
             <div
               className="prose prose-invert max-w-none text-zinc-300"
               dangerouslySetInnerHTML={{
-                __html: featuresBox,
+                __html: sanitizeRichText(featuresBox),
               }}
             />
           )}
@@ -150,7 +160,7 @@ const SpecificationsTabs = ({ productAttributeRes }: any) => {
             <div
               className="prose prose-invert max-w-none text-zinc-300"
               dangerouslySetInnerHTML={{
-                __html: reviews,
+                __html: sanitizeRichText(reviews),
               }}
             />
           )}

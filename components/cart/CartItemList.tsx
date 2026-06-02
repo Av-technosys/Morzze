@@ -46,7 +46,7 @@ const CartItemList = () => {
             >
               <div className="col-span-6 flex gap-6">
                 <Link
-                  href={`/products/${item.slug}`}
+                  href={`/product/${item.slug}`}
                   className="w-24 h-24 bg-zinc-900 rounded-md overflow-hidden shrink-0"
                 >
                   {item.image ? (
@@ -62,7 +62,7 @@ const CartItemList = () => {
                   )}
                 </Link>
                 <div className="flex flex-col justify-center">
-                  <Link href={`/products/${item.slug}`}>
+                  <Link href={`/product/${item.slug}`}>
                     <h3 className="text-white text-sm font-medium mb-1 font-montserrat hover:text-zinc-300 transition-colors">
                       {item.name ?? item.slug}
                     </h3>
@@ -126,7 +126,7 @@ const CartItemList = () => {
             <div key={item.slug} className="flex gap-4 items-start relative">
               {/* Product Image */}
               <Link
-                href={`/products/${item.slug}`}
+                href={`/product/${item.slug}`}
                 className="w-32 h-32 bg-zinc-900 rounded-lg overflow-hidden shrink-0"
               >
                 {item.image ? (
@@ -144,7 +144,7 @@ const CartItemList = () => {
 
               {/* Details */}
               <div className="flex-1 pt-1">
-                <Link href={`/products/${item.slug}`}>
+                <Link href={`/product/${item.slug}`}>
                   <h3 className="text-white text-[15px] font-medium leading-tight mb-1">
                     {item.name ?? item.slug}
                   </h3>

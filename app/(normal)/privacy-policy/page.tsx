@@ -153,7 +153,7 @@ const page = () => {
           <p>
             If you have any questions or concerns about this Privacy Policy,
             please contact us at:{" "}
-            <ContactLink type="email" value="info@morzze.com" />
+            {/* <ContactLink type="email" value="info@morzze.com" /> */}
           </p>
         </div>
 

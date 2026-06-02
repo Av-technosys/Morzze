@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -9,16 +8,13 @@ import {
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   EyeIcon,
-  EyeOffIcon,
   LockIcon,
   MailIcon,
-  PhoneIcon,
 } from "lucide-react";
 import Image from "next/image";
 import React, { Suspense, useState } from "react";
@@ -27,10 +23,16 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { resendOtp, signIn, verifyOtp } from "@/helper";
 
+const PENDING_SIGNUP_EMAIL_KEY = "pendingSignupEmail";
+
+type AuthError = Error & {
+  code?: string;
+};
+
 const VerifyOtpContent = () => {
   const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
 
@@ -41,13 +43,24 @@ const VerifyOtpContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const email = searchParams.get("email");
+  const emailFromUrl = searchParams.get("email");
 
   React.useEffect(() => {
-    if (!email) {
-      router.push("/login");  //should change later
+    const storedEmail = sessionStorage.getItem(PENDING_SIGNUP_EMAIL_KEY);
+    const nextEmail = storedEmail || emailFromUrl;
+
+    if (!nextEmail) {
+      router.push("/login");
+      return;
     }
-  }, [email, router]);
+
+    sessionStorage.setItem(PENDING_SIGNUP_EMAIL_KEY, nextEmail);
+    setEmail(nextEmail);
+
+    if (emailFromUrl) {
+      router.replace("/verify-otp");
+    }
+  }, [emailFromUrl, router]);
 
   React.useEffect(() => {
     if (timer === 0) {
@@ -69,6 +82,11 @@ const VerifyOtpContent = () => {
     }
 
     if (loading) return;
+    if (!email) {
+      toast.error("Please start signup again to verify your email.");
+      router.push("/register");
+      return;
+    }
 
     setLoading(true);
 
@@ -84,9 +102,10 @@ const VerifyOtpContent = () => {
         id: toastId,
       });
 
-      setIsVerified(true);
+      sessionStorage.removeItem(PENDING_SIGNUP_EMAIL_KEY);
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as AuthError;
       console.error("OTP verification error:", error);
 
       toast.error(error.message || "Verification failed ❌", {
@@ -98,6 +117,12 @@ const VerifyOtpContent = () => {
   };
   const handleResend = async () => {
     if (!canResend || loading) return;
+    if (!email) {
+      toast.error("Please start signup again to resend OTP.");
+      router.push("/register");
+      return;
+    }
+
     setLoading(true);
 
     const toastId = toast.loading("Resending OTP...");
@@ -111,8 +136,9 @@ const VerifyOtpContent = () => {
 
       setTimer(30);
       setCanResend(false);
-    } catch (err: any) {
-      toast.error(err.message || "Failed to resend OTP ❌", {
+    } catch (err: unknown) {
+      const error = err as AuthError;
+      toast.error(error.message || "Failed to resend OTP ❌", {
         id: toastId,
       });
     } finally {
@@ -151,10 +177,19 @@ const VerifyOtpContent = () => {
         password: formData.password,
       });
       toast.success("Login successful 🎉");
+      sessionStorage.removeItem(PENDING_SIGNUP_EMAIL_KEY);
       router.push("/dashboard");
-    } catch (err: any) {
-      toast.error(err.message || "Login failed ❌");
-      setErrors((prev) => ({ ...prev, general: err.message || "Login failed" }));
+    } catch (err: unknown) {
+      const error = err as AuthError;
+      if (error.code === "UserNotConfirmedException") {
+        sessionStorage.setItem(PENDING_SIGNUP_EMAIL_KEY, formData.email);
+        setEmail(formData.email);
+        toast.info("Please verify your email first.");
+        return;
+      }
+
+      toast.error(error.message || "Login failed ❌");
+      setErrors((prev) => ({ ...prev, general: error.message || "Login failed" }));
     } finally {
       setEmailLoading(false);
     }
@@ -255,7 +290,7 @@ const VerifyOtpContent = () => {
                   {emailLoading ? "Logging in..." : "Sign in"}
                 </Button>
                 {/* <p className="">
-                  Don't have account?{" "}
+                  Don&apos;t have account?{" "}
                   <Link href="/register" className="text-[#FDB813] underline">
                     Create Account
                   </Link>

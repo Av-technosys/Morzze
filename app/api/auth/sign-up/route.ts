@@ -1,9 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/db";
-import { referralCoinHistory, users } from "@/db/schema";
-import { cognitoAdminGetUser, cognitoSignUp } from "@/helper/cognito";
+import { users } from "@/db/schema";
+import {
+  cognitoAdminGetUser,
+  cognitoResendConfirmationCode,
+  cognitoSignUp,
+} from "@/helper/cognito";
 import { NextResponse } from "next/server";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+
+async function ensureDbUser({
+  email,
+  name,
+  phone,
+  ref,
+}: {
+  email: string;
+  name?: string;
+  phone?: string;
+  ref?: string;
+}) {
+  const [existingDbUser] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email));
+
+  if (existingDbUser) return existingDbUser;
+
+  const [userRes] = await db
+    .insert(users)
+    .values({
+      name: name || "New User",
+      email,
+      phone: phone || "0000000000",
+      password: "COGNITO_AUTH",
+      referralCoins: ref ? 200 : 0,
+    })
+    .returning();
+
+  return userRes;
+}
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -26,21 +62,22 @@ export async function POST(req: Request) {
       );
     }
 
-    await cognitoSignUp({
-      email,
-      password,
-      userAttribute: [{ Name: "email", Value: email }],
-    });
+    await cognitoResendConfirmationCode({ email });
+    const userRes = await ensureDbUser({ email, name, phone, ref });
 
     return NextResponse.json(
       {
-        message: "OTP resent to your email.",
-        data: { email },
+        message: "Account already exists but is not verified. OTP resent to your email.",
+        data: {
+          userId: userRes.id,
+          email,
+          verificationRequired: true,
+        },
       },
       { status: 200 },
     );
   } catch (error: any) {
-    if (error.__type === "UserNotFoundException") {
+    if (error.name === "UserNotFoundException" || error.__type === "UserNotFoundException") {
       try {
         await cognitoSignUp({
           email,
@@ -48,31 +85,7 @@ export async function POST(req: Request) {
           userAttribute: [{ Name: "email", Value: email }],
         });
 
-        const safeName = name || "New User";
-        const safePhone = phone || "0000000000";
-        const dummyPassword = "COGNITO_AUTH";
-
-        const [existingDbUser] = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, email));
-
-        let userRes;
-
-        if (!existingDbUser) {
-          [userRes] = await db
-            .insert(users)
-            .values({
-              name: safeName,
-              email,
-              phone: safePhone,
-              password: dummyPassword,
-              referralCoins: ref ? 200 : 0,
-            })
-            .returning();
-        } else {
-          userRes = existingDbUser;
-        }
+        const userRes = await ensureDbUser({ email, name, phone, ref });
 
         return NextResponse.json(
           {

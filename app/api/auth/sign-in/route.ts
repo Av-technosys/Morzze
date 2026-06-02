@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { authSingIn } from "@/helper/cognito";
+import { authSingIn, cognitoResendConfirmationCode } from "@/helper/cognito";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -61,27 +61,32 @@ export async function POST(req: Request) {
 
     if (error.name === "NotAuthorizedException") {
       return NextResponse.json(
-        { message: "Incorrect email or password" },
+        { message: "Incorrect email or password", code: error.name },
         { status: 401 }
       );
     }
 
     if (error.name === "UserNotConfirmedException") {
+      await cognitoResendConfirmationCode({ email });
+
       return NextResponse.json(
-        { message: "Please verify your email first (OTP)" },
+        {
+          message: "Please verify your email first. A new OTP has been sent.",
+          code: error.name,
+        },
         { status: 403 }
       );
     }
 
     if (error.name === "UserNotFoundException") {
       return NextResponse.json(
-        { message: "User does not exist" },
+        { message: "User does not exist", code: error.name },
         { status: 404 }
       );
     }
 
     return NextResponse.json(
-      { message: error.message || "Login failed" },
+      { message: error.message || "Login failed", code: error.name },
       { status: 500 }
     );
   }

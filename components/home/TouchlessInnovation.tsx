@@ -16,7 +16,7 @@ const TouchlessInnovation = () => {
           className="object-cover opacity- "
           priority
         />
-       
+
       </div>
 
       <div className="container mx-auto px-6 md:px-10 relative z-10 ">
@@ -115,13 +115,13 @@ const TouchlessInnovation = () => {
               transition={{ duration: 1.2, ease: [0.19, 1, 0.22, 1], delay: 1 }}
               className="pt-6"
             >
-              <Link href={"products/airtap"}>
-              <Button
-                variant="outline"
-                className="rounded-md border-[#CBA14D] text-[#CBA14D] hover:bg-[#CBA14D] hover:text-black font-bold uppercase tracking-widest px-10 h-14 transition-all duration-700 bg-transparent"
-              >
-                DISCOVER AIR TAP
-              </Button>
+              <Link href={"product/airtap"}>
+                <Button
+                  variant="outline"
+                  className="rounded-md border-[#CBA14D] text-[#CBA14D] hover:bg-[#CBA14D] hover:text-black font-bold uppercase tracking-widest px-10 h-14 transition-all duration-700 bg-transparent"
+                >
+                  DISCOVER AIR TAP
+                </Button>
               </Link>
             </motion.div>
           </div>

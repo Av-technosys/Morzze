@@ -54,7 +54,7 @@ const CategoryShowcase = ({ categories }: { categories: CategoryWithProducts[] }
                   >
                     <div className="pl-5 mt-4">
                       <div className="bg-[#141414]/50 p-6 border-l border-[#CBA14D]/20">
-                       
+
                         {cat.description && (
                           <p className="font-inter text-sm text-white/80 leading-relaxed mb-6 max-w-sm">{cat.description}</p>
                         )}
@@ -87,12 +87,12 @@ const CategoryShowcase = ({ categories }: { categories: CategoryWithProducts[] }
                     ease: [0.16, 1, 0.3, 1]
                   }}
                   className={`relative overflow-hidden bg-zinc-900 w-full rounded-sm shadow-2xl ${index === 0 ? 'aspect-square mt-0' :
-                      index === 1 ? 'aspect-square mt-10' :
-                        index === 2 ? 'aspect-square -mt-10' :
-                          'aspect-square mt-0'
+                    index === 1 ? 'aspect-square mt-10' :
+                      index === 2 ? 'aspect-square -mt-10' :
+                        'aspect-square mt-0'
                     }`}
                 >
-                  <Link href={`/products/${prod.slug}`}>
+                  <Link href={`/product/${prod.slug}`}>
                     <Image
                       src={prod.bannerImage || "/placeholder.png"}
                       alt={prod.name || "Product"}
@@ -144,7 +144,7 @@ const CategoryShowcase = ({ categories }: { categories: CategoryWithProducts[] }
                 {cat.products?.slice(0, 4).map((prod) => (
                   <Link
                     key={prod.id}
-                    href={`/products/${prod.slug}`}
+                    href={`/product/${prod.slug}`}
                     className="relative overflow-hidden bg-zinc-900 w-full rounded-sm shadow-2xl aspect-square"
                   >
                     <Image

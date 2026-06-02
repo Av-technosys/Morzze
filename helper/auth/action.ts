@@ -6,6 +6,7 @@ import { BASE_AUTH_API_URL } from "@/env";
 type ApiResponse<T = any> = {
   message?: string;
   data?: T;
+  code?: string;
 };
 
 async function request<T>(
@@ -30,12 +31,24 @@ async function request<T>(
     const data = await res.json();
 
     if (!res.ok) {
-      throw new Error(data.message || "Something went wrong");
+      const error = new Error(data.message || "Something went wrong") as Error & {
+        code?: string;
+        status?: number;
+      };
+      error.code = data.code;
+      error.status = res.status;
+      throw error;
     }
 
     return data;
   } catch (error: any) {
-    throw new Error(error.message);
+    const nextError = new Error(error.message) as Error & {
+      code?: string;
+      status?: number;
+    };
+    nextError.code = error.code;
+    nextError.status = error.status;
+    throw nextError;
   }
 }
 

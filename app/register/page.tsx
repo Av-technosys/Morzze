@@ -1,20 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  EyeIcon,
-  EyeOffIcon,
   LockIcon,
   MailIcon,
   PhoneIcon,
-  TicketIcon,
   TicketPercentIcon,
   User2,
 } from "lucide-react";
@@ -25,6 +20,12 @@ import { signUp } from "@/helper";
 import { toast } from "sonner";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import Link from "next/link";
+
+const PENDING_SIGNUP_EMAIL_KEY = "pendingSignupEmail";
+
+type AuthError = Error & {
+  code?: string;
+};
 
 const RegisterContent = () => {
   const params = useSearchParams();
@@ -135,8 +136,10 @@ const RegisterContent = () => {
         id: toastId,
       });
 
-      router.push(`/verify-otp?email=${formData.email}`);
-    } catch (error: any) {
+      sessionStorage.setItem(PENDING_SIGNUP_EMAIL_KEY, formData.email);
+      router.push("/verify-otp");
+    } catch (err: unknown) {
+      const error = err as AuthError;
       toast.error(error.message || "Signup failed ❌", {
         id: toastId,
       });

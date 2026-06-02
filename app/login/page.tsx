@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -21,22 +20,30 @@ import { useRouter } from "next/navigation";
 import { signIn } from "@/helper";
 import { toast } from "sonner";
 import {
+  type ConfirmationResult,
   RecaptchaVerifier,
   signInWithPhoneNumber,
 } from "firebase/auth";
 
 import { auth } from "@/lib/firebase";
 
+const PENDING_SIGNUP_EMAIL_KEY = "pendingSignupEmail";
+
 declare global {
   interface Window {
-    recaptchaVerifier: any;
+    grecaptcha?: unknown;
+    recaptchaVerifier?: RecaptchaVerifier;
   }
 }
 
-const page = () => {
+type AuthError = Error & {
+  code?: string;
+};
+
+const Page = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState<any>(null);
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
   const [otpLoading, setOtpLoading] = useState(false);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const router = useRouter();
@@ -101,12 +108,20 @@ const page = () => {
       toast.success("Login successful 🎉");
       router.push("/");
       setLoading(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as AuthError;
       setLoading(false);
-      toast.error(err.message || "Login failed ❌");
+      if (error.code === "UserNotConfirmedException") {
+        sessionStorage.setItem(PENDING_SIGNUP_EMAIL_KEY, formData.email);
+        toast.info("Please verify your email first.");
+        router.push("/verify-otp");
+        return;
+      }
+
+      toast.error(error.message || "Login failed ❌");
       setErrors((prev) => ({
         ...prev,
-        general: err.message || "Login failed",
+        general: error.message || "Login failed",
       }));
     }
   };
@@ -122,7 +137,6 @@ const page = () => {
     const ensure = async () => {
       // wait briefly for grecaptcha to load
       for (let i = 0; i < 20; i++) {
-        // @ts-ignore
         if (window.grecaptcha) break;
         await new Promise((r) => setTimeout(r, 100));
       }
@@ -166,7 +180,8 @@ const page = () => {
 
       toast.success("OTP sent successfully 🎉");
       setOtpLoading(false);
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.log(error);
       toast.error(error.message);
       setOtpLoading(false);
@@ -181,6 +196,12 @@ const page = () => {
 
     try {
       setVerifyLoading(true);
+
+      if (!confirmationResult) {
+        toast.error("Please request OTP first");
+        setVerifyLoading(false);
+        return;
+      }
 
       const userCredential = await confirmationResult.confirm(otp);
 
@@ -327,7 +348,7 @@ const page = () => {
                 </Button>
 
                 <p className="">
-                  Don't have account?{" "}
+                  Don&apos;t have account?{" "}
                   <Link href="/register" className="text-[#FDB813] underline">
                     Create Account
                   </Link>
@@ -350,7 +371,7 @@ const page = () => {
                   Sent OTP
                 </Button>
                 <p className="">
-                  Don't have account?{" "}
+                  Don&apos;t have account?{" "}
                   <a href="/signup" className="text-[#FDB813] underline">
                     Create Account
                   </a>
@@ -404,7 +425,7 @@ const page = () => {
                 <div id="recaptcha-container"></div>
 
                 <p>
-                  Don't have account?{" "}
+                  Don&apos;t have account?{" "}
                   <Link href="/register" className="text-[#FDB813] underline">
                     Create Account
                   </Link>
@@ -419,4 +440,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

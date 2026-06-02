@@ -64,7 +64,7 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
             >
               {/* Image + Buttons */}
               <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <Image
                     src={product.bannerImage || "/placeholder.png"}
                     alt={product.name || "Product"}
@@ -108,11 +108,10 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
                         e.preventDefault();
                         toggleWishlist(product.slug || "", product.id);
                       }}
-                      className={`shrink-0 rounded-sm h-10 md:h-12 w-10 md:w-10 flex items-center justify-center transition-all ${
-                        isInWishlist(product.slug || "")
+                      className={`shrink-0 rounded-sm h-10 md:h-12 w-10 md:w-10 flex items-center justify-center transition-all ${isInWishlist(product.slug || "")
                           ? "bg-[#FFBF3F] hover:bg-white"
                           : "bg-[#FFBF3F] cursor-pointer"
-                      }`}
+                        }`}
                     >
                       {isInWishlist(product.slug || "") ? (
                         <IconHeartFilled size={20} className="text-red-500" />
@@ -130,7 +129,7 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
                   {product.categoryName}
                 </p>
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
                     {product.name}
                   </h3>
@@ -151,7 +150,7 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
                   <span className="font-bold text-white font-inter text-sm md:text-base">
                     ₹{product.basePrice?.toLocaleString("en-IN")}
                   </span>
-                 
+
                 </div>
               </div>
             </motion.div>

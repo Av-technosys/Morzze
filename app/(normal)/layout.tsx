@@ -6,12 +6,11 @@ import FloatingWhatsappButton from "@/components/Whatsapp_Button/FloatingWhatsap
 export default async function Layout({ children }: {
     children: React.ReactNode
 }) {
-    const categories = await getCategories();
 
     return <>
         <Header />
         {children}
-        <Footer categories={categories} />
+        <Footer />
         <FloatingWhatsappButton />
     </>
 }

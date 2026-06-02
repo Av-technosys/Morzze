@@ -39,6 +39,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
   // userId,
   address,
   coupon,
+  callback
 }: {
   amount: number;
   name: string;
@@ -47,6 +48,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
   // userId: string;
   address: any;
   coupon?: { code: string; discountAmount: number; subtotal: number };
+  callback?: (response: any) => void;
 }) => {
   const scriptLoaded = await loadRazorpayScript();
 
@@ -96,7 +98,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
     );
 
     await CreatePaymentGatewaySubscription(subscriptions);
-    await createSubscription({userId,items});
+    await createSubscription({ userId, items });
 
   }
 
@@ -121,6 +123,15 @@ export const loadRazorpayScript = (): Promise<boolean> => {
       name,
       description,
       order_id: order.id,
+
+      modal: {
+        ondismiss: () => {
+          if (callback) {
+            callback({ reason: "dismissed" });
+          }
+
+        },
+      },
 
       handler: async function (response: any) {
         try {
@@ -159,6 +170,9 @@ export const loadRazorpayScript = (): Promise<boolean> => {
     const razor = new window.Razorpay(options);
 
     razor.on("payment.failed", function (response: any) {
+      if (callback) {
+        callback(response.error);
+      }
       reject(response.error);
     });
 

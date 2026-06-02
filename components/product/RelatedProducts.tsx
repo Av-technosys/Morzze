@@ -62,7 +62,7 @@ const RelatedProducts = ({ slug }: { slug: string }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product: any) => (
-              <Link href={`/products/${product.slug}`} key={product.id} className="group flex flex-col">
+              <Link href={`/product/${product.slug}`} key={product.id} className="group flex flex-col">
                 {/* Image Container */}
                 <div className="relative aspect-square bg-[#1A1A1A] overflow-hidden mb-4">
                   <img
@@ -144,22 +144,22 @@ const RelatedProducts = ({ slug }: { slug: string }) => {
                       <span className="text-sm text-white/40 line-through">₹{product.strikethroughPrice}</span>
                     )} */}
                     <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      toggleWishlist(product.slug, product.id);
-                    }}
-                    className="self-start mt-2"
-                  >
-                    {isInWishlist(product.slug) ? (
-                      <IconHeartFilled className="text-red-500" size={18} />
-                    ) : (
-                      <IconHeart className="text-white/60 hover:text-[#FFBF3F]" size={18} />
-                    )}
-                  </button>
+                      onClick={(e) => {
+                        e.preventDefault();
+                        toggleWishlist(product.slug, product.id);
+                      }}
+                      className="self-start mt-2"
+                    >
+                      {isInWishlist(product.slug) ? (
+                        <IconHeartFilled className="text-red-500" size={18} />
+                      ) : (
+                        <IconHeart className="text-white/60 hover:text-[#FFBF3F]" size={18} />
+                      )}
+                    </button>
                   </div>
 
                   {/* Wishlist Button */}
-                  
+
                 </div>
               </Link>
             ))}

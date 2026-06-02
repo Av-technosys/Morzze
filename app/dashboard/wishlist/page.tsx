@@ -107,7 +107,7 @@ const WishlistPage = () => {
                   <IconX size={20} />
                 </button>
 
-                <Link href={`/products/${item.slug}`}>
+                <Link href={`/product/${item.slug}`}>
                   {item.bannerImage ? (
                     <Image
                       src={item.bannerImage}
@@ -137,7 +137,7 @@ const WishlistPage = () => {
                     {item.sku}
                   </p>
                 )}
-                <Link href={`/products/${item.slug}`}>
+                <Link href={`/product/${item.slug}`}>
                   <h3 className="text-sm font-medium text-gray-200 hover:text-white transition-colors line-clamp-2">
                     {item.name}
                   </h3>

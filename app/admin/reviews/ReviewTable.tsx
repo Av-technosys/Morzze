@@ -52,35 +52,35 @@ const ReviewTable = ({ page, reviews }: ReviewTableProps) => {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
 
-async function handleApprove(id: string) {
-  startTransition(async () => {
-    const res = await toggleApproveReview(id);
+  async function handleApprove(id: string) {
+    startTransition(async () => {
+      const res = await toggleApproveReview(id);
 
-    if (res?.success) {
-      toast.success("Review approved");
-    } else {
-      toast.error(res?.message ?? "Failed to approve review");
-    }
-  });
-}
+      if (res?.success) {
+        toast.success("Review approved");
+      } else {
+        toast.error(res?.message ?? "Failed to approve review");
+      }
+    });
+  }
 
 
 
-async function handleDelete() {
-  if (!deleteId) return;
+  async function handleDelete() {
+    if (!deleteId) return;
 
-  startTransition(async () => {
-    const res = await deleteReview(deleteId);
+    startTransition(async () => {
+      const res = await deleteReview(deleteId);
 
-    if (res?.success) {
-      toast.success("Review deleted");
-    } else {
-      toast.error(res?.message ?? "Failed to delete review");
-    }
+      if (res?.success) {
+        toast.success("Review deleted");
+      } else {
+        toast.error(res?.message ?? "Failed to delete review");
+      }
 
-    setDeleteId(null);
-  });
-}
+      setDeleteId(null);
+    });
+  }
 
 
 
@@ -129,7 +129,7 @@ async function handleDelete() {
                 <TableCell className="py-5">
                   {review.productSlug ? (
                     <Link
-                      href={`/products/${review.productSlug}`}
+                      href={`/product/${review.productSlug}`}
                       target="_blank"
                       className="flex items-center gap-2.5 group w-max max-w-[200px]"
                     >
@@ -192,38 +192,38 @@ async function handleDelete() {
                   <div className="flex justify-end gap-2">
 
                     {/* APPROVE */}
-                <TooltipProvider delayDuration={150}>
-  <Tooltip>
-    <TooltipTrigger asChild>
-      <span>
-        <Button
-  size="icon"
-  variant="secondary"
-  disabled={isPending || review.isAdminApproved}
-  onClick={() => handleApprove(review.id)}
-  className={
-    review.isAdminApproved
-      ? "bg-blue-100 text-blue-700 cursor-not-allowed"
-      : "bg-green-100 text-green-700 hover:bg-green-200"
-  }
->
-  {review.isAdminApproved ? (
-    <Check size={18} strokeWidth={2.5} />
-  ) : (
-    <Check size={18} strokeWidth={2.5} />
-  )}
-</Button>
+                    <TooltipProvider delayDuration={150}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span>
+                            <Button
+                              size="icon"
+                              variant="secondary"
+                              disabled={isPending || review.isAdminApproved}
+                              onClick={() => handleApprove(review.id)}
+                              className={
+                                review.isAdminApproved
+                                  ? "bg-blue-100 text-blue-700 cursor-not-allowed"
+                                  : "bg-green-100 text-green-700 hover:bg-green-200"
+                              }
+                            >
+                              {review.isAdminApproved ? (
+                                <Check size={18} strokeWidth={2.5} />
+                              ) : (
+                                <Check size={18} strokeWidth={2.5} />
+                              )}
+                            </Button>
 
-      </span>
-    </TooltipTrigger>
+                          </span>
+                        </TooltipTrigger>
 
-    {review.isAdminApproved && (
-      <TooltipContent>
-        Already approved
-      </TooltipContent>
-    )}
-  </Tooltip>
-</TooltipProvider>
+                        {review.isAdminApproved && (
+                          <TooltipContent>
+                            Already approved
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </TooltipProvider>
 
 
                     {/* DELETE CONFIRM */}

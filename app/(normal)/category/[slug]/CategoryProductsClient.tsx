@@ -78,7 +78,7 @@ const CategoryProductsClient = ({
 
           return (
             <div key={product.id} className="group flex flex-col">
-              <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
+              <div className="relative aspect-4/5 bg-[#111] overflow-hidden mb-4">
                 {discount > 0 && (
                   <div className="absolute top-2 right-3 z-20">
                     <Badge className="bg-[#EF4444] text-white hover:bg-[#EF4444] rounded-none px-2 py-0.5 text-[9px] font-semibold">
@@ -87,7 +87,7 @@ const CategoryProductsClient = ({
                   </div>
                 )}
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <Image
                     src={product.bannerImage}
                     alt={product.name}
@@ -155,7 +155,7 @@ const CategoryProductsClient = ({
                   {categoryName}
                 </p>
 
-                <Link href={`/products/${product.slug}`}>
+                <Link href={`/product/${product.slug}`}>
                   <h3 className="text-sm md:text-[15px] font-inter text-[#EDEBE9] group-hover:text-[#FFBF3F] transition-colors line-clamp-1 cursor-pointer">
                     {product.name}
                   </h3>

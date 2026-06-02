@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AWS_ACCESS_KEY_ID, AWS_REGION, AWS_SECRET_ACCESS_KEY, COGNITO_CLIENT_ID, COGNITO_CLIENT_SECRET, USER_POOL_ID } from '@/env';
-import { AdminGetUserCommand, AdminUpdateUserAttributesCommand, AuthFlowType, CognitoIdentityProviderClient, ConfirmForgotPasswordCommand, ConfirmSignUpCommand, ForgotPasswordCommand, InitiateAuthCommand, SignUpCommand } from '@aws-sdk/client-cognito-identity-provider';
+import { AdminGetUserCommand, AdminUpdateUserAttributesCommand, AuthFlowType, CognitoIdentityProviderClient, ConfirmForgotPasswordCommand, ConfirmSignUpCommand, ForgotPasswordCommand, InitiateAuthCommand, ResendConfirmationCodeCommand, SignUpCommand } from '@aws-sdk/client-cognito-identity-provider';
 import crypto from 'crypto';
 
 
@@ -67,6 +67,17 @@ export async function cognitoConfirmSignUp({ email, code }: { email: string, cod
     return cognito.send(command);
 }
 
+export async function cognitoResendConfirmationCode({ email }: { email: string }) {
+    const params = {
+        ClientId: COGNITO_CLIENT_ID,
+        Username: email,
+        SecretHash: await generateSecretHash(email),
+    };
+
+    const command = new ResendConfirmationCodeCommand(params);
+    return cognito.send(command);
+}
+
 export async function authSingIn({ email, password }: { email: string, password: string }) {
     if (!email || !password) {
         throw new Error('Email and password are required.');
@@ -125,4 +136,3 @@ export async function cognitoConfirmForgotPassword({ email, code, newPassword }:
     const command = new ConfirmForgotPasswordCommand(params);
     return cognito.send(command);
 }
-

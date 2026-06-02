@@ -1,30 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { COGNITO_CLIENT_ID } from "@/env";
-import { cognito, generateSecretHash } from "@/helper/cognito";
-import { ResendConfirmationCodeCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { cognitoResendConfirmationCode } from "@/helper/cognito";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-    const body = await req.json();
-    const { email } = body;
+  const body = await req.json();
+  const { email } = body;
 
-    if (!email)
-        return NextResponse.json({ message: 'email is required.' }, { status: 400 });
+  if (!email) {
+    return NextResponse.json({ message: "email is required." }, { status: 400 });
+  }
 
-    try {
-        const secretHash = await generateSecretHash(email);
-        const params = {
-            ClientId: COGNITO_CLIENT_ID,
-            Username: email,
-            SecretHash: secretHash,
-        };
-        const command = new ResendConfirmationCodeCommand(params);
+  try {
+    await cognitoResendConfirmationCode({ email });
 
-        const response = await cognito.send(command);
-
-        return NextResponse.json({ message: response }, { status: 200 });
-    } catch (err: any) {
-        console.error('refreshToken error:', err);
-        return NextResponse.json({ message: err.message }, { status: 500 });
-    }
+    return NextResponse.json(
+      { message: "OTP resent successfully.", data: { email } },
+      { status: 200 },
+    );
+  } catch (err: any) {
+    console.error("Resend OTP error:", err);
+    return NextResponse.json({ message: err.message }, { status: 500 });
+  }
 }

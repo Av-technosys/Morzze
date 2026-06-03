@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { db } from "@/db";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 type CognitoIdTokenPayload = {
   email?: string;
@@ -20,7 +23,17 @@ export async function GET() {
   }
 
   const decoded = idToken ? jwt.decode(idToken) as CognitoIdTokenPayload | null : null;
-  const userId = decoded?.["custom:userId"] ?? decoded?.["custom:user_id"];
+  let userId = decoded?.["custom:userId"] ?? decoded?.["custom:user_id"];
+
+  if (!userId && decoded?.email) {
+    const [user] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.email, decoded.email))
+      .limit(1);
+
+    userId = user?.id;
+  }
 
   if (!idToken || !userId) {
     return NextResponse.json({ authenticated: false });

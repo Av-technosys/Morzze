@@ -20,11 +20,51 @@ type NewAddressInput = {
   isDefault?: boolean;
 };
 
+type DecodedAuthToken = {
+  email?: string;
+  "custom:userId"?: string;
+  "custom:user_id"?: string;
+};
+
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USER_POOL_ID!,
   tokenUse: "access",
   clientId: process.env.COGNITO_CLIENT_ID!,
 });
+
+async function getUserFromDecodedToken(decoded: DecodedAuthToken | null) {
+  const tokenUserId = decoded?.["custom:userId"] ?? decoded?.["custom:user_id"];
+  const email = decoded?.email;
+
+  if (tokenUserId) {
+    return {
+      userId: tokenUserId,
+      email,
+    };
+  }
+
+  if (!email) {
+    return null;
+  }
+
+  const [user] = await db
+    .select({
+      id: users.id,
+      email: users.email,
+    })
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+
+  if (!user?.id) {
+    return null;
+  }
+
+  return {
+    userId: user.id,
+    email: user.email ?? email,
+  };
+}
 
 async function refreshUserTokens() {
 
@@ -61,7 +101,7 @@ export async function requireUserWithRefresh() {
 
   const user = await getCurrentUser();
 
-  if (user) {
+  if (user?.userId) {
     return user;
   }
 
@@ -74,11 +114,14 @@ export async function requireUserWithRefresh() {
   const idToken =
     refreshed?.response?.AuthenticationResult?.IdToken;
 
-  const decoded: any = jwt.decode(idToken);
-  return {
-    userId: decoded?.["custom:userId"] ?? decoded?.["custom:user_id"],
-    email: decoded?.email,
-  };
+  const decoded = idToken ? jwt.decode(idToken) as DecodedAuthToken | null : null;
+  const refreshedUser = await getUserFromDecodedToken(decoded);
+
+  if (!refreshedUser?.userId) {
+    throw new Error("USER_ID_MISSING");
+  }
+
+  return refreshedUser;
 }
 export async function getCurrentUser() {
 
@@ -93,18 +136,13 @@ export async function getCurrentUser() {
 
     await verifier.verify(accessToken);
 
-    const decoded: any = jwt.decode(idToken);
-    const userId = decoded?.["custom:userId"] ?? decoded?.["custom:user_id"];
-    const email = decoded?.email;
-    if (!userId) {
-      throw new Error("USER_ID_MISSING");
-    }
-    return {
-      userId,
-      email,
-    };
+    const decoded = jwt.decode(idToken) as DecodedAuthToken | null;
+    return await getUserFromDecodedToken(decoded);
   } catch (error) {
-    console.error(error)
+    if ((error as Error)?.message !== "USER_ID_MISSING") {
+      console.error(error)
+    }
+    return null;
   }
 }
 

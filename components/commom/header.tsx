@@ -14,6 +14,7 @@ import {
   IconArrowRight,
 } from "@tabler/icons-react";
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 import { isUserLoggedIn } from "@/helper/auth/action";
 
 type SearchProduct = {
@@ -188,6 +189,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { totalItems } = useCart();
+  const { wishlistSlugs } = useWishlist();
+  const wishlistItems = wishlistSlugs.length;
 
   // Shared search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -434,11 +437,16 @@ const Header = () => {
 
           {/* Icons Actions */}
           <div className="flex items-center space-x-4">
-            <Link href={"/dashboard/wishlist"}>
-              <button className="hidden lg:block hover:text-[#B88E2F] transition-colors">
-                <IconHeart size={20} stroke={1.5} />
-              </button>
-            </Link>
+            <div className="relative hidden lg:block">
+              <Link href={"/dashboard/wishlist"}>
+                <button className="hover:text-[#B88E2F] transition-colors">
+                  <IconHeart size={20} stroke={1.5} />
+                </button>
+              </Link>
+              <span className="absolute -top-2 -right-2 bg-[#B88E2F] text-black text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-black">
+                {wishlistItems}
+              </span>
+            </div>
             {isAuthenticated ? (
               <Link href={"/dashboard/profile"}>
                 <button className="hover:text-[#B88E2F] transition-colors">
@@ -666,9 +674,14 @@ const Header = () => {
 
               {/* Bottom Actions for Mobile */}
               <div className="mt-auto p-8 border-t border-zinc-900 bg-zinc-950 flex justify-around">
-                <Link href="/dashboard/wishlist" onClick={() => setIsMenuOpen(false)}>
-                  <IconHeart size={24} className="text-zinc-400 hover:text-[#B88E2F] transition-colors" />
-                </Link>
+                <div className="relative">
+                  <Link href="/dashboard/wishlist" onClick={() => setIsMenuOpen(false)}>
+                    <IconHeart size={24} className="text-zinc-400 hover:text-[#B88E2F] transition-colors" />
+                  </Link>
+                  <span className="absolute -top-2 -right-2 bg-[#B88E2F] text-black text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-zinc-950">
+                    {wishlistItems}
+                  </span>
+                </div>
                 <Link href="/dashboard/profile" onClick={() => setIsMenuOpen(false)}>
                   <IconUser size={24} className="text-zinc-400 hover:text-[#B88E2F] transition-colors" />
                 </Link>

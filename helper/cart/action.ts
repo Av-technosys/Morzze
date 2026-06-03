@@ -170,7 +170,12 @@ export async function setUserCartItemQuantity(input: CartMutationInput) {
 
 export async function getCart() {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const userId = await getCurrentUserIdForCart();
+
+    if (!userId) {
+      return { success: true, items: [], userIsNotLoggedIn: true };
+    }
+
     const userCart = await db
       .select()
       .from(cart)
@@ -214,9 +219,8 @@ export async function addToCart(
   uuid?:any
 ) {
   try {
-   
+    const userId = await getCurrentUserIdForCart();
 
-    const { userId } = await requireUserWithRefresh();
     if (!userId) {
       return {
         success: false,
@@ -327,7 +331,12 @@ export async function removeFromCart(
   cartSizes?: any,
 ) {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const userId = await getCurrentUserIdForCart();
+
+    if (!userId) {
+      return { success: true, userIsNotLoggedIn: true };
+    }
+
     const result = await db.transaction(async (tx) => {
       const userCart = await tx
         .select()
@@ -383,7 +392,12 @@ export async function updateCartItemQuantity(
   quantity: number,
 ) {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const userId = await getCurrentUserIdForCart();
+
+    if (!userId) {
+      return { success: true, userIsNotLoggedIn: true };
+    }
+
     if (quantity < 0) {
       return { success: false, error: "Invalid quantity" };
     }
@@ -440,7 +454,12 @@ export async function updateCartItemQuantity(
 
 export async function clearCart() {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const userId = await getCurrentUserIdForCart();
+
+    if (!userId) {
+      return { success: true, userIsNotLoggedIn: true };
+    }
+
     const result = await db.transaction(async (tx) => {
       const userCart = await tx
         .select()
@@ -472,7 +491,12 @@ export async function clearCart() {
 
 export async function syncCartWithDatabase() {
   try {
-    const { userId } = await requireUserWithRefresh();
+    const userId = await getCurrentUserIdForCart();
+
+    if (!userId) {
+      return { success: true, items: [], userIsNotLoggedIn: true };
+    }
+
     const userCart = await db
       .select()
       .from(cart)

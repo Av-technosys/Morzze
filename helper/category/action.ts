@@ -7,12 +7,16 @@ import slugify from "slugify";
 //import path from "path";
 import { redirect } from "next/navigation";
 import { desc, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { generateUniqueSlug } from "../slug/generateUniqueSlug";
 import { and, asc, ilike, sql } from "drizzle-orm";
 import { paginate } from "@/lib/pagination";
 import { category, productCategory, product } from "@/db/schema";
-import { unstable_cache } from "next/cache";
+import {
+  CACHE_TAGS,
+  revalidateCategoryCache,
+  revalidateProductCache,
+} from "@/lib/cache-tags";
 
 
 interface GetCategoriesOptions {
@@ -33,6 +37,8 @@ export async function createCategory(categoryData: any) {
       type
     });
 
+    revalidateCategoryCache(slug);
+    revalidateProductCache();
     revalidatePath("/admin/category");
     return { success: true, message: "Category created successfully" };
   } catch (error) {
@@ -58,6 +64,8 @@ export async function updateCategory(categoryData: any) {
       })
       .where(eq(category.id, id));
 
+    revalidateCategoryCache(slugify(name, { lower: true }));
+    revalidateProductCache();
     revalidatePath("/admin/category");
     revalidatePath(`/admin/category/${id}`);
     return { success: true, message: "Category updated successfully" };
@@ -79,6 +87,9 @@ export const attachProductCategory = async (
       productId,
       categoryId,
     });
+
+    revalidateProductCache(productId);
+    revalidateCategoryCache(categoryId);
   } catch (error) {
     console.error("attach Product Category failed:", error);
     throw new Error("attach Product Category failed");
@@ -115,6 +126,9 @@ export async function updateProductCategory(
       productId,
       categoryId,
     });
+
+    revalidateProductCache(productId);
+    revalidateCategoryCache(categoryId);
   } catch (error) {
     console.error("Update product category failed:", error);
     throw new Error("Failed to update category");
@@ -169,6 +183,8 @@ export async function deleteCategory(id: string) {
 
     await db.delete(category).where(eq(category.id, id));
 
+    revalidateCategoryCache(id);
+    revalidateProductCache();
     revalidatePath("/admin/category");
 
     return {
@@ -195,59 +211,77 @@ export async function getCategories() {
         return [];
       }
     },
-    ['get-categories'],
-    { revalidate: 3600, tags: ['categories'] }
+    [CACHE_TAGS.categories],
+    { revalidate: 3600, tags: [CACHE_TAGS.categories] }
   )();
 }
 
 export async function getAllProductsByCategorySlug(slug: string) {
-  try {
-    const products = await db
-      .select({
-        id: product.id,
-        name: product.name,
-        basePrice: product.basePrice,
-        strikethroughPrice: product.strikethroughPrice,
-        slug: product.slug,
-        bannerImage: product.bannerImage,
-        rateing1Star: product.rateing1Star,
-        rateing2Star: product.rateing2Star,
-        rateing3Star: product.rateing3Star,
-        rateing4Star: product.rateing4Star,
-        rateing5Star: product.rateing5Star,
-        sku: product.sku,
-      })
-      .from(product)
-      .innerJoin(
-        productCategory,
-        eq(product.id, productCategory.productId),
-      )
-      .innerJoin(
-        category,
-        eq(category.id, productCategory.categoryId),
-      )
-      .where(eq(category.slug, slug));
+  return unstable_cache(
+    async () => {
+      try {
+        const products = await db
+          .select({
+            id: product.id,
+            name: product.name,
+            basePrice: product.basePrice,
+            strikethroughPrice: product.strikethroughPrice,
+            slug: product.slug,
+            bannerImage: product.bannerImage,
+            rateing1Star: product.rateing1Star,
+            rateing2Star: product.rateing2Star,
+            rateing3Star: product.rateing3Star,
+            rateing4Star: product.rateing4Star,
+            rateing5Star: product.rateing5Star,
+            sku: product.sku,
+          })
+          .from(product)
+          .innerJoin(
+            productCategory,
+            eq(product.id, productCategory.productId),
+          )
+          .innerJoin(
+            category,
+            eq(category.id, productCategory.categoryId),
+          )
+          .where(eq(category.slug, slug));
 
-    return products;
-  } catch (error) {
-    console.error("fetch products by category failed:", error);
-    return [];
-  }
+        return products;
+      } catch (error) {
+        console.error("fetch products by category failed:", error);
+        return [];
+      }
+    },
+    [CACHE_TAGS.products, CACHE_TAGS.category(slug), "category-products", slug],
+    {
+      revalidate: 3600,
+      tags: [CACHE_TAGS.products, CACHE_TAGS.categories, CACHE_TAGS.category(slug)],
+    },
+  )();
 }
 
 export async function getCategoryBySlug(slug: string) {
-  try {
-    const result = await db
-      .select()
-      .from(category)
-      .where(eq(category.slug, slug))
-      .limit(1);
+  return unstable_cache(
+    async () => {
+      try {
+        const result = await db
+          .select()
+          .from(category)
+          .where(eq(category.slug, slug))
+          .limit(1);
 
-    return result[0] || null;
-  } catch (error) {
-    console.error("fetch category by slug failed:", error);
-    return null;
-  }
+        return result[0] || null;
+      } catch (error) {
+        console.error("fetch category by slug failed:", error);
+        return null;
+      }
+    },
+    [CACHE_TAGS.category(slug), slug],
+    {
+      revalidate: 3600,
+      tags: [CACHE_TAGS.categories, CACHE_TAGS.category(slug)],
+    },
+  )();
 }
 
 export async function getCategoriesWithProducts(limit = 4) {
@@ -286,21 +320,27 @@ export async function getCategoriesWithProducts(limit = 4) {
         return [];
       }
     },
-    [`categories-with-products-${limit}`],
-    { revalidate: 3600, tags: ['categories', 'products'] }
+    ["categories-with-products", String(limit)],
+    { revalidate: 3600, tags: [CACHE_TAGS.categories, CACHE_TAGS.products] }
   )();
 }
 
 export async function getAllCategoriesMeta() {
-  try {
-    return await db
-      .select({
-        id: category.id,
-        name: category.name,
-      })
-      .from(category);
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  return unstable_cache(
+    async () => {
+      try {
+        return await db
+          .select({
+            id: category.id,
+            name: category.name,
+          })
+          .from(category);
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
+    ["categories-meta"],
+    { revalidate: 3600, tags: [CACHE_TAGS.categories] },
+  )();
 }

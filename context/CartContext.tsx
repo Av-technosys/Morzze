@@ -47,8 +47,8 @@ export type AppliedCoupon = {
 type CartContextType = {
   cartItems: CartItem[];
   addToCart: (slug: string, quantity?: number, productData?: Partial<CartItem>) => void;
-  removeFromCart: (slug: string) => void;
-  updateQuantity: (slug: string, quantity: number) => void;
+  removeFromCart: (itemOrSlug: CartItem | string) => void;
+  updateQuantity: (itemOrSlug: CartItem | string, quantity: number) => void;
   clearCart: () => void;
   getItemQuantity: (slug: string) => number;
   totalItems: number;
@@ -94,6 +94,14 @@ function setLocalCart(items: CartItem[]) {
 
 function getItemKey(item: Pick<CartItem, "slug" | "productId" | "productVarientBox">) {
   return `${item.productId ?? item.slug}:${item.productVarientBox ?? "default"}`;
+}
+
+function matchesCartItem(item: CartItem, itemOrSlug: CartItem | string) {
+  if (typeof itemOrSlug === "string") {
+    return item.slug === itemOrSlug;
+  }
+
+  return getItemKey(item) === getItemKey(itemOrSlug);
 }
 
 function normalizeQuantity(quantity: number) {
@@ -320,32 +328,32 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const removeFromCart = useCallback(
-    (slug: string) => {
-      const item = cartItems.find((cartItem) => cartItem.slug === slug);
+    (itemOrSlug: CartItem | string) => {
+      const item = cartItems.find((cartItem) => matchesCartItem(cartItem, itemOrSlug));
       if (!item) return;
 
-      setCartItems((prev) => prev.filter((cartItem) => cartItem.slug !== slug));
+      setCartItems((prev) => prev.filter((cartItem) => !matchesCartItem(cartItem, item)));
       void syncItemNow(item, 0);
     },
     [cartItems, syncItemNow],
   );
 
   const updateQuantity = useCallback(
-    (slug: string, quantity: number) => {
-      const item = cartItems.find((cartItem) => cartItem.slug === slug);
+    (itemOrSlug: CartItem | string, quantity: number) => {
+      const item = cartItems.find((cartItem) => matchesCartItem(cartItem, itemOrSlug));
       if (!item) return;
 
       const safeQuantity = normalizeQuantity(quantity);
       const updatedItem = { ...item, quantity: safeQuantity };
 
       if (safeQuantity <= 0) {
-        setCartItems((prev) => prev.filter((cartItem) => cartItem.slug !== slug));
+        setCartItems((prev) => prev.filter((cartItem) => !matchesCartItem(cartItem, item)));
         void syncItemNow(item, 0);
         return;
       }
 
       setCartItems((prev) =>
-        prev.map((cartItem) => (cartItem.slug === slug ? updatedItem : cartItem)),
+        prev.map((cartItem) => (matchesCartItem(cartItem, item) ? updatedItem : cartItem)),
       );
       debouncedSyncItem(updatedItem, safeQuantity);
     },

@@ -8,6 +8,10 @@ import { toast } from 'sonner'
 import { ShoppingBag } from 'lucide-react'
 import { ContactLink } from '@/components/ContactLink'
 import Link from 'next/link'
+import {
+  clearCart as clearCartDB,
+  setUserCartItemQuantity,
+} from "@/helper/cart/action";
 
 /**
  * Parse a rupee string like "₹1,000" or "₹15000" into a number.
@@ -20,7 +24,53 @@ const parseRupeeValue = (value: string | null | undefined): number => {
   return Number.isFinite(num) ? num : 0
 }
 
-const OrderReview = ({ shippingData }: { shippingData?: any }) => {
+type ShippingData = {
+  fullName?: string;
+  phone?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+};
+
+function getPaymentErrorMessage(error: unknown) {
+  if (error && typeof error === "object") {
+    const maybeError = error as { description?: unknown; message?: unknown };
+    if (typeof maybeError.description === "string") return maybeError.description;
+    if (typeof maybeError.message === "string") return maybeError.message;
+  }
+
+  return "Payment failed. Please try again.";
+}
+
+async function syncVisibleCartToServer(cartItems: ReturnType<typeof useCart>["cartItems"]) {
+  await clearCartDB();
+
+  const results = await Promise.all(
+    cartItems.map((item) => {
+      if (!item.productId) {
+        throw new Error("Unable to sync cart item before payment");
+      }
+
+      return setUserCartItemQuantity({
+        productId: item.productId,
+        productVarientBox: item.productVarientBox ?? null,
+        quantity: item.quantity,
+        isTypeSubscription: item.isTypeSubscription ?? false,
+        frequencyInMonths: item.frequencyInMonths ?? null,
+        clientCartItemId: item.clientCartItemId ?? null,
+      });
+    }),
+  );
+
+  const failedSync = results.find((result) => !result.success);
+  if (failedSync) {
+    throw new Error(failedSync.message ?? "Unable to sync cart before payment");
+  }
+}
+
+const OrderReview = ({ shippingData }: { shippingData?: ShippingData }) => {
   const { cartItems, clearCart, appliedCoupon } = useCart()
   const router = useRouter()
   const [paying, setPaying] = useState(false)
@@ -79,9 +129,12 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
 
     setPaying(true)
     try {
+      await syncVisibleCartToServer(cartItems);
+
       const items = cartItems.map((item) => ({
         productId: item.productId ?? item.slug,
         quantity: item.quantity,
+        productVarientBox: item.productVarientBox ?? null,
         slug: item.slug,
         isTypeSubscription: false,
       }))
@@ -97,7 +150,6 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
         : {}
 
       await initiateRazorpayPayment({
-        amount: total,
         name: "Morzze",
         description: `Order of ${cartItems.length} item(s)`,
         items,
@@ -107,7 +159,7 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
           discountAmount,
           subtotal,
         } : undefined,
-        callback: (response: any) => {
+        callback: (response: unknown) => {
           setPaying(false)
           console.log(response);
         }
@@ -119,9 +171,9 @@ const OrderReview = ({ shippingData }: { shippingData?: any }) => {
       clearCart()
       toast.success("Payment successful! Order placed.")
       router.push("/dashboard/order")
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Payment error:", error)
-      toast.error(error?.description || error?.message || "Payment failed. Please try again.")
+      toast.error(getPaymentErrorMessage(error))
     } finally {
       setPaying(false)
     }

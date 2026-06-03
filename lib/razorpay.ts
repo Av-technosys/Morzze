@@ -31,7 +31,6 @@ export const loadRazorpayScript = (): Promise<boolean> => {
 /**
  * Opens Razorpay Checkout
  */ export const initiateRazorpayPayment = async ({
-  amount,
   name,
   description,
   items,
@@ -40,7 +39,6 @@ export const loadRazorpayScript = (): Promise<boolean> => {
   coupon,
   callback
 }: {
-  amount: number;
   name: string;
   description: string;
   items: any[];
@@ -63,7 +61,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
     const plan = await fetch("/api/razorpay/plans", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount, items }),
+      body: JSON.stringify({ items }),
     });
 
     const planData = await plan.json();
@@ -100,11 +98,12 @@ export const loadRazorpayScript = (): Promise<boolean> => {
 
   }
 
-  // 1️⃣ Create Razorpay Order (ONLY amount here)
+  // 1. Create Razorpay Order from server-calculated cart amount.
   const res = await fetch("/api/razorpay/order", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount }),
+    body: JSON.stringify({ couponCode: coupon?.code }),
   });
 
   const order = await res.json();
@@ -143,8 +142,7 @@ export const loadRazorpayScript = (): Promise<boolean> => {
               items,
               // userId,
               address,
-              amount,
-              coupon,
+              couponCode: coupon?.code,
             }),
           });
 

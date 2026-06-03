@@ -79,7 +79,7 @@ const CartItemList = () => {
               <div className="col-span-2 flex justify-center">
                 <div className="flex items-center px-3 py-1 gap-4">
                   <button
-                    onClick={() => updateQuantity(item.slug, item.quantity - 1)}
+                    onClick={() => updateQuantity(item, item.quantity - 1)}
                     className="text-zinc-500 hover:text-white transition-colors"
                   >
                     <Minus size={14} />
@@ -88,7 +88,7 @@ const CartItemList = () => {
                     {item.quantity}
                   </span>
                   <button
-                    onClick={() => updateQuantity(item.slug, item.quantity + 1)}
+                    onClick={() => updateQuantity(item, item.quantity + 1)}
                     className="text-zinc-500 hover:text-white transition-colors"
                   >
                     <Plus size={14} />
@@ -106,7 +106,7 @@ const CartItemList = () => {
                     ₹{totalPrice.toLocaleString("en-IN")}
                   </span>
                   <button
-                    onClick={() => removeFromCart(item.slug)}
+                    onClick={() => removeFromCart(item)}
                     className="text-red-500/80 hover:text-red-500 transition-colors"
                   >
                     <Trash2 size={16} />
@@ -171,7 +171,7 @@ const CartItemList = () => {
               {/* Vertical Quantity Selector */}
               <div className="flex flex-col items-center gap-1">
                 <button
-                  onClick={() => updateQuantity(item.slug, item.quantity + 1)}
+                  onClick={() => updateQuantity(item, item.quantity + 1)}
                   className="w-8 h-8 flex items-center justify-center bg-[#141414] rounded-full text-zinc-400"
                 >
                   <Plus size={14} />
@@ -180,7 +180,7 @@ const CartItemList = () => {
                   {item.quantity}
                 </div>
                 <button
-                  onClick={() => updateQuantity(item.slug, item.quantity - 1)}
+                  onClick={() => updateQuantity(item, item.quantity - 1)}
                   className="w-8 h-8 flex items-center justify-center bg-[#141414] rounded-full text-zinc-400"
                 >
                   <Minus size={14} />
@@ -189,7 +189,7 @@ const CartItemList = () => {
 
               {/* Delete Button */}
               <button
-                onClick={() => removeFromCart(item.slug)}
+                onClick={() => removeFromCart(item)}
                 className="absolute -top-1 -right-1 p-1 text-red-500/50 hover:text-red-500 transition-colors"
               >
                 <Trash2 size={14} />

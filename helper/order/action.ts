@@ -2,13 +2,14 @@
 "use server";
 
 import { paginate } from "@/lib/pagination";
-import { and, or, sql, asc, eq, desc, inArray } from "drizzle-orm";
+import { and, or, sql, asc, eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 
 import { revalidatePath } from "next/cache";
 import { cart, cartItem, product, rewardCoinsHistory } from "@/db/schema";
 import { order, orderItem, payment, users } from "@/db/schema";
 import { getProfile } from "../user/action";
+import { calculateCheckoutPricing } from "../checkout/pricing";
 
 export const fetchOrders = async ({
   page = 1,
@@ -320,51 +321,23 @@ export async function updateOrderStatus(id: string, status: string | any) {
 // }
 
 export async function createOrder({
-  items,
-  fixedAmount,
   address,
   userId,
   razorpayPaymentId,
   razorpayOrderId,
-  coupon,
+  couponCode,
 }: {
-  items: any;
   userId: any;
-  fixedAmount: number;
   address: any;
   razorpayPaymentId: string;
   razorpayOrderId: string;
-  coupon?: { code: string; discountAmount: number; subtotal: number };
+  couponCode?: string | null;
 }) {
   try {
-    if (!items || items.length === 0) {
-      throw new Error("Order items are required");
-    }
-
-    const productIds = items
-      .map((i: any) => i.productId)
-      .filter((id: any): id is string => typeof id === "string");
-
-    const uniqueProductIds: any = [...new Set(productIds)];
-
-    if (uniqueProductIds.length === 0) {
-      throw new Error("No product IDs provided");
-    }
-
-    const products = await db
-      .select()
-      .from(product)
-      .where(inArray(product.id, uniqueProductIds));
-
-    if (products.length !== uniqueProductIds.length) {
-      throw new Error("Some products not found");
-    }
-
-    const productMap = new Map(products.map((p) => [p.id, p]));
-
-    const safeAmount = Math.round(fixedAmount);
-    const discountAmount = coupon?.discountAmount ? Math.round(coupon.discountAmount) : 0
-    const subtotalAmount = coupon?.subtotal ? Math.round(coupon.subtotal) : safeAmount
+    const pricing = await calculateCheckoutPricing({ userId, couponCode });
+    const safeAmount = pricing.total;
+    const discountAmount = pricing.discountAmount;
+    const subtotalAmount = pricing.subtotal;
 
     const result = await db.transaction(async (tx) => {
       const insertedOrder = await tx
@@ -375,7 +348,7 @@ export async function createOrder({
           totalAmount: safeAmount,
           subtotalAmount: subtotalAmount,
           discountAmount: discountAmount,
-          couponCode: coupon?.code || null,
+          couponCode: pricing.couponCode,
           addressLine1: address.street,
           addressLine2: address.locality,
           city: address.city,
@@ -386,28 +359,17 @@ export async function createOrder({
 
       const orderId = insertedOrder[0].id;
 
-      const orderItemsToInsert = items.map((item: any) => {
-        // const Id =
-        //   (item as any).id || (item as any).productId;
-        const Id = item.productId;
-        const p = productMap.get(Id);
-
-        if (!p || !p.name || !p.slug || p.basePrice == null) {
-          throw new Error("Invalid product data");
-        }
-
-        return {
-          orderId,
-          productId: p.id,
-          quantity: item.quantity,
-          productVarientBox: item.productVarientBox,
-          productName: p.name,
-          productSlug: p.slug,
-          productImage: p.bannerImage ?? null,
-          productSKU: p.sku ?? null,
-          productPrice: p.basePrice,
-        };
-      });
+      const orderItemsToInsert = pricing.items.map((item) => ({
+        orderId,
+        productId: item.product.id,
+        quantity: item.quantity,
+        productVarientBox: item.productVarientBox,
+        productName: item.product.name,
+        productSlug: item.product.slug,
+        productImage: item.product.bannerImage ?? null,
+        productSKU: item.product.sku ?? null,
+        productPrice: item.price,
+      }));
 
       await Promise.all([
         tx.insert(orderItem).values(orderItemsToInsert),
@@ -459,6 +421,14 @@ export async function createOrder({
     return {
       success: true,
       orderId: result.orderId,
+      totalAmount: safeAmount,
+      subtotalAmount,
+      discountAmount,
+      couponCode: pricing.couponCode,
+      productNames: pricing.items
+        .map((item) => item.product.name)
+        .filter(Boolean)
+        .join(", "),
     };
   } catch (error) {
     console.error("Order creation failed:", error);

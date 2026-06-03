@@ -26,6 +26,10 @@ type DecodedAuthToken = {
   "custom:user_id"?: string;
 };
 
+function isJwtLike(token: string) {
+  return token.split(".").length === 3;
+}
+
 const verifier = CognitoJwtVerifier.create({
   userPoolId: process.env.USER_POOL_ID!,
   tokenUse: "access",
@@ -67,13 +71,13 @@ async function getUserFromDecodedToken(decoded: DecodedAuthToken | null) {
 }
 
 async function refreshUserTokens() {
-
   const cookieStore = await cookies();
 
   const refreshToken = cookieStore.get("refreshToken")?.value;
   const idToken = cookieStore.get("idToken")?.value;
 
   if (!refreshToken || !idToken) return null;
+
   try {
 
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_AUTH_API_URL}/refersh-token`, {
@@ -133,13 +137,18 @@ export async function getCurrentUser() {
 
     if (!accessToken || !idToken) return null;
 
+    if (!isJwtLike(accessToken)) return null;
 
     await verifier.verify(accessToken);
 
     const decoded = jwt.decode(idToken) as DecodedAuthToken | null;
     return await getUserFromDecodedToken(decoded);
   } catch (error) {
-    if ((error as Error)?.message !== "USER_ID_MISSING") {
+    const message = (error as Error)?.message;
+    if (
+      message !== "USER_ID_MISSING" &&
+      !message?.includes("JWT string does not consist of exactly 3 parts")
+    ) {
       console.error(error)
     }
     return null;

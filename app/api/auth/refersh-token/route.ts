@@ -15,10 +15,15 @@ export async function POST(req: Request) {
     const decoded: any = jwt.decode(idToken);
 
 
-    const username = decoded["cognito:username"] || decoded.email;
+    const username = decoded?.["cognito:username"] || decoded?.email;
 
-    if (!refreshToken)
+    if (!refreshToken) {
         return NextResponse.json({ message: 'Refresh token is required.' }, { status: 400 });
+    }
+
+    if (!username) {
+        return NextResponse.json({ message: "Unable to identify refresh user." }, { status: 400 });
+    }
 
     try {
         const secretHash = await generateSecretHash(username);
@@ -40,15 +45,18 @@ export async function POST(req: Request) {
         if (!newAccessToken || !newIdToken) {
             throw new Error("Invalid refresh response");
         }
+
         cookieStore.set("accessToken", newAccessToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             path: "/",
         });
 
         cookieStore.set("idToken", newIdToken, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
             path: "/",
         });
 

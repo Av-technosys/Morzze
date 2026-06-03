@@ -71,8 +71,10 @@ export default function AppSidebar() {
       await logout()
       toast.success("Signed out successfully", { id: toastId })
       router.push("/login")
-    } catch (error: any) {
-      toast.error(error.message || "Failed to sign out", {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to sign out"
+
+      toast.error(message, {
         id: toastId,
       })
     } finally {

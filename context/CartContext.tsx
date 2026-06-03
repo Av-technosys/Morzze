@@ -139,7 +139,8 @@ function mapDbCartItems(items: unknown[]): CartItem[] {
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => getLocalCart());
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartLoaded, setCartLoaded] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
 
   const syncCartFromDb = useCallback(async () => {
@@ -262,6 +263,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      setCartItems(getLocalCart());
+      setCartLoaded(true);
       void syncCartFromDb();
     }, 0);
 
@@ -269,8 +272,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [syncCartFromDb]);
 
   useEffect(() => {
+    if (!cartLoaded) return;
     setLocalCart(cartItems);
-  }, [cartItems]);
+  }, [cartItems, cartLoaded]);
 
   const addToCart = useCallback(
     async (slug: string, quantity: number = 1, productData?: Partial<CartItem>) => {

@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { and, desc, asc, eq, gte, ilike, inArray, lte, ne, sql } from "drizzle-orm";
 import { generateUniqueSlug } from "../slug/generateUniqueSlug";
 
@@ -22,7 +22,11 @@ import {
   orderItem,
 } from "@/db/schema";
 import { bestSellingSlug, isUUID } from "@/const/globalconst";
-import { unstable_cache } from "next/cache";
+import {
+  CACHE_TAGS,
+  revalidateCategoryCache,
+  revalidateProductCache,
+} from "@/lib/cache-tags";
 
 interface GetProductsOptions {
   page?: number;
@@ -332,6 +336,8 @@ export async function createProduct(formData: FormData): Promise<void> {
       }
     });
 
+    revalidateProductCache(variants.slug);
+    revalidateCategoryCache();
     revalidatePath("/admin/product");
   } catch (error) {
     console.error("createProduct failed:", error);
@@ -495,6 +501,9 @@ export async function updateProduct(formData: FormData): Promise<void> {
       // }
     });
 
+    revalidateProductCache(variants.slug);
+    revalidateProductCache(productId);
+    revalidateCategoryCache();
     revalidatePath("/admin/product");
   } catch (error) {
     console.error("updateProduct failed:", error);
@@ -505,75 +514,83 @@ export async function updateProduct(formData: FormData): Promise<void> {
 // add new query for get faq by id
 
 export async function getFullProductDetails(identifier: string) {
- console.log("reciving slug", identifier)
-  try {
-    if (!identifier) throw new Error("Missing product identifier");
+  return unstable_cache(
+    async () => {
+      try {
+        if (!identifier) throw new Error("Missing product identifier");
 
-    // 1. Slug se product lao
-    const [productDeails] = await db
-      .select()
-      .from(product)
-      .where(eq(product.slug, identifier))
-      .limit(1);
+        // 1. Slug se product lao
+        const [productDeails] = await db
+          .select()
+          .from(product)
+          .where(eq(product.slug, identifier))
+          .limit(1);
 
-    if (!productDeails) throw new Error("Product not found");
+        if (!productDeails) throw new Error("Product not found");
 
-    // 2. Product ID nikalo
-    const productId = productDeails.id;
+        // 2. Product ID nikalo
+        const productId = productDeails.id;
 
-    // 3. Parallel me sab data fetch karo
-    const [
-      prodcutVarientBoxRes,
-      categoryRes,
-      productAttributeRes,
-      productMediaRes,
-      filters,
-      productFaqRes,
-    ] = await Promise.all([
-      db
-        .select()
-        .from(productVarientBox)
-        .where(eq(productVarientBox.productId, productId)),
+        // 3. Parallel me sab data fetch karo
+        const [
+          prodcutVarientBoxRes,
+          categoryRes,
+          productAttributeRes,
+          productMediaRes,
+          filters,
+          productFaqRes,
+        ] = await Promise.all([
+          db
+            .select()
+            .from(productVarientBox)
+            .where(eq(productVarientBox.productId, productId)),
 
-      db
-        .select()
-        .from(category)
-        .leftJoin(productCategory, eq(category.id, productCategory.categoryId))
-        .where(eq(productCategory.productId, productId)),
+          db
+            .select()
+            .from(category)
+            .leftJoin(productCategory, eq(category.id, productCategory.categoryId))
+            .where(eq(productCategory.productId, productId)),
 
-      db
-        .select()
-        .from(productAttribute)
-        .where(eq(productAttribute.productId, productId)),
+          db
+            .select()
+            .from(productAttribute)
+            .where(eq(productAttribute.productId, productId)),
 
-      db
-        .select()
-        .from(productMedia)
-        .where(eq(productMedia.productId, productId)),
+          db
+            .select()
+            .from(productMedia)
+            .where(eq(productMedia.productId, productId)),
 
-      db
-        .select()
-        .from(productFilter)
-        .where(eq(productFilter.productId, productId)),
+          db
+            .select()
+            .from(productFilter)
+            .where(eq(productFilter.productId, productId)),
 
-      // FAQ FETCH
-      getProductFaqRows(productId),
-    ]);
+          // FAQ FETCH
+          getProductFaqRows(productId),
+        ]);
 
-    // 4. Final response
-    return {
-      ...productDeails,
-      prodcutVarientBoxRes,
-      categoryRes,
-      productAttributeRes,
-      productMediaRes,
-      filters,
-      productFaqRes, // <-- ye add karna important h
-    };
-  } catch (error) {
-    console.error("getFullProduct failed:", error);
-    throw new Error("Unable to fetch product");
-  }
+        // 4. Final response
+        return {
+          ...productDeails,
+          prodcutVarientBoxRes,
+          categoryRes,
+          productAttributeRes,
+          productMediaRes,
+          filters,
+          productFaqRes, // <-- ye add karna important h
+        };
+      } catch (error) {
+        console.error("getFullProduct failed:", error);
+        throw new Error("Unable to fetch product");
+      }
+    },
+    [CACHE_TAGS.product(identifier), identifier],
+    {
+      revalidate: 3600,
+      tags: [CACHE_TAGS.products, CACHE_TAGS.product(identifier)],
+    },
+  )();
 }
 
 export async function getFullProduct(identifier: string) {
@@ -654,51 +671,61 @@ export async function getCategoryName(categoryId: any) {
 }
 
 export async function getProductSimilarProducts(slug: string | any) {
-  try {
-    const [v] = await db
-      .select()
-      .from(product)
-      .where(eq(product.slug, slug))
-      .limit(1);
-    if (!v || !v.id) return [];
+  return unstable_cache(
+    async () => {
+      try {
+        const [v] = await db
+          .select()
+          .from(product)
+          .where(eq(product.slug, slug))
+          .limit(1);
+        if (!v || !v.id) return [];
 
-    const productWithCategory = await db
-      .select({ categoryId: productCategory.categoryId })
-      .from(productCategory)
-      .where(eq(productCategory.productId, v.id));
+        const productWithCategory = await db
+          .select({ categoryId: productCategory.categoryId })
+          .from(productCategory)
+          .where(eq(productCategory.productId, v.id));
 
-    if (!productWithCategory.length) return [];
+        if (!productWithCategory.length) return [];
 
-    const categoryId = productWithCategory[0].categoryId;
+        const categoryId = productWithCategory[0].categoryId;
 
-    const similarVariants = await db
-      .select({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        basePrice: product.basePrice,
-        bannerImage: product.bannerImage,
-        rateing1Star: product.rateing1Star,
-        rateing2Star: product.rateing2Star,
-        rateing3Star: product.rateing3Star,
-        rateing4Star: product.rateing4Star,
-        rateing5Star: product.rateing5Star,
-        hasVarientBox: product.hasVarientBox,
-        strikethroughPrice: product.strikethroughPrice,
-        category: category.name,
-      })
-      .from(product)
-      .innerJoin(productCategory, eq(productCategory.productId, product.id))
-      .innerJoin(category, eq(category.id, productCategory.categoryId))
-      .where(
-        and(eq(productCategory.categoryId, categoryId), ne(product.id, v.id)),
-      )
-      .limit(10);
+        const similarVariants = await db
+          .select({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            basePrice: product.basePrice,
+            bannerImage: product.bannerImage,
+            rateing1Star: product.rateing1Star,
+            rateing2Star: product.rateing2Star,
+            rateing3Star: product.rateing3Star,
+            rateing4Star: product.rateing4Star,
+            rateing5Star: product.rateing5Star,
+            hasVarientBox: product.hasVarientBox,
+            strikethroughPrice: product.strikethroughPrice,
+            category: category.name,
+          })
+          .from(product)
+          .innerJoin(productCategory, eq(productCategory.productId, product.id))
+          .innerJoin(category, eq(category.id, productCategory.categoryId))
+          .where(
+            and(eq(productCategory.categoryId, categoryId), ne(product.id, v.id)),
+          )
+          .limit(10);
 
-    return similarVariants;
-  } catch (error) {
-    console.error("getProductSimilarProducts failed:", error);
-  }
+        return similarVariants;
+      } catch (error) {
+        console.error("getProductSimilarProducts failed:", error);
+        return [];
+      }
+    },
+    ["similar-products", String(slug)],
+    {
+      revalidate: 3600,
+      tags: [CACHE_TAGS.products, CACHE_TAGS.product(String(slug))],
+    },
+  )();
 }
 
 export async function deleteProduct(id: string) {
@@ -757,6 +784,8 @@ export async function deleteProduct(id: string) {
       await tx.delete(product).where(eq(product.id, id));
     });
 
+    revalidateProductCache(id);
+    revalidateCategoryCache();
     revalidatePath("/admin/product");
     return {
       success: true,
@@ -786,27 +815,29 @@ export async function getProducts({
   brand = "",
   sort = "",
 }: GetProductsOptions) {
-  const filters = [];
+  return unstable_cache(
+    async () => {
+      const filters = [];
 
-  if (search.trim() !== "") {
-    filters.push(ilike(product.name, `%${search}%`));
-  }
+      if (search.trim() !== "") {
+        filters.push(ilike(product.name, `%${search}%`));
+      }
 
-  const offset = (page - 1) * pageSize;
+      const offset = (page - 1) * pageSize;
 
-  const filterValues = [
-    type,
-    material,
-    finish,
-    size,
-    flow,
-    cramps,
-    allergies,
-  ].flat().filter(Boolean);
+      const filterValues = [
+        type,
+        material,
+        finish,
+        size,
+        flow,
+        cramps,
+        allergies,
+      ].flat().filter(Boolean);
 
-  if (filterValues.length > 0) {
-    filters.push(
-      sql`exists (
+      if (filterValues.length > 0) {
+        filters.push(
+          sql`exists (
       select 1 from ${productFilter}
       where ${productFilter.productId} = ${product.id}
       and ${productFilter.filter} in (${sql.join(
@@ -816,40 +847,40 @@ export async function getProducts({
       group by ${productFilter.productId}
       having count(distinct ${productFilter.filter}) = ${filterValues.length}
     )`,
-    );
-  }
+        );
+      }
 
-  if (min && max) {
-    filters.push(
-      and(
-        gte(product.basePrice, Number(min)),
-        lte(product.basePrice, Number(max)),
-      ),
-    );
-  } else if (min) {
-    filters.push(gte(product.basePrice, Number(min)));
-  } else if (max) {
-    filters.push(lte(product.basePrice, Number(max)));
-  }
+      if (min && max) {
+        filters.push(
+          and(
+            gte(product.basePrice, Number(min)),
+            lte(product.basePrice, Number(max)),
+          ),
+        );
+      } else if (min) {
+        filters.push(gte(product.basePrice, Number(min)));
+      } else if (max) {
+        filters.push(lte(product.basePrice, Number(max)));
+      }
 
-  if (stock === "true") {
-    filters.push(eq(product.isInStock, true));
-  }
+      if (stock === "true") {
+        filters.push(eq(product.isInStock, true));
+      }
 
-  if (brand) {
-    filters.push(eq(product.brand, brand));
-  }
+      if (brand) {
+        filters.push(eq(product.brand, brand));
+      }
 
-  if (categorySlug) {
-    const slugs = Array.isArray(categorySlug) ? categorySlug : [categorySlug];
-    const categoryIds = await db
-      .select({ id: category.id })
-      .from(category)
-      .where(inArray(category.slug, slugs));
+      if (categorySlug) {
+        const slugs = Array.isArray(categorySlug) ? categorySlug : [categorySlug];
+        const categoryIds = await db
+          .select({ id: category.id })
+          .from(category)
+          .where(inArray(category.slug, slugs));
 
-    if (categoryIds.length > 0) {
-      filters.push(
-        sql`exists (
+        if (categoryIds.length > 0) {
+          filters.push(
+            sql`exists (
       select 1 from ${productCategory}
       where ${productCategory.productId} = ${product.id}
       and ${productCategory.categoryId} in (${sql.join(
@@ -857,58 +888,82 @@ export async function getProducts({
         sql`,`,
       )})
     )`,
-      );
-    }
-  }
-  const whereClause = filters.length ? and(...filters) : undefined;
+          );
+        }
+      }
+      const whereClause = filters.length ? and(...filters) : undefined;
 
-  let orderByClause: any = desc(product.createdAt);
-  if (sort === "price_asc") {
-    orderByClause = asc(product.basePrice);
-  } else if (sort === "price_desc") {
-    orderByClause = desc(product.basePrice);
-  }
+      let orderByClause: any = desc(product.createdAt);
+      if (sort === "price_asc") {
+        orderByClause = asc(product.basePrice);
+      } else if (sort === "price_desc") {
+        orderByClause = desc(product.basePrice);
+      }
 
-  const [items, total] = await Promise.all([
-    db
-      .select({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        sku: product.sku,
-        description: product.description,
+      const [items, total] = await Promise.all([
+        db
+          .select({
+            id: product.id,
+            name: product.name,
+            slug: product.slug,
+            sku: product.sku,
+            description: product.description,
 
-        isInStock: product.isInStock,
-        hasVarientBox: product.hasVarientBox,
-        basePrice: product.basePrice,
-        strikethroughPrice: product.strikethroughPrice,
-        bannerImage: product.bannerImage,
-        createdAt: product.createdAt,
-      })
-      .from(product)
-      // .leftJoin(productCategory, eq(productCategory.productId, product.id))
-      .where(whereClause)
-      .orderBy(orderByClause)
-      .limit(pageSize)
-      .offset(offset),
+            isInStock: product.isInStock,
+            hasVarientBox: product.hasVarientBox,
+            basePrice: product.basePrice,
+            strikethroughPrice: product.strikethroughPrice,
+            bannerImage: product.bannerImage,
+            createdAt: product.createdAt,
+          })
+          .from(product)
+          // .leftJoin(productCategory, eq(productCategory.productId, product.id))
+          .where(whereClause)
+          .orderBy(orderByClause)
+          .limit(pageSize)
+          .offset(offset),
 
-    db
-      .select({ count: sql<number>`count(distinct ${product.id})` })
-      .from(product)
-      .leftJoin(productCategory, eq(productCategory.productId, product.id))
-      .leftJoin(category, eq(category.id, productCategory.categoryId))
-      .where(whereClause),
-  ]);
+        db
+          .select({ count: sql<number>`count(distinct ${product.id})` })
+          .from(product)
+          .leftJoin(productCategory, eq(productCategory.productId, product.id))
+          .leftJoin(category, eq(category.id, productCategory.categoryId))
+          .where(whereClause),
+      ]);
 
-  const totalItems = Number(total[0]?.count || 0);
-  const totalPages = Math.ceil(totalItems / pageSize);
+      const totalItems = Number(total[0]?.count || 0);
+      const totalPages = Math.ceil(totalItems / pageSize);
 
-  return {
-    items,
-    totalItems,
-    totalPages,
-    page,
-  };
+      return {
+        items,
+        totalItems,
+        totalPages,
+        page,
+      };
+    },
+    [
+      "products-list",
+      JSON.stringify({
+        page,
+        pageSize,
+        search,
+        category: categorySlug,
+        type,
+        material,
+        finish,
+        size,
+        flow,
+        cramps,
+        allergies,
+        min,
+        max,
+        stock,
+        brand,
+        sort,
+      }),
+    ],
+    { revalidate: 3600, tags: [CACHE_TAGS.products, CACHE_TAGS.categories] },
+  )();
 }
 
 // export async function getProductSimilarProducts(slug: string | any) {
@@ -1217,27 +1272,33 @@ export async function getProductsBySlugList(slugs: string[]) {
 }
 
 export async function getProductFilterOptions() {
-  const rows = await db
-    .select({
-      type: productFilter.type,
-      filter: productFilter.filter,
-    })
-    .from(productFilter)
-    .groupBy(productFilter.type, productFilter.filter);
+  return unstable_cache(
+    async () => {
+      const rows = await db
+        .select({
+          type: productFilter.type,
+          filter: productFilter.filter,
+        })
+        .from(productFilter)
+        .groupBy(productFilter.type, productFilter.filter);
 
-  const makeOptions = (type: string) =>
-    rows
-      .filter((row) => row.type === type && row.filter)
-      .map((row) => ({
-        label: row.filter,
-        value: row.filter,
-      }));
+      const makeOptions = (type: string) =>
+        rows
+          .filter((row) => row.type === type && row.filter)
+          .map((row) => ({
+            label: row.filter,
+            value: row.filter,
+          }));
 
-  return {
-    materialOptions: makeOptions("material"),
-    finishOptions: makeOptions("finish"),
-    sizeOptions: makeOptions("size"),
-  };
+      return {
+        materialOptions: makeOptions("material"),
+        finishOptions: makeOptions("finish"),
+        sizeOptions: makeOptions("size"),
+      };
+    },
+    ["product-filter-options"],
+    { revalidate: 3600, tags: [CACHE_TAGS.products] },
+  )();
 }
 
 export async function getSignatureProducts(limit = 8) {
@@ -1267,8 +1328,8 @@ export async function getSignatureProducts(limit = 8) {
         return [];
       }
     },
-    [`signature-products-${limit}`],
-    { revalidate: 3600, tags: ['products'] }
+    ["signature-products", String(limit)],
+    { revalidate: 3600, tags: [CACHE_TAGS.products] }
   )();
 }
 
@@ -1299,8 +1360,8 @@ export async function getNewArrivalProducts(limit = 8) {
         return [];
       }
     },
-    [`new-arrival-products-${limit}`],
-    { revalidate: 3600, tags: ['products'] }
+    ["new-arrival-products", String(limit)],
+    { revalidate: 3600, tags: [CACHE_TAGS.products] }
   )();
 }
 
@@ -1331,7 +1392,7 @@ export async function getTrendingProducts(limit = 8) {
         return [];
       }
     },
-    [`trending-products-${limit}`],
-    { revalidate: 3600, tags: ['products'] }
+    ["trending-products", String(limit)],
+    { revalidate: 3600, tags: [CACHE_TAGS.products] }
   )();
 }

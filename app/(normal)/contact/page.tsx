@@ -188,7 +188,7 @@ const handleFaqRedirect = () => {
             <br />
             Naraina Industrial Area,
             <br />
-            New Delhi – 110012
+            New Delhi – 110028
             <br />
             India
           </p>
@@ -402,7 +402,7 @@ const handleFaqRedirect = () => {
             <div className="space-y-6">
               <div className="rounded-lg overflow-hidden h-64 lg:h-72">
                 <iframe
-                  src="https://www.google.com/maps?q=A-42,+Phase-1,+Naraina+Industrial+Area,+New+Delhi+-+110012&output=embed"
+                  src="https://www.google.com/maps?q=A-42,+Phase-1,+Naraina+Industrial+Area,+New+Delhi+-+110028&output=embed"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}

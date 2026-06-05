@@ -10,27 +10,27 @@ export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 export const kitchenBathroomRestrictCategories = new Set([
-  "hand-shower",
+  "Hand-Shower",
   "trending-now",
-  "aura-steel-sinks",
-  "sink-drain-adaptor",
+  "Aura",
+  "Sink-Drainer-Adapter",
   "signature-pieces",
-  "drain-pipe",
-  "liquid-soap-dispenser",
-  "sink-strainer-cover",
+  "Drain-Pipe",
+  "Liquid-Soap-Dispenser",
+  "Sink-Strainer-Cover",
   "new-arrivals",
-  "sink-strainer",
-  "kitchen-accessories"
+  "Sink-Strainer",
+  "Kitchen-Accessories"
 ]);
 
 export const allowedCategoryNames = new Set([
-  "granite-sink",
-  "stainless-steel-sinks",
-  "kitchen-faucet",
-  "bathroom-faucet",
-  "wash-basin",
-  "towel-warmer",
-  "food-waste-disposers",
-  "floor-drainer",
-  "air-tap",
+  "Granite-Sinks",
+  "Steel-Sinks",
+  "Kitchen-Faucets",
+  "Bathroom-Faucets",
+  "Bathroom-Basins",
+  "Towel-Warmers",
+  "Food-Waste-Disposers",
+  "Floor-Drainers",
+  "Air-Tap",
 ]);

@@ -284,7 +284,7 @@ const Footer = async () => {
           </div>
 
           <p className="text-[11px] text-white/60 font-inter text-center md:text-right order-2 md:order-3 max-w-[200px] md:max-w-none">
-            A-42, Phase-1, Naraina Industrial Area, New Delhi, 110012
+            A-42, Phase-1, Naraina Industrial Area, New Delhi, 110028
           </p>
         </div>
       </div>

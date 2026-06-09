@@ -39,14 +39,16 @@ const handleFaqRedirect = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
+ 
   const [formData, setFormData] = useState({
+    
     fullName: "",
     email: "",
     phone: "",
     category: "",
     subject: "",
     message: "",
+   zc_gad: "",
   });
 
   const handleChange = (
@@ -68,9 +70,14 @@ const handleFaqRedirect = () => {
     setError("");
     setSuccess("");
   };
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const payload = {
+    ...formData,
+    zc_gad: (document.getElementById("zc_gad") as HTMLInputElement)?.value || "",
+  };
 
     setError("");
     setSuccess("");
@@ -124,7 +131,7 @@ const handleFaqRedirect = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
@@ -139,6 +146,7 @@ const handleFaqRedirect = () => {
           category: "",
           subject: "",
           message: "",
+    zc_gad: "",
         });
 
         setMessageLength(0);
@@ -283,7 +291,13 @@ const handleFaqRedirect = () => {
                 </div>
               )}
 
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-6" id="zoho-form" onSubmit={handleSubmit}>
+                <input
+                  type="hidden"
+                  id="zc_gad"
+                  name="zc_gad"
+                  value={formData.zc_gad}
+                />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <FieldLabel className="text-white mb-3 block text-sm font-medium">

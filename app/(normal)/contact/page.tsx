@@ -291,7 +291,7 @@ const handleFaqRedirect = () => {
                 </div>
               )}
 
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-6" id="zoho-form" onSubmit={handleSubmit}>
                 <input
                   type="hidden"
                   id="zc_gad"

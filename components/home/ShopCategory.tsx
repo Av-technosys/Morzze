@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { IconArrowRight } from "@tabler/icons-react";
+import { getImageURL } from "@/lib/getImageLin";
 
 type CategoryType = "kitchen" | "bathroom" | null;
 
@@ -92,7 +93,7 @@ const ShopCategory = ({ categories = [] }: ShopCategoryProps) => {
                   >
                     {cat.bannerImage ? (
                       <Image
-                        src={cat.bannerImage}
+                        src={getImageURL(cat.bannerImage || "")}
                         alt={cat.name}
                         width={900}
                         height={600}

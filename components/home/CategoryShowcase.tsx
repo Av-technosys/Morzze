@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getImageURL } from '@/lib/getImageLin'
 
 interface CategoryProduct {
   id: string;
@@ -94,7 +95,7 @@ const CategoryShowcase = ({ categories }: { categories: CategoryWithProducts[] }
                 >
                   <Link href={`/product/${prod.slug}`}>
                     <Image
-                      src={prod.bannerImage || "/placeholder.png"}
+                      src={getImageURL(prod.bannerImage || "")}
                       alt={prod.name || "Product"}
                       fill
                       className="object-cover transition-transform duration-1000 hover:scale-105"
@@ -148,7 +149,7 @@ const CategoryShowcase = ({ categories }: { categories: CategoryWithProducts[] }
                     className="relative overflow-hidden bg-zinc-900 w-full rounded-sm shadow-2xl aspect-square"
                   >
                     <Image
-                      src={prod.bannerImage || "/placeholder.png"}
+                      src={getImageURL(prod.bannerImage || "")}
                       alt={prod.name || "Product"}
                       fill
                       className="object-cover transition-transform duration-1000 hover:scale-105"

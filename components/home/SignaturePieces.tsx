@@ -7,6 +7,7 @@ import { IconArrowRight, IconShoppingBag, IconHeart, IconHeartFilled, IconStarFi
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";
+import { getImageURL } from "@/lib/getImageLin";
 
 interface SignatureProduct {
   id: string;
@@ -66,7 +67,7 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
               <div className="relative aspect-[4/5] bg-[#111] overflow-hidden mb-4">
                 <Link href={`/product/${product.slug}`}>
                   <Image
-                    src={product.bannerImage || "/placeholder.png"}
+                    src={getImageURL(product.bannerImage || "")}
                     alt={product.name || "Product"}
                     fill
                     className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
@@ -109,8 +110,8 @@ const SignaturePieces = ({ products }: { products: SignatureProduct[] }) => {
                         toggleWishlist(product.slug || "", product.id);
                       }}
                       className={`shrink-0 rounded-sm h-10 md:h-12 w-10 md:w-10 flex items-center justify-center transition-all ${isInWishlist(product.slug || "")
-                          ? "bg-[#FFBF3F] hover:bg-white"
-                          : "bg-[#FFBF3F] cursor-pointer"
+                        ? "bg-[#FFBF3F] hover:bg-white"
+                        : "bg-[#FFBF3F] cursor-pointer"
                         }`}
                     >
                       {isInWishlist(product.slug || "") ? (

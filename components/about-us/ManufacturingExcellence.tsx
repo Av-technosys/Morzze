@@ -43,11 +43,7 @@ const features = [
     title: "ISO 9001:2015 Certified",
     desc: "Our quality management systems meet internationa standards for consistent excellence.",
   },
-  {
-    icon: <IconShieldCheck size={28} stroke={1.5} />,
-    title: "10-Year Warranty",
-    desc: "Every product comes with our comprehensive warranty, a testament to our confidence in quality.",
-  },
+  
   {
     icon: <IconRecycle size={28} stroke={1.5} />,
     title: "Sustainable Practices",

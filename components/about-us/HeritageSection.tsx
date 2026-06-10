@@ -53,7 +53,7 @@ const HeritageSection = () => {
             >
               <p>
                 Morzze began with a simple belief: that everyday objects deserve
-                extraordinary attention. Founded in 2008 in the heart of New
+                extraordinary attention. Founded in 1990 in the heart of New
                 Delhi, we set out to redefine what premium kitchen and bathroom
                 fittings could be.
               </p>

@@ -51,9 +51,7 @@ export default function ProductCatalogueHero() {
           viewport={{ once: true }}
           className="max-w-3xl mx-auto text-[13px] md:text-[17px] leading-7 text-[#efefef]/90"
         >
-          Download detailed catalogues for our complete range of bathroom
-          fittings, kitchen sinks, shower systems, sanitary ware, and wellness
-          products.
+          Explore the Morzze catalogue, a curated collection of premium kitchen and bathroom solutions that embody luxury and innovation. Each product is meticulously crafted with the finest materials, ensuring durability and timeless elegance.
         </motion.p>
       </div>
     </section>

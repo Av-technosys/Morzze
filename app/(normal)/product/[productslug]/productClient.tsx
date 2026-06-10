@@ -159,7 +159,8 @@ const ProductClient = ({ product, slug, reviews }: any) => {
                   )}
                 >
                   <Image
-                    src={img}
+                   src={img}
+                    // src={`${process.env.NEXT_PUBLIC_S3_BASE_URL}/${img}`}
                     alt={`${product.name ?? "Product"} thumbnail ${i + 1}`}
                     width={500}
                     height={500}

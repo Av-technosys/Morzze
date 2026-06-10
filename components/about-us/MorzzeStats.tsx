@@ -27,9 +27,9 @@ const itemVariants: Variants = {
 const MorzzeStats = () => {
   const stats = [
         { value: "700+", label: "DEALER NETWORK" },
-  { value: "35+", label: "YEARS OF EXCELLENCE" },
-  { value: "50k+", label: "HAPPY CUSTOMERS" },
-  { value: "200+", label: "PRODUCT VARIENTS" },
+  { value: "200+", label: "Collaborations with Architects" },
+  { value: "100+", label: "Collaborations with Builders" },
+  { value: "35+", label: "Years of Experience" },
   ];
 
   return (

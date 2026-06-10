@@ -56,7 +56,15 @@ const MissionVisionSection = () => {
                   Our Mission
                 </h3>
                 <p className="font-inter text-white/80 text-sm md:text-md leading-relaxed">
-                  Our mission is to redefine kitchen and bathroom spaces by offering premium solutions that blend exceptional quality, innovative design, and sustainability. We strive to elevate everyday living with products that are both functional and luxurious.
+                  
+                To elevate the essential rhythms of the home transforming daily rituals of
+                cleansing and culinary creation into experiences of grace and well-being.
+            
+                We believe the home has two hearts. One beats for tranquility, the other for
+                connection. True luxury lies in the fluidity of daily life—whether it is the
+                quiet solitude of a morning shower or the vibrant choreography of preparing
+                a meal. Your interaction with water defines the rhythm of your day.
+            
                 </p>
               </div>
             </div>

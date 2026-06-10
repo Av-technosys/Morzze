@@ -6,12 +6,12 @@ const milestones = [
   {
     year: "1990",
     title: "Foundation",
-    desc: "Anupam founded at Naraina, New Delhi, India.",
+    desc: "Anupam founded at Naraina,New Delhi,India.",
   },
   {
     year: "1997",
     title: "Expansion",
-    desc: "Anupam shifted its unit to new premises of 16000 sq.ft at Ghevera, New Delhi.",
+    desc: "Anupam shifted its unit to new premises of 16000 sq.ft at Ghevera,New Delhi.",
   },
   {
     year: "2000",
@@ -21,7 +21,7 @@ const milestones = [
   {
     year: "2008",
     title: "Display Centre Launch",
-    desc: "Opened its first Display Centre 'ANUPAM WORLD'. By end of 2008, six display centres were operating across India.",
+    desc: "Opened its first Display Centre “ANUPAM WORLD”.By end of 2008, six display centres across India.",
   },
   {
     year: "2009",

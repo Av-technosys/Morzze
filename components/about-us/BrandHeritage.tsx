@@ -66,7 +66,7 @@ const BrandHeritage = () => {
             >
               <p>
                 Morzze began with a simple belief: that everyday objects deserve
-                extraordinary attention. Founded in 2008 in New Delhi, we set
+                extraordinary attention. Founded in 1990 in New Delhi, we set
                 out to redefine what premium kitchen and bathroom fittings could
                 be for Indian homes.
               </p>
@@ -92,7 +92,7 @@ const BrandHeritage = () => {
                 <div className="w-[1.5px] h-12 bg-[#CBA14D] transition-all duration-500 group-hover:h-16" />
                 <div className="space-y-1">
                   <h4 className="text-4xl md:text-5xl font-semibold text-white leading-none">
-                    16+
+                    35+
                   </h4>
                   <p className="text-[10px] uppercase tracking-[0.3em] text-white/80">
                     Years of Craft

@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server"
 import { renderTemplate, sendEmailWithAttachments } from "@/lib/email"
+import { getCurrentUser } from "@/helper/user/action"
 
 export async function POST(req: Request) {
   try {
@@ -25,8 +26,9 @@ export async function POST(req: Request) {
     const bytes = await resume.arrayBuffer()
     const buffer = Buffer.from(bytes)
 
+    const loggedInUser = await getCurrentUser()
     await sendEmailWithAttachments({
-      to: process.env.RECEIVER_EMAIL || process.env.EMAIL_FROM!,
+      to: loggedInUser?.email!,
       subject: `New Job Application - ${jobTitle}`,
       html: renderTemplate(
         `

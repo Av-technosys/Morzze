@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { careerEnquiries } from "@/db/schema";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { renderTemplate, sendEmail, sendEmailWithAttachments } from "@/lib/email";
+import { getCurrentUser } from "@/helper/user/action";
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION!,
@@ -81,9 +82,12 @@ export async function POST(req: Request) {
       resumeUrl,
     });
 
+    const loggedInUser = await getCurrentUser();
+    const receiverEmail = loggedInUser?.email!;
+
     try {
       await sendEmailWithAttachments({
-        to: process.env.CAREER_RECEIVER_EMAIL || process.env.RECEIVER_EMAIL || process.env.EMAIL_FROM!,
+        to: receiverEmail,
         subject: `New Career Enquiry - ${subject}`,
         html: renderTemplate(
           `

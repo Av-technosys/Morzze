@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { renderTemplate, sendEmail, sendEmailWithAttachments } from "@/lib/email";
+import { getCurrentUser } from "@/helper/user/action";
 
 export async function POST(req: Request) {
   try {
@@ -35,8 +36,9 @@ export async function POST(req: Request) {
       });
     }
 
+    const loggedInUser = await getCurrentUser();
     const emailPayload = {
-      to: process.env.EMAIL_TO || process.env.RECEIVER_EMAIL || process.env.EMAIL_FROM!,
+      to: loggedInUser?.email!,
       subject: "New Return Request",
       html: renderTemplate(
         `

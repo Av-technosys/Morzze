@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { notifyNewsletterSignupEmail } from "@/lib/email-notifications";
 import { renderTemplate, sendEmail } from "@/lib/email";
+import { getCurrentUser } from "@/helper/user/action";
 
 export async function POST(req: Request) {
   try {
@@ -17,8 +18,9 @@ export async function POST(req: Request) {
     }
 
     try {
+      const loggedInUser = await getCurrentUser();
       await sendEmail({
-        to: process.env.RECEIVER_EMAIL || process.env.EMAIL_FROM!,
+        to: loggedInUser?.email!,
         subject: "New Newsletter Subscription - Morzze",
         html: renderTemplate(
           `

@@ -2,6 +2,7 @@
 
 import { NextResponse } from "next/server"
 import { renderTemplate, sendEmail } from "@/lib/email"
+import { getCurrentUser } from "@/helper/user/action"
 
 export async function POST(req: Request) {
   try {
@@ -34,8 +35,9 @@ export async function POST(req: Request) {
       )
     }
 
+    const loggedInUser = await getCurrentUser()
     await sendEmail({
-      to: process.env.RECEIVER_EMAIL || process.env.EMAIL_FROM!,
+      to: loggedInUser?.email!,
       subject: `New Dealer Application - ${businessName}`,
       html: renderTemplate(
         `
